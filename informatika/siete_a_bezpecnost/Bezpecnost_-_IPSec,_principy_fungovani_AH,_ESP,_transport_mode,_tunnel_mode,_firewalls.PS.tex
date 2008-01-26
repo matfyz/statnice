@@ -1,0 +1,79 @@
+\subsection{Bezpečnost -- IPSec, principy fungování AH, ESP, transport mode, tunnel mode, firewalls}
+
+\subsubsection*{IPSec}
+
+\begin{pitemize}
+	\item Není to pouze jeden protokol ale soustava vzájemně provázaných opatření a dílčích protokolů pro zabezpečení komunikace pomocí IP protokolu, funguje na síťové vrstvě -- není závislý na protokolech vyšších vrstev jako je TCP a UDP (např. SSL protokol pracuje na transportní vrstvě)
+	\item Podporováno jak v IPv4 (podpora nepovinná) i v IPv6 (podpora povinná)
+	\item Zajišťuje důvěrnost (šifruje přenášená data) a integritu (data nejsou při přenosu změněna)
+	\item několik desítek RFC dokumentů
+	\item autentifikace -- ověření původu dat (odesílatele)
+	\item kryptování -- šifrování komunikace (mimo IP hlavičky)
+	\item může být implementováno na bráně (security gateway, lokální síť je považována za bezpečnou) nebo na koncových zařízení 
+
+	\item \textbf{SA (Security Association)}
+	\begin{pitemize}
+		\item point-to-point bezpečnostní spoj (návrh uvažuje i o jiných variantách)
+		\item pro každý směr a každý prototokol nutné mít vlastní SA spoj
+	\end{pitemize}
+\end{pitemize}
+
+IPsec módy:
+\begin{pitemize}
+	\item \textbf{transport mode}
+	\begin{pitemize}
+		\item IP hlavička nechráněná (jeden z důvodů je užívání systému NAT), tělo paketu šifrováno (data vyšších protokolů)
+		\item použitelné jen na koncových stanicích 
+	\end{pitemize}
+	\item \textbf{tunnel mode}
+	\begin{pitemize}
+		\item pakety jsou celé (včetně hlavičky) zašifrovány a vloženy do dalšího paketu, na druhé straně rozbaleny
+		\item povinné pro security gateways, volitelné pro koncové stanice
+		\item ve vnější IP hlavičce se jako příjemce uvádí security gateway na hranici cílové sítě 
+	\end{pitemize}
+\end{pitemize}
+
+IPsec protokoly:
+\begin{pitemize}
+	\item \textbf{AH (Authentication Header)}
+	\begin{pitemize}
+		\item komunikující strany se dohodnou na klíči
+		\item k datům se připojuje hash
+		\item chrání také před replay attack
+		\item provádí autentizaci a kontrolu změny dat, neprovádí šifrování 
+	\end{pitemize}
+	\item \textbf{ESP (Encapsulating Security Payload)}
+	\begin{pitemize}
+		\item provádí autentizaci a také šifruje obsah
+		\item pro šifrování používá 3DES, Blowfish aj. (původně DES, již není považováno za bezpečné) 
+	\end{pitemize}
+\end{pitemize}
+
+Dohoda klíčů:
+\begin{pitemize}
+	\item před použitím protokolu AH či ESP si musí strany dohodnout klíče
+	\item manuální konfigurace
+	\item automatická konfigurace -- IKE (Internet Key Exchange) protokol 
+\end{pitemize}
+
+\subsubsection*{Firewally}
+\begin{pitemize}
+	\item sledování a filtrování komunikace na síti
+	\begin{pitemize}
+		\item blokování -- zabraňuje neoprávněnému přístupu
+		\item prostupnost -- propouštění povoleného toku 
+	\end{pitemize}
+	\item paketové filtry -- např. na routeru
+	\item stavový firewall (stateful) -- sleduje vztahy mezi pakety, ohlíží se na historii
+	\item na různých vrstvách
+	\begin{pitemize}
+		\item síťová -- pouze dle zdrojových a cílových adres a protokolu
+		\item transportní -- také podle portů
+		\item aplikační -- dle obsahu (dat) 
+	\end{pitemize}
+	\item demilitarizovaná zóna (DMZ):
+	\begin{pitemize}
+		\item jiné řešení bezpečnosti
+		\item přístup ven pouze přes specializovaná zařízení (proxy, brány), nelze přímo -- platí pro oba směry 
+	\end{pitemize}
+\end{pitemize}

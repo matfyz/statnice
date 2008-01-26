@@ -1,0 +1,64 @@
+\subsection{Konkrétní souborové systémy}
+
+\subsubsection*{ext2 (second extended filesystem)}
+
+\begin{pitemize}
+  \item Prostor je rozdělen na bloky a ty jsou uspořádány do skupin bloků. To je kvůli
+  snížení vnitřní fragmentace a minimalizaci pohyb hlav na disku.
+  \item Každá skupina bloků obsahuje: superblock, mapu skupiny bloků, mapu inodů
+  a bloky dat.
+  \item \textbf{superblock}~-- obsahuje základní (nezbytné) informace o svazku. Jeho kopie
+  je tedy v každé skupině bloků 
+  \item \textbf{i-node}~-- obsahuje informace o souboru
+  \begin{pitemize}
+    \item počet linků na soubor
+    \item vlastník, skupina
+    \item přístupová práva
+    \item typ souboru
+    \item velikost souboru
+    \item časy~-- modifikace, přístup\dots
+    \item odkazy na datové bloky
+    \item neobsahuje název souboru, ten je uložen v adresáři kam soubor patří
+  \end{pitemize}
+  \item velkost FS daná při formátování
+\end{pitemize}
+
+\subsubsection*{ext3}
+\begin{pitemize}
+  \item nadstavba na ext2 a tedy možnost přechodu mezi těmito dvěma FS bez
+  nutnosti přenášení dat.
+  \item hlavní novinka je, že přibyl žurnál. Jsou možné tři úrovně žurnálování:
+  \begin{pitemize}
+    \item \textbf{Journal}~-- (nejpomalejší, ale nejspolehlivější) metadata i
+    obsah souborů jsou zapisovány do žurnálu, ještě před komitnutím do FS.
+    \item \textbf{Ordered}~-- (středně rychlý, středně riskantní) 
+    \item \textbf{Writeback}~-- (nejrychlejší, ale riskantní - v některých
+    ohledech jako ext2) žurnálována jsou pouze metadata, ne již obsah souborů.
+  \end{pitemize}
+  \item při havárii systému okamžitá oprava podle žurnálu, FS se nemusí kontrolovat
+  \item FS roste za běhu jak je potřeba
+\end{pitemize}
+
+\subsubsection*{ReiserFS}
+\begin{pitemize}
+  \item žunálování metadat
+  \item růst velikosti FS za běhu, dle potřeby
+  \item \uv{tail packing} pro snížení míry fragmentace
+  \item metadata, adresářové položky, inody a konce (tail) souborů jsou uloženy
+  v jednom \emph{B+ stromě} podle univerzálního ID
+  \item mnohdy rychlejší než ext2 (ext3), kde jsou adresáře jako seznamy souborů
+  a tak projití adresáře je lineární na rozdíl od logaritmického u stromu v ReiserFS.
+\end{pitemize}
+
+\subsubsection*{FAT32 (File Allocatio Table)}
+\begin{pitemize}
+  \item jednoduchá implementace $\Rightarrow$ téměř na každém OS
+  \item žádná ochrana proti fragmentaci
+  \item zjistit kolik je volného místa znamená projít lineárně celý disk
+  \item rozdělení disku:
+  \begin{pitemize}
+    \item Boot sector
+    \item FAT~-- dvě kopie FAT (mapy datové oblasti)
+    \item Datová oblast~-- soubory a adresáře až do konce disku
+  \end{pitemize}
+\end{pitemize}

@@ -1,0 +1,43 @@
+\subsection{Vztah OS a HW, obsluha přerušení}
+
+\begin{obecne}{Zjištění změny stavu I/O zařízení:}
+\begin{pitemize}
+	\item \emph{asynchronní přerušení}~-- zašle zařízení
+	\item \emph{polling}~-- peridická kontrola stavu zařízení
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Druhy přerušení:}
+\begin{pitemize}
+	\item \emph{synchronní}~-- záměrně (instrukce TRAP~-- vstup do OS), výjimky (nesprávné chování procesu)~-- zpracuje se okamžitě
+	\item \emph{asynchronní}~-- vnější událost (např. příchod dat)~-- zpracuje se po dokončení aktuální instrukce 
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Obsluha přerušení:}
+\begin{pitemize}
+	\item OS se ujme řízení
+	\item uloží se stav CPU (obsah registrů, čítač, ...)
+	\item analyzuje se přerušení, vyvolá se příslušná obsluha (pokud není přerušení blokováno)
+	\item obslouží se přerušení (např. se zavolá obslužná procedura)
+	\item obnoví se stav CPU a aplikace pokračuje, popř. může dojít k přeplánování 
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{I/O software (vrstvy):}
+\begin{pitemize}
+	\item uživatelský I/O software
+	\item I/O nezávislý subsystém
+	\item ovladače zařízení
+	\item obsluha přerušení 
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Cíle I/O software:}
+\begin{pitemize}
+	\item nezávislost zařízení~-- programy nemusí vědět, s jakým přesně pracují
+	\item jednotné pojmenování (/dev)
+	\item připojení (mount)~-- vyměnitelná zařízení
+	\item obsluha chyb
+\end{pitemize}
+\end{obecne}

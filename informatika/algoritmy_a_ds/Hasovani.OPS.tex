@@ -1,0 +1,296 @@
+\newcommand{\nadpis}[1]{\pagebreak[2]\ramcek{\subsubsection*{#1}}}
+
+\subsection{Hašování}
+
+\begin{definiceN}{slovníkový problém} Dáno univerzum $U$, máme reprezentovat
+$S \subseteq U$ a navrhnout algoritmy pro operace
+\begin{pitemize}
+\item MEMBER(x) - zjistí zda $x \in S$ a pokud ano nalezne kde,
+\item INSERT(x) - pokud $x \notin S$, vloží $x$ do struktury reprezentující $S$,
+\item DELETE(x) - když $x \in S$, smaže $x$ ze struktury reprezentující $S$.
+\end{pitemize}
+\end{definiceN}
+
+Například pomocí pole můžeme tyto operace implementovat rychle, ale nevýhodou
+je prostorová náročnost. Pro velké množiny je to někdy dokonce nemožné.
+\emph{Hašování} se snaží zachovat rychlost operací a odstranit prostorovou
+náročnost.
+
+Podívejme se nyní na \emph{základní ideu} hašování. Mějme univerzum $U$ a
+množinu $S \subseteq U$ takovou, že $|S| << |U|$. Dále mějme funkci
+$h:U\rightarrow\{0,1,\dots,m-1\}$. Množinu $S$ potom reprezentujeme tabulkou
+(polem) o velikosti $m$ tak, že prvek $x \in S$ je uložen na řádku $h(x)$.
+
+\begin{definiceN}{Hašovací funkce, kolize} Funkci
+$h:U\rightarrow\{0,1,\dots,m-1\}$ potom nazýváme \textbf{hašovací funkcí}.
+Situaci $h(s)=h(t)$, pro $s \neq t; s,t \in S$  nazveme \textbf{kolize}.
+\end{definiceN}
+
+Jelikož mohutnost univerza $U$ je větší než velikost hašovací tabulky, nelze se
+kolizím úplně vyhnout. Existuje spousta různých metod, jak kolize řešit.
+Podívejme se tedy na některé podrobněji.
+
+\begin{definice}
+Ještě si zavedeme některé značení. Velikost $S$ (hašované množiny) označme
+\textbf{n}, velikost tabulky (pole) označme \textbf{m}, a faktor naplnění
+\textbf{$\alpha=\frac{n}{m}$}.
+\end{definice}
+
+\subsubsection*{Hašování se separovanými řetězci}
+
+Použijeme pole velikosti $m$, jehož $i$-tá položka bude spojový seznam $S_i$
+takový, že $s\in S_i \Leftrightarrow h(s)=i$, pro $s\in S$. Čili každý řádek
+pole obsahuje spojový seznam všech (kolidujících) prvků, které jsou hašovány na
+tento řádek. Seznamy nemusí být uspořádané, vznikají tak, jak jsou vkládány
+jednotlivé prvky do struktury.
+
+\begin{algoritmusN}{Hašování se separovanými řetězci}
+\begin{pitemize}
+\item \textbf{MEMBER} -- Spočteme hodnotu hašovací funkce $h(x)$, prohledáme
+řetězec začínající na pozici $h(x)$ a zjistíme zda se prvek nachází, či
+nenachází ve struktuře. Pokud se prvek v databázi nachází, tak musí nutně ležet
+v tomto řetězci.
+\item \textbf{INSERT} -- Zjistíme zda $x$ je v řetězci $h(x)$, pokud ne, přidáme
+ho nakonec, v opačném případě neděláme nic.
+\item \textbf{DELETE} -- Vyhledá $x$ v řetězci $h(x)$ a smaže ho. Pokud se tam
+$x$ nenachází, neudělá nic.
+\end{pitemize}
+\end{algoritmusN}
+
+\paragraph{Očekávaný počet testů} v neúspěšném případě je přibližně
+$e^{-\alpha} + \alpha$ a při úspěšném vyhledávání přibližně
+$1+\frac{\alpha}{2}$.
+
+\subsubsection*{Hašování s uspořádanými řetězci}
+
+Jak již je zřejmé z názvu je tato metoda téměř stejná jako předchozí. Jediný
+rozdíl je, že jednotlivé seznamy jsou uspořádány vzestupně dle velikosti
+prvků.
+
+\begin{algoritmusN}{Hašování s uspořádanými řetězci}
+Rozdíly jsou pouze pro operaci \textbf{MEMBER}, kde skončíme prohledávání, když
+dojdeme na konec, nebo když nalezneme prvek, který je větší než hledaný a
+operaci \textbf{INSERT}, které vkládá prvek na místo kde jsme ukončili
+vyhledávání (před prvek, který ho ukončil).
+\end{algoritmusN}
+
+\paragraph{Očekávaný počet testů} v neúspěšném případě je přibližně roven
+$e^{-\alpha}+1+\frac{\alpha}{2}-\frac{1}{\alpha}(1-e^{-\alpha})$ a v úspěšném
+případě je přibližně $1+\frac{\alpha}{2}$.
+
+Nevýhodou předchozích dvou metod je nerovnoměrné využití paměti. Zatímco
+některé seznamy mohou být dlouhé, v některých není prvek žádný. Řešením je najít
+způsob, jak kolidující prvky ukládat na jiné (prázdné) řádky tabulky. Potom je
+ale nutné každý prvek tabulky rozšířit a položky pro práci s tabulkou. 
+
+Čím použijeme sofistikovanější metodu ukládání dat do tabulky, tím více budeme
+potřebovat položek pro práci s tabulkou a tedy vzroste paměťová náročnost. Naším
+cílem je tedy najít rozumný kompromis mezi sofistikovaností (rychlostí)
+strategie a její paměťovou náročností. Podívejme se na další algoritmy,
+které se o to pokoušejí.
+
+\subsubsection*{Hašování s přemísťováním}
+
+Seznamy jsou tentokrát ukládány do tabulky a implementovány jako dvousměrné.
+Potřebujeme tedy dvě položky pro práci s tabulkou: \emph{next} -- číslo řádku
+obsahující další prvek seznamu a \emph{previous} -- číslo řádku obsahující
+předchozí prvek seznamu. Když dojde ke kolizi, tj. chceme vložit prvek a jeho
+místo je obsazené prvkem z jiného řetězce, pak tento prvek z jiného řetězce
+přemístíme na jiný prázdný řádek v tabulce (proto hašování s přemísťováním).
+
+\begin{algoritmusN}{Hašování s přemísťováním}
+Algoritmus \textbf{MEMBER} funguje stejně jako u hašování se separovanými
+řetězci, jen místo ukazatele na další prvek použije hodnotu \emph{next} z
+tabulky. Při operaci \textbf{INSERT} vložíme prvek kam patří pokud je tam místo,
+pokud již je místo obsazeno prvkem který tam patří, čili zde začíná seznam
+kolidujících prvků (\emph{previous} = prázdné), pak postupujeme po položkách
+\emph{next} až na konec seznamu, vložíme prvek na některý volný řádek
+tabulky a vyplníme správně hodnoty \emph{next} a \emph{previous}. Pokud je místo
+obsazeno prvkem z jiného seznamu (\emph{previous} $\neq$ prázdné), tak tento
+prvek přemístíme na některý volný řádek, správně přepíšeme položky \emph{next} a
+\emph{previous} v měněném seznamu a vkládaný prvek uložíme na jeho místo.
+Operace \textbf{DELETE} je vcelku přímočará, jenom je třeba, pokud mažeme první
+prvek seznamu na jeho místo přesunout ten druhý v pořadí (pokud existuje).
+\end{algoritmusN}
+
+\paragraph{Očekávaný počet testů} je v neúspěšném případě roven přibližně
+$(1-\frac{1}{m})^n+\frac{n}{m}\approx e^{-\alpha}+\alpha$ a v úspěšném je stejný
+jako pro hašování se separovanými řetězci a tedy $\frac{n-1}{2m}+1 \approx 1 +
+\frac{1}{\alpha}$.
+
+\subsubsection*{Hašování se dvěma ukazateli}
+
+Hašování s přemísťováním má tu nevýhodu, že díky přemisťování prvků jsou operace
+INSERT a DELETE časově náročné. Tato metoda tedy implementuje řetězce jako
+jednosměrné seznamy, ale takové které nemusejí začínat na svém místě, tj.
+řetězec $S_j$ obsahující prvky $s \in S$ takové, že $h(s)=j$, nemusí začínat na
+$j$-tém řádku. Místo ukazatele na předchozí prvek tak do položek pro práci s
+tabulkou přidáme ukazatel na místo, kde začíná řetězec příslušný danému řádku.
+Položky pro práci s tabulkou tedy budou: \emph{next} -- číslo řádku tabulky kde
+je další prvek seznamu, \emph{begin} -- číslo řádku tabulky obsahující první
+prvek seznamu příslušného tomuto místu.
+
+\begin{algoritmusN}{Hašování se dvěma ukazateli}
+Položka \emph{begin} v $j$-tém řádku je vyplněna právě tehdy, když
+reprezentovaná množina $S$ obsahuje prvek $s \in S$ takový, že $h(s)=j$.
+Algoritmy jsou potom podobné těm u hašování s přemísťováním, ale přemísťování
+prvků je nahrazeno odpovídajícími změnami v položce \emph{begin} daných řádků.
+\end{algoritmusN}
+
+Díky práci s položkami jsou operace INSERT a DELETE rychlejší než při hašování s
+přemísťováním, ale začátek řetězce v jiném řádku tabulky přidá navíc jeden test,
+což změní složitost operace MEMBER.
+
+\paragraph{Očekávaný počet testů} v neúspěšném případě je přibližně
+$1+\frac{\alpha^2}{2}+\alpha+e^{-\alpha}(2+\alpha)-2$ a při úspěšném vyhledávání
+je roven $1+\frac{(n-1)(n-2)}{6m^2}+\frac{n-1}{2m} \approx 1 +
+\frac{\alpha^2}{6}+\frac{\alpha}{2}$
+
+\subsubsection*{Srůstající hašování}
+
+Nyní se podíváme na několik verzí metody, která se nazývá srůstající hašování.
+Budeme potřebovat jedinou položku pro práci s tabulkou a to ukazatel
+jednosměrného spojového seznamu. Na rozdíl od předchozích metod zde nejsou
+řetězce separované, v jednom řetězci mohou být prvky s různou hodnotou hašovací
+funkce. Když máme přidat prvek $s$, tak ho zařadíme do řetězce, který se nachází
+na $h(s)$-tém řádku tabulky. Řetězce tedy v této metodě \emph{srůstají}. Různé
+verze této metody se liší tím, kam přidáváme nový prvek a podle práce s pamětí.
+Dělí se na \emph{standardní srůstající hašování} bez pomocné paměti a na hašování
+používající pomocnou paměť, kterému se říká jen \emph{srůstající hašování}.
+
+Nejdříve se budeme věnovat metodám standardního srůstajícího hašování (bez
+pomocné paměti):
+\begin{pitemize}
+\item \textbf{LISCH} -- late-insertion standard coalesced hashing -- vkládá se
+za poslední prvek řetězce,
+\item \textbf{EISCH} -- early-insertion standard coalesced hashing -- vkládá se
+za první prvek řetězce.
+\end{pitemize}
+
+Přirozená efektivní operace DELETE pro standardní srůstající hašování není
+známa. Na druhou stranu i primitivní algoritmy mají rozumnou očekávanou časovou
+složitost.
+
+Další otázka zní, proč používat metodu EISCH, když programy pro metodu LISCH
+jsou jednodušší. Odpověď je na první pohled dost překvapující. Při úspěšném
+vyhledávání je metoda EISCH rychlejší než metoda LISCH. Je to proto, že je o
+něco pravděpodobnější, že se bude pracovat s novým prvkem. V neúspěšném případě
+jsou samozřejmě obě metody stejné, neboť řetězce jsou u obou stejně dlouhé.
+
+Metody srůstajícího hašování (s pomocnou pamětí) mají použitou paměť rozdělenou
+na dvě části. Na tu přímo adresovatelnou hašovací funkcí a na pomocnou část.
+Adresovací část má $m$ řádků, pokud hašovací funkce má hodnoty z oboru
+$\{0,1,\dots,m-1\}$, v pomocné části jsou řádky ke kterým nemáme přístup přes
+hašovací funkci. Když při přidávání nového prvku vznikne kolize, tak se nejprve
+vybere volný řádek z pomocné části a teprve když je pomocné část zaplněna
+použijí se k ukládání kolidujících prvků řádky z adresovatelné části tabulky.
+Tato strategie oddaluje srůstání řetězců. Srůstající hašování se tedy, aspoň
+dokud není zaplněna pomocná část tabulky, podobá hašování se separovanými
+řetězci. Existují základní tři varianty:
+\begin{pitemize}
+\item \textbf{LICH} -- late-insertion coalesced hashing -- vkládá prvek na konec
+řetězce,
+\item \textbf{VICH} -- early-insertion coalesced hashing -- vkládá prvek na
+řádek $h(x)$ pokud je prázdný a nebo hned za prvek na řádku $h(x)$,
+\item \textbf{EICH} -- varied-insertion coalesced hashing -- vkládá se za
+poslední prvek řetězce, který je ještě v pomocné části. Pokud v pomocné části
+žádný není, vkládá se hned za prvek na pozici $h(x)$.
+\end{pitemize}
+
+Tyto metody nepodporují přirozené efektivní algoritmy pro operaci DELETE.
+
+\subsubsection*{Hašování s lineárním přidáváním}
+
+Následující metoda nepoužívá žádné položky pro práci s tabulkou to znamená, že
+způsob nalezení dalšího řádku řetězce je zabudován přímo do metody. Metoda
+funguje tak, že pokud chceme vložit prvek do tabulky a nastane kolize, najdeme
+první následující volný řádek a tam prvek vložíme. Předpokládáme, že řádky jsou
+číslovány modulo \emph{m}, čili vytvářejí cyklus délky \emph{m}.
+
+Tato metoda sice využívá minimální velikost paměti, ale v tabulce vznikají
+shluky obsazených řádků a proto je při velkém zaplnění pomalá. Navíc metoda
+nepodporuje efektivní operaci DELETE.
+
+\subsubsection*{Shrnutí}
+
+Zde uvedeme pořadí metod hašování podle očekávaného počtu testů.
+
+\begin{obecne}{Neúspěšné vyhledávání:}
+\begin{penumerate}
+\item Hašování s uspořádanými separovanými řetězci,
+\item Hašování se separovanými řetězci = Hašování s přemísťováním,
+\item Hašování se dvěma ukazateli,
+\item VICH = LICH
+\item EICH,
+\item LISCH = EISCH,
+\item Hašování s lineárním přidáváním.
+\end{penumerate}
+\end{obecne}
+
+\begin{obecne}{Úspěšné vyhledávání}
+\begin{penumerate}
+\item H. s uspořádanými řetězci = H. se separovanými řetězci = H. s přemísťováním,
+\item Hašování se dvěma ukazateli,
+\item VICH,
+\item LICH,
+\item EICH,
+\item EISCH,
+\item LISCH,
+\item Hašování s lineárním přidáváním.
+\end{penumerate}
+\end{obecne}
+
+\begin{poznamka} Metody se separovanými řetězci a srůstající hašování používají
+více paměti. Metoda s přemísťováním vyžaduje více času -- na přemístění prvku.
+Otázka která z metod je nejlepší není proto jednoznačně rozhodnutelná a je nutné
+pečlivě zvážit všechny okolnosti nasazení metody a všechny naše požadavky na ní,
+než se rozhodneme, kterou použijeme.
+\end{poznamka}
+
+\subsubsection*{Univerzální hašování}
+
+Pro dobré fungování hašování potřebujeme mimo jiné, aby vstupní data byla
+rovnoměrně rozdělena a toho někdy není možné dosáhnout. Odstranit tento
+nedostatek se pokouší metoda \emph{univerzální hašování}. Základní idea této
+metody je taková, že máme množinu \emph{H} hašovacích funkcí z univerza do
+tabulky velikosti \emph{m} takových, že pro $S \subseteq U$, $|S| \leq m$ se
+většina funkcí chová dobře v tom smyslu, že má malý počet kolizí. Hašovací
+funkci potom zvolíme z množiny \emph{H} (takovou s rovnoměrným rozdělením).
+Jelikož funkci volíme my, můžeme požadavek rovnoměrného rozdělení zajistit.
+
+\subsubsection*{Perfektní hašování}
+
+Jiná možnost jak vyřešit kolize, je najít takzvanou \emph{perfektní hašovací
+funkci}, tj. takovou které nepřipouští kolize. Nevýhoda této metody je, že nelze
+dost dobře implementovat operaci INSERT, proto se dá prakticky použít pouze tam,
+kde předpokládáme hodně operací MEMBER a jen velmi málo operací INSERT. Kolize
+se potom dají řešit třeba malou pomocnou tabulkou, kam se ukládají kolidující
+data. 
+
+Pro rozumné fungování metody je nutné, aby hašovací funkce byla rychle
+spočitatelná a aby její zadání nevyžadovat mnoho paměti, nejvýhodnější je
+analytické zadání. 
+
+Naopak jedna z výhod je, že nalezení perfektní hašovací funkce, může trvat
+dlouho, neboť ho provádíme pouze jednou na začátku algoritmu. 
+
+\subsubsection*{Externí hašování}
+
+Externí hašování řeší trochu jiný problém, než výše popsané metody. Chceme
+uložit data na externí médium a protože přístup k externím médiím je o několik
+řádů pomalejší, než práce v interní paměti, bude naším cílem minimalizovat počet
+přístupů do ní. Externí paměť bývá rozdělena na stránky a ty většinou načítáme
+do interní paměti celé. Tato operace je však velice pomalá. Problémem externího
+hašování je tedy nalézt datovou strukturu pro uložení dat na vnější paměti a
+algoritmy pro operace INSERT, DELETE a MEMBER, tak abychom použili co nejmenší
+počet komunikací mezi vnější a vnitřní pamětí.
+
+Metod externího hašování je opět mnoho. Některé používají pomocnou datovou
+strukturu v interní paměti, kterou často nazýváme adresář. Pokud metody nemají
+žádnou takovou pomocnou strukturu neobejdou se obvykle bez oblasti přetečení.
+Některé známější metody vnějšího hašování jsou například: \uv{Litwinovo lineární
+hašování}, \uv{Faginovo rozšiřitelné hašování}, \uv{Cormackovo perfektní
+hašování} nebo \uv{Perfektní hašování Larsona a Kajli}. 
+% to neni preklep, hasovani je opravdu od pana KAJLI z nakyho duvodu se to uci
+% blbe. viz http://portal.acm.org/citation.cfm?id=358193&coll=portal&dl=ACM
+% ajs

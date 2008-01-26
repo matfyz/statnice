@@ -1,0 +1,66 @@
+\subsection{Procesy, vlákna, plánování}
+
+\subsubsection*{Procesy a vlákna}
+Systémové volání je interface mezi OS (kernelspace) a užívatelskými programy (userspace).
+
+\begin{definiceN}{Proces}
+  \emph{Proces} je inštancia vykonávaného programu. Kým program je len súbor
+  inštrukcií, proces je vlastný \uv{výkon} týchto inštrukcií. Proces má vlastný
+  adresný priestor (pamäť), prostriedky, práva a napr. aj ID (Process ID).
+\end{definiceN}
+
+Počas života sa môže proces nachádzať v rôznych stavoch:
+\begin{pitemize}
+  \item \emph{bežiaci}~-- jeden proces na procesor,
+  \item \emph{blokovaný}~-- pri použití blokujúceho volania~-- I/O disku atď.,
+  \item \emph{pripravený}~-- skončilo blokovanie; spotreboval všetok pridelený čas resp. vrátil riadenie systému, čaká na nové pridelenie procesora,
+  \item \emph{zombie}~-- po ukončení procesu, keď už nepracuje~-- ale ešte nebol vymazaný.
+\end{pitemize}
+
+\begin{definiceN}{Vlákno}
+  \emph{Vlákno} je možnosť pre program ako sa \uv{rozdeliť} na dva alebo viac
+  zároveň (resp. pseudo-zároveň) vykonávaných úloh. Oproti procesu mu nie je
+  pridelená vlastná pamäť~-- je to len miesto vykonávania inštrukcií v programe.
+  Oproti procesu sú jeho \uv{atribútmi} len hodnota programového čítača, stav
+  registrov CPU a zásobník.
+\end{definiceN}
+
+Oproti Windows/Solaris neobsahuje Linux priamu podporu pre vlákna. Miesto toho podporuje procesy (zhodou okolností :-)) zdieľajúce pamäť. V samotnom jadre linuxu ale vlákna existujú (kthreads).
+
+\subsubsection*{Plánovanie}
+
+Prideľovanie procesorového času jednotlivým procesom má na starosti \emph{plánovač}. Plánovanie pritom môže byť preemptívne alebo nepreemptívne (kooperatívne~-- alla Win16).
+
+\begin{obecne}{Ciele plánovania (niektoré z nich sú očividne protichodné):}
+\begin{pitemize}
+	\item Spravodlivosť (každy procesor dostane adekvátnu časť času CPU)
+	\item Efektívnosť (plne vyťažený procesor)
+	\item Minimálna doba odpovede
+	\item Průchodnost (maximálny počet spracovaných procesov)
+	\item Minimálna réžia systému
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Kritériá plánovania:}
+\begin{pitemize}
+	\item Viazanosť procesu na dané CPU a I/O (presun procesu na iný procesor zaberie veľa prostriedkov)
+	\item Proces je dávkovy/interaktívny?
+	\item Priorita procesu (statická (nemenná~-- okrem \uv{renice}) + dynamická, ktorá sa mení v čase kvôli spravodlivosti)
+	\item Ako často proces generuje výpadky stránok (nejaký popis???)
+	\item Kolik skutočného času CPU proces obdržel
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Algoritmy:}
+\begin{pitemize}
+	\item \textbf{FIFO}: nepreemptívny, proces opustí procesor až po skončení
+
+	\item \textbf{Round Robin}: preemptívne rozšírenie FIFO, po skončení časového kvanta je proces presunutý na koniec fronty
+
+	\item \textbf{Plánovanie s viacerými frontami}: niekoľko front, procesu z $i$-tej fronty je pridelený procesor až keď vo frontách $1, \dots, i-1$ nie je pripravený ziadny proces. Ak proces skončil I/O operáciou, je blokovaný a presunutý do fronty $i-1$, ak skončil preempciou, je pripravený a presunutý do fronty $i+1$.
+
+	\item \textbf{SMP}: fronta CPU čakajúcich na pripravené procesy (aktívne (spotrebováva energiu) vs. pasívne čakanie (špeciálne inštrukcie)), \uv{vzťah}/afinita procesov k CPU
+
+	\item TODO: Plánovanie windows vs. linux???
+\end{pitemize}
+\end{obecne}

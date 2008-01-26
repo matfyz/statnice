@@ -1,0 +1,31 @@
+\subsection{Bezpečnost, autentifikace, autorizace, přístupová práva}
+
+\begin{definice}
+  \begin{pitemize}
+    \item \textbf{Ochrana}~-- s prostředky OS mohou pracovat pouze autorizované procesy
+    \item \textbf{Autorizace}~-- zjištění oprávněnosti požadavku
+    \item \textbf{Bezpečnost}~-- zabraňuje neautorizovaný přístup do systému
+    \item \textbf{Právo}~-- povolení/zakázání vykonávat nějakou operaci
+    \item \textbf{Doména ochrany}~-- množina párů (objekt:práva)
+    \begin{pitemize}
+      \item \textbf{ACL (Access Control List)}~-- ke každému objektu seznam práv pro uživatele/skupiny
+      \item \textbf{C-list (Capability List)}~-- ke každému uživateli/skupině seznam práv pro objekty
+    \end{pitemize}
+  \end{pitemize}
+\end{definice}
+
+\begin{obecne}{Autentifikace}
+  Identifikace něčím, co uživatel ví, má nebo je. 
+  \begin{pitemize}
+    \item \textbf{Hesla}
+    \begin{pitemize}
+      \item slovníkový útok (80--90\% hesel je jednoduchých), hrubá síla
+      \item vynucování délky a složitosti hesla
+    \end{pitemize}
+    \item \textbf{Model otázka/odpověď}
+    \item \textbf{Fyzický objekt}~-- smartcards, USB klíče
+    \item \textbf{Biometrika}~-- otisky prstů, rohovka, hlas
+  \end{pitemize}
+\end{obecne}
+
+TODO: autorizace, přístupová práva

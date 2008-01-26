@@ -1,0 +1,48 @@
+\subsection{Pojmy a principy objektového návrhu}
+
+TODO: tohle je tupý copy \& paste z Wikipedie, předělat/přeložit
+
+\begin{definiceN}{Objektový návrh}
+Object oriented design is part of OO methodology and it forces programmers to think in terms of objects, rather than procedures, when they plan their code. An object contains encapsulated data and procedures grouped together to represent an entity. The 'object interface', how the object can be interacted, is also defined. An object oriented program is described by the interaction of these objects. Object Oriented Design is the discipline of defining the objects and their interactions to solve a business problem that was identified and documented during object oriented analysis.
+\end{definiceN}
+
+\begin{obecne}{Uvažované aspekty pro objektový návrh (prerekvizity)}
+\begin{pitemize}
+    \item \emph{Conceptual model (must have):} Conceptual model is the result of object-oriented analysis, it captures concepts in the problem domain. The conceptual model is explicitly chosen to be independent of implementation details, such as concurrency or data storage.
+    \item \emph{Use case (must have):} Use case is description of sequences of events that, taken together, lead to a system doing something useful. Each use case provides one or more scenarios that convey how the system should interact with the users called actors to achieve a specific business goal or function. Use case actors may be end users or other systems.
+    \item \emph{System Sequence Diagram (should have):} System Sequence diagram (SSD) is a picture that shows, for a particular scenario of a use case, the events that external actors generate, their order, and possible inter-system events.
+    \item \emph{User interface documentations (if applicable):} Document that shows and describes the look and feel of the end product's user interface. This is not mandatory to have, but helps to visualize the end-product and such helps the designer.
+    \item \emph{Relational data model (if applicable):} A data model is an abstract model that describes how data is represented and used. If not object database is used, usually the relational data model should be created before the design can start. How the relational to object mapping is done is included to the OO design.
+\end{pitemize}
+\end{obecne}
+
+\begin{poznamka}
+Objektový návrh počítá s vlastnostmi objektového programování, podporovanými objektově-orientovanými jazyky. Jsou to zejména:
+\begin{pitemize}
+    \item zapouzdření, objekty
+    \item abstrakce, skrytí informací
+    \item dědičnost
+    \item vnější interface
+    \item polymorfismus
+\end{pitemize}
+\end{poznamka}
+
+\begin{obecne}{Postup při objektovém návrhu / Designing concepts}
+\begin{pitemize}
+    \item Defining objects, creating class diagram from conceptual diagram: Usually map entity to class.
+    \item Identifying attributes.
+    \item Use design patterns (if applicable): A design pattern is not a finished design, it is a description of a solution to a common problem. The main advantage of using a design pattern is that it can be reused in multiple applications. It can also be thought of as a template for how to solve a problem that can be used in many different situations and/or applications. Object-oriented design patterns typically show relationships and interactions between classes or objects, without specifying the final application classes or objects that are involved.
+    \item Define application framework (if applicable): Application framework is a term usually used to refer to a set of libraries or classes that are used to implement the standard structure of an application for a specific operating system. By bundling a large amount of reusable code into a framework, much time is saved for the developer, since he/she is saved the task of rewriting large amounts of standard code for each new application that is developed.
+    \item Identify persisted objects/data (if applicable): Identify objects that have to be persisted. If relational database is used design the object relation mapping.
+    \item Identify, define remote objects (if applicable)
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Výstup, výsledek objektového návrhu / Output (deliverables) of object oriented design}
+\begin{pitemize}
+    \item Class diagram: Class diagram is a type of static structure diagram that describes the structure of a system by showing the system's classes, their attributes, and the relationships between the classes.
+    \item Sequence diagram: Expend the System Sequence Diagram to add specific objects that handle the system events. Usually we create sequence diagram for important and complex system events, not for simple or trivial ones. A sequence diagram shows, as parallel vertical lines, different processes or objects that live simultaneously, and, as horizontal arrows, the messages exchanged between them, in the order in which they occur.
+\end{pitemize}
+\end{obecne}
+
+

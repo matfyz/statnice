@@ -1,0 +1,43 @@
+\subsection{Zabezpečení, systém práv, správa uživatelských účtů}
+
+TODO: tohle je jenom copy \& paste z Wiki
+
+\subsubsection*{Zabezpečení}
+
+\begin{pitemize}
+  \item procesy běží v uživatelském režimu s omezenými možnostmi, při systémových voláních se proces přepne do režimu jádra
+  \item preemptivní plánování, priority
+  \item firewall - iptables (Linux), pf (OpenBSD), ipfw (FreeBSD), FW-1 (Solaris), ipfilter aj.
+  \item vypnutí nepotřebných služeb (daemonů)
+  \item zálohování
+  \item sledování logů
+  \item nmap
+  \item Kerberos
+  \item chroot
+  \item sifrovani disku
+  \item sifrovani komunikace
+  \item pouceni uzivatelu
+  \item silna hesla 
+\end{pitemize}
+
+\subsubsection*{Systém práv}
+
+\begin{pitemize}
+  \item každý soubor a proces mají vlastníka a skupinu
+  \item práva pro vlastníka, skupinu a ostatní - čtení, zápis, spouštění
+  \item setuid, setgid - propůjčení práv vlastníka/skupiny při spuštění programu
+  \item setgid pro adresáře - nové soubory budou mít stejnou skupinu jako adresář
+  \item sticky bit pro adresáře - práva k souborům mají jen vlastníci souborů a nikoliv vlastníci adresáře
+  \item uživatel root
+  \item reálné a efektivní UID/GID u běžících procesů
+  \item chmod, chown, chgrp, umask 
+\end{pitemize}
+
+\subsubsection*{Správa uživatelských účtů}
+
+\begin{pitemize}
+  \item /etc/passwd - seznam uživatelů - login, UID, GID, plné jméno, domovský adresář, shell
+  \item /etc/group - skupiny - název, GID, seznam členů
+  \item /etc/shadow - zašifrovaná hesla (hash) - může číst pouze root
+  \item useradd, userdel, usermod, groupadd, groupdel, groupmod, passwd
+\end{pitemize}

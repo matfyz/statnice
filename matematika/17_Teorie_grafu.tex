@@ -1,0 +1,559 @@
+\section{Teorie grafů}
+
+\begin{poziadavky}
+\begin{pitemize}
+    \item Základní pojmy teorie grafů, reprezentace grafu.
+    \item Stromy a jejich základní vlastnosti, kostra grafu.
+    \item Eulerovské a hamiltonovské grafy.
+    \item Rovinné grafy, barvení grafů.
+\end{pitemize}
+\end{poziadavky}
+
+\subsection{Základní pojmy teorie grafů, reprezentace grafu}
+
+\begin{definiceN}{Graf}
+Graf $G$ je uspořádaná dvojice $(V,E)$, kde $V$ je nějaká množina a $E$ je množina dvouprvkových podmnožin množiny $V$ (takže neuspořádaných dvojic). Prvky množiny $V$ se jmenují \textbf{vrcholy grafu $G$} a prvky množiny $E$ \textbf{hrany grafu $G.$}
+\end{definiceN}
+
+\begin{definiceN}{Orientovaný graf}
+$G$ je dvojice $(V,E),$ kde $E$ je podmnožina kartézského součinu $V \times V$. Prvky $E$ (tj. uspořádané dvojice prvků z $V$) nazýváme orientované hrany grafu.
+\end{definiceN}
+
+\begin{definiceN}{Symetrizace grafu}
+Orientovanému grafu $G=(V,E)$ přiřadíme neorientovaný graf $\mathrm{sym}(G) = (V,\bar E) $ kde $\bar E=\{\{x,y\};$ $(x,y) \in E \lor (y,x) \in E \}.$ Graf $\mathrm{sym}(G)$ se nazývá \textbf{symetrizace} grafu $G.$ \textit{(Z orientovaného grafu se odstraní údaje o směru hran.)}
+\end{definiceN}
+
+\begin{definiceN}{Důležité typy grafů}
+\begin{pitemize}
+\item \textbf{úplný graf $K_n$:} $V=\{1,\dots,n\}, E=\binom{V}{2}$ \textit{(Každý vrchol je spojen hranou s každým např. $K_5$ --- \uv{pentagram}.)}
+\item \textbf{kružnice $C_n$:} $V=\{1,\dots,n\}, E=\{\{i, i+1\}; i=1,\dots,n-1\} \cup\{\{1,n\}\}$ \textit{(V~kružnici se nesmí opakovat vrcholy.)}
+\item \textbf{cesta $P_n$:} $V=\{0,1,\dots,n\}, E=\{\{i-1,i\}; i=1,\dots,n\}$ \textit{(Jako kružnice, ale bez poslední hrany.)}
+\item \textbf{bipartitní graf:} $V=\{u_1,\dots,u_n\} \; \cup \; \{v_1,\dots,v_m\}$, $E \subseteq \{\{u_i,v_j\}; i=1,\dots,n, j=1,\dots,m\}$; v \textbf{úplném bipartitním grafu} je $E = \{\{u_i,v_j\}; i=1,\dots,n, j=1,\dots,m\}$ \textit{(Každý vrchol z jedné partity je spojen hranou pouze s některými (v úplném z každým) vrcholem druhé partity. Např. $K_{3,3}$, úplný bipartitní graf na 3 a 3 vrcholech.)}
+\end{pitemize}
+\end{definiceN}
+
+\begin{definiceN}{Sled, tah}
+Pro graf $G=(V,E)$ definujeme \textbf{sled} jako posloupnost $(v_0,e_1,v_1,\dots,e_n,v_n),$ kde $e_i=\{v_{i-1},v_i\} \in E$ pro $i=1,\dots,n.$ \textbf{Tah} je sled, ve kterém se žádná hrana neopakuje.
+\end{definiceN}
+
+\begin{definiceN}{Isomorfismus grafů}
+Dva grafy $G, G'$ považujeme za \textbf{isomorfní} (značíme $G\simeq G'$), pokud se liší jen v označení vrcholů a hran, tj. pokud existuje vzájemně jednoznačné zobrazení $f: G \rightarrow G'$ tak, že platí $\{x,y\}\in E \Leftrightarrow \{f(x),f(y)\} \in E'.$
+\end{definiceN}
+
+\begin{definiceN}{Podgraf, indukovaný podgraf}
+Graf $G$ je \textbf{podgrafem} grafu $G',$ jestliže $V(G)\subseteq V(G')$ a $E(G)\subseteq E(G') \cap \binom{V(G)}{2}$. Pro \textbf{indukovaný podgraf} $G$ grafu $G'$ platí, že $V(G)\subseteq V(G')$ a $E(G) = E(G') \cap \binom{V(G)}{2}.$ \textit{(Indukovaný podgraf dostaneme vymazáním některých vrcholů původního grafu a všech hran tyto vrcholy obsahujících.)}
+\end{definiceN}
+
+\begin{definiceN}{Souvislost}
+Neorientovaný graf je \textbf{souvislý}, jestliže mezi každými jeho dvěma vrcholy v něm existuje cesta. Pro orientované grafy definujeme \textbf{slabou souvislost} --- po symetrizaci se z něj stane souvislý neorientovaný graf --- a \textbf{silnou souvislost} --- každé dva vrcholy lze spojit orientovanou cestou v obou směrech.
+\end{definiceN}
+
+\begin{poznamka}
+Pro orientované grafy není samotný pojem \uv{souvislost} definován.
+\end{poznamka}
+
+\begin{definiceN}{$n$-souvislost}
+Graf je vrcholově \textbf{$n$-souvislý}, pokud má alespoň $n+1$ vrcholů a po odebrání libovolných $n-1$ vrcholů dostaneme vždy souvislý graf. Podobně (přes odebírání hran) definujeme \textbf{hranovou $n$-souvislost.}
+\end{definiceN}
+
+\begin{poznamka}
+Vrcholová $n$-souvislost je silnější podmínka než hranová $n$-souvislost, protože při odebírání $n-1$ vrcholů můžeme (a většinou musíme) odebrat více než $n-1$ hran.
+\end{poznamka}
+
+\begin{definiceN}{Komponenta souvislosti}
+\textbf{Komponenta souvislosti grafu} je jeho maximální souvislý podgraf. (Sjednocením všech komponent grafu dostaneme původní graf).
+\end{definiceN}
+
+\begin{definiceN}{Most}
+\textbf{Most} je hrana, která neleží ve 2-souvislém podgrafu (po jejím odstranění se zvětší počet komponent).
+\end{definiceN}
+
+\begin{definiceN}{Blok}
+Blok je maximální vrcholově 2-souvislý podgraf grafu. Samotný graf o~2 vrcholech spojených jednou hranou je také blok. \textit{(2-souvislý podgraf, ke kterému se nedá přidat žádný vrchol, protože by přestal být 2-souvislý.)}
+\end{definiceN}
+
+\begin{definiceN}{Artikulace}
+Artikulace je vrchol $v$ souvislého grafu $G$ takový, že $G - v$ není souvislý.
+\end{definiceN}
+%\input blok.pic
+
+\begin{definiceN}{Blokový graf}
+je graf incidence (sousednosti) bloků a artikulací --- artikulacím a blokům odpovídají vrcholy, hrany značí incidenci bloků a artikulací.
+\end{definiceN}
+
+\begin{veta}
+Blokový graf souvislého grafu je strom.
+\end{veta}
+
+\begin{definiceN}{Hranové pokrytí}
+Množinu $C \subseteq E$ v grafu $G=(V,E)$ nazveme \textbf{hranovým pokrytím,} pokud každý vrchol $v \in V$ je obsažen alespoň v jedné hraně $e \in C.$
+\end{definiceN}
+
+\begin{definiceN}{Stupeň vrcholu}
+\textbf{Stupeň vrcholu,} $\deg_{G}(v),$ je počet hran grafu $G$ obsahujících vrchol $v.$ V případě orientovaného grafu rozlišujeme \textbf{vstupní stupeň vrcholu,} $\deg^+_G(v),$ což je počet vstupních hran, podobně \textbf{výstupní stupeň vrcholu.}
+\end{definiceN}
+
+\begin{definiceN}{Párování}
+Každá množina vzájemně disjunktních hran v grafu se nazývá \textbf{párování}.
+\end{definiceN}
+
+\begin{definiceN}{k-faktor grafu}
+\textbf{k-faktor} je podgraf $G'=(V,E')$ grafu $G=(V,E)$ takový, že $(\forall v \in V) \deg_{G'}(v)=k.$
+\end{definiceN}
+
+\begin{poznamkaN}{1-faktor grafu}
+\textbf{1-faktor} je vlastně párování na všech vrcholech (úplné párování).
+\end{poznamkaN}
+
+\begin{vetaN}{Princip sudosti}
+$\sum_{v \in V} \deg_G(v) = 2 |E(G)|$ \end{vetaN}
+
+\begin{definiceN}{Skóre grafu}
+\textbf{Skóre grafu} je posloupnost stupňů vrcholů grafu, přičemž nezáleží na pořadí, v jakém jsou uváděny.
+\end{definiceN}
+
+\begin{vetaN}{Věta o skóre}
+Nechť $D=(d_1,\dots,d_n)$ je posloupnost přirozených čísel. Předpokládejme, že $d_1\leq d_2 \leq \dots \leq d_n$ a označme symbolem $D'$ posloupnost $(d'_1, \dots, d'_{n-1}),$ kde
+$$
+d'_i =
+\begin{cases}
+d_i & \text{pro $i < n-d_n$}\\
+d_i-1 & \text{pro $i \geq n-d_n$}
+\end{cases}
+$$
+Potom $D$ je skóre grafu, právě když je $D'$ skóre grafu. \textit{(Jakoby odebereme poslední vrchol ($V_n$) a myslíme si, že byl propojen s předchozími $d_n$ vrcholy.)}
+
+\medskip
+\begin{dukaz}
+Jedna implikace je triviální, druhá (máme $D$ skóre grafu -- a tedy k němu nějaký graf $G$ a dokazujeme, že $D'$ je taky skóre grafu $G'$) není o moc těžší -- \uv{přepojíme} hrany tak, aby z vrcholu $v_n$ šly právě do $v_{n-d_n},\dots v_{n-1}$ a $v_n$ odebereme.
+\end{dukaz}
+\end{vetaN}
+
+
+\begin{definiceN}{Metrika grafu}
+Pro souvislý graf $G$ definujeme \textbf{metriku} jako funkci $d_G: V \times V \rightarrow \textbf{R},$ kde číslo $d_G(v,v')$ představuje délku nejkratší cesty z $v$ do $v'.$ Funkce $d_G$ má následující vlastnosti (tj. splňuje axiomy metriky, jak ji známe z metrických prostorů):
+\begin{penumerate}
+\item $d_G(v,v') \geq 0,$ a $d_G(v,v')=0 \Leftrightarrow v=v';$
+\item $(\forall v, v' \in V)(d_G(v,v')=d_G(v',v))$ \hfill \textit{(symetrie)}
+\item $(\forall v, v', v'' \in V)(d_G(v, v'')\leq d_G(v,v')+d_G(v',v''))$ \hfill \textit{(trojúhelníková nerovnost)}
+\end{penumerate}
+\end{definiceN}
+
+
+\begin{definiceN}{Některé grafové operace}
+Nechť $G=(V,E)$ je graf. Definujeme
+\begin{pitemize}
+\item \textbf{odebrání hrany:} $G-e=(V,E \setminus \{e\}),$ kde $e \in E$ je hrana grafu G
+\item \textbf{přidání nové hrany:} $G+\bar e=(V,E \cup \{\bar e\}),$ kde $\bar e$ je dvojice vrcholů, která není hranou v $G$
+\item \textbf{odebrání vrcholu:} $G-v=(V \setminus \{v\}, \{e \in E; v \not \in e\}),$ kde $v \in V$ (odebereme vrchol $v$ a všechny hrany do něj zasahující)
+\item \textbf{dělení hrany:} $G\%e=(V \cup \{z\},((E \setminus \{\{x,y\}\}) \cup \{\{x,z\},\{z,y\}\}),$ kde $\{x,y\} \in E$ je hrana a $z \not \in V$ je nový vrchol (na hranu $\{x,y\}$ \uv{přikreslíme} nový vrchol~$z$).
+\end{pitemize}
+Řekneme, že graf $G'$ je \textbf{dělení} grafu G, pokud $G'$ je isomorfní grafu vytvořenému z grafu $G$ postupným opakováním operace dělení hrany.
+\end{definiceN}
+
+
+\subsection{Reprezentace grafu}
+
+\begin{definiceN}{Nakreslení}
+Graf lze reprezentovat např. jeho nakreslením -- lze si pod tím představit i grafické znázornění na papír. Formální definici nakreslení provedeme v sekci o rovinných grafech.
+\end{definiceN}
+
+\begin{definiceN}{Matice sousednosti}
+Mějme graf $G=(V,E)$ s $n$ vrcholy $v_1,\dots,v_n.$ \textbf{Matice sousednosti} grafu $G$ je čtvercová matice $A_G=(a_{ij})^n_{i,j=1}$ řádu $n$ definovaná předpisem
+$$
+a_{ij} =
+\begin{cases}
+1 & \text{pro $\{v_i,v_j\} \in E$}\\
+0 & \text{jinak}
+\end{cases}
+$$
+(Po umocnění matice sousednosti $A^k$ představuje číslo $a_{ij}^{(k)}$ počet sledů délky $k$ z vrcholu $v_i$ do vrcholu $v_j$ v grafu $G.$)
+\end{definiceN}
+
+\begin{definiceN}{Matice vzdáleností}
+Pro grafy s ohodnocenými hranami lze zkonstruovat \textbf{matici vzdáleností} --- je to matice sousednosti, do které se v případě, že hrana existuje, ukládá místo jedničky její ohodnocení.
+\end{definiceN}
+
+\begin{definiceN}{Laplaceova matice}
+$$
+(L_G)_{uv} =
+\begin{cases}
+\deg u & u=v\\
+-1 & \{u,v\} \in E\\
+0 & u \not= v \land \{u,v\} \not \in E
+\end{cases}
+$$
+\textit{(Na hlavní diagonále je stupeň vrcholu, kde vede hrana, tam je -1, jinde 0. % predpokladal bych ze kdo si precetl predchozi sekci, vi o co jde :-) ... Stupeň vrcholu viz odst. \ref{stupen_vrcholu} 
+)}
+
+\begin{poznamka}
+Laplaceovu matici lze použít mj. k výpočtu počtu koster grafu, jak uvidíme v následující sekci.
+\end{poznamka}
+\end{definiceN}
+
+\begin{definiceN}{Matice incidence}
+Řádky matice odpovídají vrcholům, sloupce odpovídají hranám. Prvek matice se rovná $-1$, pokud v tomto vrcholu začíná daná hrana, $+1$ pokud tam tato hrana končí, $0$ jinak. Neorientované grafy mají u obou vrcholů hrany hodnotu $+1$.
+\end{definiceN}
+
+\begin{definiceN}{Seznam sousedů}
+Pomocí dvou polí; v jednom čísla všech následníků, v druhém poli indexy určující, kde začíná sekvence sousedů daného vrcholu.
+\end{definiceN}
+
+\begin{definiceN}{Seznam hran}
+Pole s prvky o dvou složkách, zaznamenávají se do něj hrany ve formě obou jejich vrcholů; pro orientované grafy lze stanovit, že první složka bude reprezentovat počáteční a druhá koncový vrchol hrany.
+\end{definiceN}
+
+\pagebreak[3]
+\subsection{Stromy a jejich základní vlastnosti}
+
+\begin{definiceN}{Strom, list}
+\textbf{Strom} je souvislý graf neobsahující kružnici. \textbf{List} (koncový vrchol) je vrchol stupně 1.
+\end{definiceN}
+
+\begin{veta}
+Počet stromů na $n$-vrcholové množině je $n^{n-2}.$
+\end{veta}
+
+\begin{vetaN}{Charakterizace stromů}
+Pro graf $G=(V,E)$ jsou následující podmínky ekvivalentní:
+\begin{penumerate}
+\item $G$ je strom.
+\item Pro každé dva vrcholy $x,y \in V$ existuje právě jedna cesta z $x$ do $y.$ \textit{(jednoznačnost cesty)}
+\item Graf $G$ je souvislý a vynecháním libovolné hrany vznikne nesouvislý graf. \textit{(minimální souvislost)}
+\item Graf $G$ neobsahuje kružnici a každý graf vzniklý z $G$ přidáním hrany již kružnici obsahuje. \textit{(maximální graf bez kružnic)}
+\item $G$ je souvislý a $|V|=|E|+1.$
+\item $G$ je acyklický a $|V|=|E|+1.$
+\end{penumerate}
+\end{vetaN}
+
+\begin{definiceN}{Kostra grafu}
+\textbf{Kostra grafu} $G$ je strom, který je podgrafem $G$ a obsahuje všechny vrcholy grafu~$G$.
+\end{definiceN}
+
+\begin{vetaN}{Počet koster}
+Počet koster grafu $G$ je $\det(L'_G),$ kde $L'_{G}$
+je matice, která vznikne odstraněním $i$-tého řádku a $i$-tého sloupce z~Laplaceovy matice charakterizující graf.
+
+??? Dukaz
+\end{vetaN}
+
+\subsection{Eulerovské a hamiltonovské grafy}
+
+\begin{definiceN}{Eulerovský graf}
+Graf $G=(V,E)$ se nazývá \textbf{eulerovský}, jestliže existuje takové pořadí všech hran $e_1,\dots,e_n,$ že $e_i \cap e_{i+1} \not = 0 \land e_1 \cap e_n \not = 0,$ tedy každé dvě po sobě jdoucí hrany mají společný vrchol a rovněž první a poslední hrana se protínají, žádná hrana se neopakuje. Jinými slovy: graf je eulerovský, pokud v něm existuje uzavřený sled $(v_0,e_1,v_1,\dots,e_{m-1},v_{m-1},e_m,v_0),$ v němž se každá hrana vyskytuje právě jednou. Takový tah nazýváme \textbf{uzavřeným eulerovským tahem.}
+\end{definiceN}
+
+\begin{vetaN}{Charakteristika eulerovského grafu}
+Graf $G=(V,E)$ je eulerovský právě tehdy, když je souvislý a každý vrchol $G$ má sudý stupeň.
+
+\medskip
+\begin{dukaz}
+\uv{$\Rightarrow$}: tato implikace je triviální --- eulerovský graf musí být souvislý, do každého vrcholu musím vstoupit i z něj vystoupit, což zvýší stupeň vždy o 2.
+
+\bigskip
+\noindent \uv{$\Leftarrow$}: Mějme tah maximální délky $v_0,e_1,\dots,e_m,v_m.$ První a poslední vrchol tahu jsou totožné, jinak by do prvního vrcholu vedl lichý počet hran, a jelikož graf má všechny stupně sudé, dal by se tah prodoužit. Vidíme, že každou hranou v grafu vede nějaký uzavřený tah (nejdelší tah hranou je uzavřený, protože jinak by šel z vrcholu ze sudým stupněm prodlužovat). 
+
+Náš maximální tah obsahuje všechny hrany a vrcholy, protože pokud ne, ze souvislosti jistě existuje vrchol, který je v max. tahu, z něhož vede hrana, která v max. tahu není. Tou vede uzavřený tah a pokud ho spojíme s naším maximálním tahem, dostaneme delší, což je spor.
+\end{dukaz}
+\end{vetaN}
+
+\begin{definiceN}{k-hamiltonovský graf}
+Graf je \textbf{k-hamiltonovský}, pokud existuje posloupnost všech vrcholů $v_1,\dots, v_n$ taková, že $d_G(v_i,v_{i+1}) \leq k \land d_G(v_n,v_1) \leq k.$ \textit{(Do každého vrcholu smíme jen jednou.)} O grafu říkáme jednoduše, že je \textbf{hamiltonovský}, pokud je 1-hamiltonovský.
+\end{definiceN}
+
+\begin{definiceN}{Hamiltonovská kružnice}
+Hamiltonovská kružnice je kružnice procházející každým vrcholem grafu právě jednou. Graf má takovou kružnici, právě když je hamiltonovský. Její nalezení je NP-úplný problém.
+
+\begin{poznamka}
+Problém nalezení hamiltonovské kružnice se dá upřesnit na problém nalezení hamiltonovské kružnice s nejmenší vahou v ohodnoceném grafu, což je známý problém obchodního cestujícího. Je tedy také NP-úplný, ale existují algoritmy, jejichž řešení jsou blízká optimálnímu.
+\end{poznamka}
+\end{definiceN}
+
+
+\begin{vetaN}{Diracova}
+Graf $G=(V,E)$ je hamiltonovský, pokud platí:
+$$\forall v\in V: \deg v\geq \frac{|V|}{2}$$
+
+\medskip
+\begin{dukaz}
+Dokážeme o něco silnější lemma pro jeden vrchol, z kterého Diracova věta plyne: pro dva vrcholy $u,v$ v grafu $G$ nespojené hranou platí, že pokud $\deg u +\deg v \geq |V|$, potom je graf $G$ hamiltonovský, právě když $G$ s přidanou hranou je hamiltonovský.
+
+\medskip\noindent
+Jedna implikace je triviální, takže vezmeme tu druhou. Máme v grafu $G+\{u,v\}$ hamiltonovskou kružnici $C$. Pokud ta neobsahuje $\{u,v\}$ tak je i v grafu $G$ a končíme, pokud tuto hranu obsahuje, označíme pro vrcholy grafu v pořadí, v jakém je prochází hamiltonovská kružnice $u = v_1,v_2,\dots,v_n= v$:
+\begin{align*}
+A & :=\{i,\{u,v_i\}\in E\} \\
+B & :=\{i + 1,\{v,v_i\}\in E\}
+\end{align*}
+Pokud mají tyto množiny neprázdný průnik, nalezneme vrcholy $v_k$ a $v_{k+1}$, přes které můžeme kružnici \uv{přepojit}. $A$ ani $B$ neobsahují \uv{$1$}, takže $|A\cup B|\leq n-1$. Potom
+$$|A\cap B|=|A|+|B|-|A\cup B|\geq |V|- |A\cup B|\geq 1$$
+\noindent takže takový bod $v_k$ existuje.
+\end{dukaz}
+\end{vetaN}
+
+\begin{veta}
+Každý souvislý graf je 3-hamiltonovský.
+
+\medskip
+\begin{dukaz}
+$G=(V,E)$ je souvislý, existuje v něm tedy kostra $T=(V,E'),$ která je souvislá. Kostra vznikla ubráním některých hran, takže $d_T(x,y) \geq d_G(x,y) (\forall x,y \in V).$ Stačí tedy dokázat, že kostra $T$ je 3-hamiltonovská.
+\end{dukaz}
+\end{veta}
+
+\begin{lemma}
+Každý strom je 3-hamiltonovský.
+
+\medskip
+\begin{dukaz}
+Indukcí:
+\begin{penumerate}
+\item pro $n \leq 4$ triviální
+\item Máme dvě komponenty $T_1,T_2,$ každá je 3-hamiltonovská. Graf je souvislý $\rightarrow$ existuje most z $T_1$ do $T_2.$ Most vede přes vrcholy $x',x,y,y',$ kde $x,x' \in T_1, y,y' \in T_2.$ Potom existuje 3-hamiltonovské propojení komponent $T_1,T_2: x,(T_1),x',y',(T_2),y.$
+\end{penumerate}
+\end{dukaz}
+\end{lemma}
+
+\begin{veta}
+Graf je vrcholově 2-souvislý, právě když v něm mezi každými dvěma různými vrcholy existují dvě vrcholově disjunktní cesty.
+
+\medskip
+\begin{dukaz}
+Implikace $\Leftarrow$ je zřejmá, opačná se dá ukázat sporem -- nechť ve dvousouvislém grafu mezi nějakými dvěma vrcholy neexistují dvě vrcholově disjunktní cesty. Pak vezmu vrchol, který je na každé cestě mezi těmito dvěma a odeberu ho -- a tím se graf stane nesouvislým, což je spor.
+\end{dukaz}
+\end{veta}
+
+\begin{veta}
+Graf je vrcholově 2-souvislý, právě když jej lze vytvořit z trojúhelníku (t.j. z $K_3$) posloupností dělení a přidávání hran (definice těchto operací jsou na začátku kapitoly).
+\end{veta}
+
+\begin{veta}
+Každý 2-souvislý graf je 2-hamiltonovský.
+
+\medskip
+\begin{dukaz}
+??? Do každého vrcholu vedou 2 vrcholově i hranově disjunktní cesty --- při zpáteční cestě použiju druhou. Důkaz podobně jako u věty o 3-hamiltonovských grafech.
+\end{dukaz}
+\end{veta}
+
+
+\subsection{Rovinné grafy}
+
+\begin{definiceN}{Oblouk}
+\textbf{Oblouk} je podmnožina roviny tvaru $o=\gamma(\langle0,1\rangle)=\{\gamma(x); x \in \langle0,1\rangle\}$, kde $\gamma:\langle0,1\rangle \to \mathbb{R}^2$ je nějaké prosté spojité zobrazení intervalu $\langle0,1\rangle$ do roviny. Přitom body $\gamma(0)$ a $\gamma(1)$ nazýváme \textbf{koncové body} oblouku $o$.
+\end{definiceN}
+
+\begin{definiceN}{Nakreslení grafu}
+\textbf{Nakreslením grafu} $G=(V,E)$ rozumíme přiřazení, které každému vrcholu v grafu $G$ přiřazuje bod $b(v)$ roviny a každé hraně $e=\{v,v'\}$ přiřazuje oblouk $o(e)$ v rovině s koncovými body $b(v)$ a $b(v').$ Zobrazení $b(v)$ je prosté (různým vrcholům odpovídají různé body) a žádný z bodů tvaru $b(v)$ není nekoncovým bodem žádného z oblouků $o(e).$ Graf spolu s nakreslením nazýváme \textbf{topologický graf.}
+\end{definiceN}
+
+\begin{definiceN}{Rovinný graf}
+Nakreslení grafu $G,$ v němž oblouky odpovídající různým hranám mají společné nanejvýš koncové body, se nazývá \textbf{rovinné nakreslení}. Graf $G$ je \textbf{rovinný,} má-li alespoň jedno rovinné nakreslení.
+\end{definiceN}
+
+\begin{definiceN}{Stěna grafu}
+Mějme $G$ rovinný topologický graf. Množinu $A \subseteq \mathbb{R}^2\setminus X$ bodů roviny (kde $X$ je množina všech bodů všech oblouků nakreslení grafu $G$) nazveme \textbf{souvislou,} pokud pro libovolné dva body $x,y \in A$ existuje oblouk $o \subseteq A$ s koncovými body $x,y.$  Relace souvislosti rozdělí množinu všech bodů roviny, které neleží v žádném z oblouků nakreslení, na třídy ekvivalence. Ty nazýváme \textbf{stěnami} topologického rovinného nakreslení grafu $G$.
+\end{definiceN}
+
+\begin{definiceN}{Topologická kružnice}
+Uzavřená křivka v rovině neprotínající sebe sama; formálně se definuje jako oblouk, jehož koncové body splývají.
+\end{definiceN}
+
+\begin{vetaN}{Jordanova, o kružnici}
+Každá topologická kružnice $k$ rozděluje rovinu na právě dvě souvislé části (\uv{vnitřek} a \uv{vnějšek}), přičemž $k$ je jejich společnou hranicí.
+\end{vetaN}
+
+\begin{vetaN}{Kuratowského}
+Graf $G$ je rovinný, právě když žádný jeho podgraf není isomorfní dělení grafu $K_{3,3}$ ani $K_5.$
+\end{vetaN}
+
+\begin{vetaN}{Eulerův vzorec}
+Nechť $G=(V,E)$ je souvislý rovinný graf, a nechť $s$ je počet stěn nějakého rovinného nakreslení $G.$ Potom platí $|V|-|E|+s = 2.$
+
+\medskip
+\begin{dukaz}
+Indukcí podle počtu hran. Pro graf sestávající pouze z jednoho vrcholu vzorec platí.
+\begin{penumerate}
+\item Pokud přidaná hrana nevytvoří kružnici, nezměnil se počet stěn, ale o jednu se zvětšil počet vrcholů a hran (graf musí být vždy souvislý, takže jediná možnost jak tohoto dosáhnout, je připojit další vrchol).
+\item Pokud přidaná hrana vytvoří kružnici, zvětší se počet stěn o jednu (přidaná hrana sousedí se dvěma různými stěnami --- podle Jordanovy věty o kružnici --- které před přidáním byly stěnou jedinou), počet hran také o jednu, a počet vrcholů se nezmění.
+\end{penumerate}
+Vzorec tedy v obou případech platí.
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{2-souvislý rovinný graf}
+Dvousouvislý rovinný graf má hranice libovolné stěny libovolného nakreslení jako kružnice.
+\end{vetaN}
+
+\begin{vetaN}{Maximální počet hran rovinného grafu}
+Nechť $G$ je rovinný graf s alespoň 3 vrcholy. Potom $|E|\leq 3|V|-6.$ Rovnost nastává pro každý maximální rovinný graf, t.j. rovinný graf, ke kterému nelze již přidat žádnou hranu (při zachování množiny vrcholů) tak, aby zůstal rovinný. Pokud graf $G$ navíc neobsahuje trojúhelník (t.j. $K_3$ jako podgraf) a má-li alespoň 3 vrcholy, potom $|E|\leq 2|V|-4.$
+
+\medskip
+\begin{dukaz}
+Obě tvrzení můžeme dokázat pro maximální rovinný graf. V prvním případě je určitě dvousouvislý, protože jinak můžu ještě nějaké dva body spojit. Navíc každá stěna musí být trojúhelník (je-li čtverec nebo něco většího, také jdou ještě nějaké dva body spojit). Tím dostanu, že $3s=2|E|$ a zbytek vyjde z Eulerova vzorce.
+
+Druhý případ má jednu zvláštnost -- takový graf může být hvězda. Pro tu je ale tvrzení splněno. Pokud není hvězda, už musí být dvousouvislý a všechny stěny musí být čtverce, takže dostanu $4s=2|E|$ a z Eulerova vzorce i celý výsledek.
+\end{dukaz}
+\end{vetaN}
+
+\begin{dusledek}
+Rovinný graf má alespoň jeden vrchol stupně nejvýše 5.
+\end{dusledek}
+
+\subsection{Barvení grafu}
+
+\begin{definiceN}{Neorientovaný graf s násobnými hranami (multigraf)}
+je trojice $(V,E,\varepsilon),$ kde $V$ a $E$ jsou disjunktní množiny a $\varepsilon: E \to \binom{V}{2} \cup V$ je zobrazení \textit{(hrany prohlásíme za \uv{abstraktní} objekty a $\varepsilon$ určuje pro každou hranu dvojici vrcholů, které jsou jejími \uv{konci}).}
+\end{definiceN}
+
+\begin{poznamka}
+Pro orientovaný graf je pojem definován obdobně, pouze hrany jsou přiřazeny uspořádané dvojici vrcholů, tedy: $\varepsilon: E \to \langle v_1,v_2 \rangle \cup V$.
+\end{poznamka}
+
+\begin{definiceN}{Geometrický duál grafu}
+Nechť $G$ je topologický rovinný graf. Označme $S$ množinu stěn $G.$ Jako \textbf{(geometrický) duál grafu} definujeme multigraf tvaru $(S,E,\varepsilon),$ kde $\varepsilon$ se definuje předpisem $\varepsilon(e)=\{S_i,S_j\},$ jestliže hrana $e$ je společnou hranicí stěn $S_i$ a $S_j$ (přičemž může být $S_i=S_j,$ jestliže z obou stran hrany $e$ je tatáž stěna). Značíme jej $G^*.$ \textit{(Sice opravdu platí $G^{**}=G$, ale pak již pro spočítání druhého duálu potřebujeme znát duál i~pro multigrafy!)}
+\end{definiceN}
+
+\begin{obecne}{Úloha \textit{(barvení mapy)}}
+Uvažme politickou mapu, na níž jsou vyznačeny hranice států. Předpokládejme, že každý stát tvoří souvislou oblast ohraničenou nějakou topologickou kružnicí. Dvě oblasti pokládáme za sousední, jesliže mají společný aspoň kousek hranice. Každý stát na takové mapě chceme vybarvit nějakou barvou tak, že sousední státy nikdy nebudou mít stejnou barvu. Jaký minimální počet barev je potřeba?
+\end{obecne}
+
+\begin{definiceN}{Barevnost grafu}
+Buď $G=(V,E)$ graf, $k$ přirozené číslo. Zobrazení $b: V \rightarrow \{1,\dots,k\}$ nazveme \textbf{obarvením grafu} $G$ pomocí $k$ barev, pokud pro každou hranu $\{x,y\}\in E$ platí $b(x) \not = b(y).$ \textbf{Barevnost (chromatické číslo) grafu} $G,$ označovaná $\chi(G),$ je minimální počet barev potřebný k obarvení $G.$
+\end{definiceN}
+
+\begin{lemma}
+Duální graf rovinného grafu je rovinný graf.
+\end{lemma}
+
+\begin{obecne}{Převod úlohy barvení mapy na úlohu hledání barevnosti grafu}
+Máme-li mapu, kterou chápeme jako nakreslení nějakého grafu $G,$ potom otázka obarvitelnosti mapy pomocí $k$ barev je ekvivalentní s obarvitelností duálního grafu $G^*$ pomocí $k$ barev. Na druhé straně platí, že každý rovinný graf se vyskytne jako podgraf duálního grafu nějakého vhodného grafu. Takto lze převést problém barvení map na problémy barevnosti rovinných grafů.
+\end{obecne}
+
+\begin{vetaN}{Věta o pěti barvách}
+Pro každý rovinný graf $G$ platí $\chi(G)\leq 5.$
+
+\medskip
+\begin{dukaz}
+Indukcí dle počtu vrcholů grafu. Pro $|V|\leq 5$ je tvrzení triviální. Podle důsledku věty o počtu hran v rovinném grafu existuje vrchol stupně $\leq 5.$ Pokud má vrchol $v$ stupeň $< 5,$ použijeme indukční předpoklad: obarvíme graf $G-v$ 5 barvami a $v$ přiřadíme barvu, která není mezi barvami jeho (nejvýše čtyř) sousedů. Zbývá tedy případ, kdy má $v$ stupeň 5 a jeho sousedi jsou obarveni různými barvami. Graf $G$ má pevně zvolené rovinné nakreslení a v tomto nakreslení budou $t,u,x,z,y$ sousedé vrcholu $v$ v takovém pořadí, v jakém příslušné hrany vycházejí z vrcholu $v$ (např. po směru hodinových ručiček). Uvažme vrcholy $x$ a $y$ a nechť $V_{x,y}$ je množina všech vrcholů grafu $G'=G-v$ obarvených barvami $b(x)$ nebo $b(y).$ Zřejmě $x,y \in V_{x,y}.$
+
+\medskip \noindent Nastávají dva případy:
+\begin{penumerate}
+\item Neexistuje cesta z $x$ do $y$ používající pouze vrcholů z $V_{x,y}.$
+Mějme $V'_{x,y}$ množinu vrcholů, které jsou v $G'$ spojeny s $x$ cestou
+používající jen vrcholy z $V_{x,y}.$ Definujeme nové obarvení $b'$ takto:
+$b'(s) = b(s),$ pokud $s \not \in V'_{x,y};$ a pokud $s \in V'_{x,y},$
+změníme barvu $s$ z $b(y)$ na $b(x)$ nebo z $b(x)$ na $b(y)$ (tzn. na
+množině $V_{x,y}$ zaměníme barvy). Zřejmě $b'$ je obarvení, a protože
+$b'(x)=b'(y)=b(y),$ můžeme položit $b'(v)=b(x).$ Tedy $b'$ je obarvení
+grafu $G$ 5 barvami.
+\item Pokud taková cesta existuje (označme ji $P$), uvažme vrcholy $t$ a $z.$
+Zřejmě $V_{x,y}$ a $V_{t,z}$ jsou disjunktní množiny. Cesta $P$ spolu
+s hranami $\{v,x\}$ a $\{v,y\}$ tvoří kružnici, která odděluje $t$ a
+$z,$ a proto by každá cesta z $t$ do $z$ musela použít některý vrchol této
+kružnice. Neexistuje tedy cesta z $t$ do $z$ používající pouze vrcholů z
+$V_{t,z}$ a obarvení grafu G 5 barvami lze zkonstruovat stejně jako v
+předchozím případě, pouze musíme začít s vrcholy $z$ a $t.$
+\end{penumerate}
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Problém čtyř barev}
+Je možné každou mapu obarvit 4 barvami?
+
+\medskip
+\begin{dukaz}
+Věta platí, ale je velmi těžké ji dokázat (probírání mnoha případů počítačem).
+\end{dukaz}
+\end{vetaN}
+
+\begin{poznamka}
+NP-úplné problémy: je dán neorientovaný graf $G$ a číslo $k.$
+\begin{penumerate}
+\item Je možné $G$ obarvit $k$ barvami?
+\item Totéž, ale předem víme, že k=3.
+\item Totéž, ale graf je rovinný.
+\item Totéž, ale stupeň libovolného vrcholu je nejvýše 4.
+\item Je dáno obarvení třemi barvami, dotaz na netriviálně jiné.
+\end{penumerate}
+\end{poznamka}
+
+
+\subsection{Základní grafové algoritmy}
+
+\ramcek{10cm}{Tato sekce není požadovaná ke zkoušce!\\
+\\
+(Nebo teda je požadovaná, ale v informatice, kde je vypracovaná zvlášť)
+}
+
+V tomto oddíle zavedeme pro odhady časových složitostí algoritmů značení $n=|V(G)|$ a $m=|E(G)|.$
+
+\begin{algoritmusN}{Dijkstrův algoritmus pro hledání nejkratší cesty}
+Máme graf $G,$ jehož hrany jsou ohodnoceny kladnými čísly, tzn. že je dáno zobrazení $w: E(G) \to (0,\infty).$ (Ohodnocení $w(e)$ hrany $e$ si představujeme jako její délku. Délka cesty je rovna součtu délek jejích hran a vzdálenost $d_{G,w}(u,v)$ vrcholů $u,v$ je rovna nejmenší z délek všech cest spojujících $u,v.$ \uv{Obyčejná} grafová vzdálenost je speciální případ, totiž je-li $w(e)=1$ pro každou hranu $e.$) Hledáme nejkratší cestu z vrcholu $s$ do všech ostatních vrcholů.
+\begin{penumerate}
+\item (Inicializace) \hfil \\
+    \uv{Odhad} vzdálenosti $d(\cdot)$ u počátečního vrcholu $s$ nastavíme na 0,
+    odhady u všech ostatních vrcholů na $\infty$ (známe cestu délky 0 z $s$ do
+    $s,$ délky ostatních cest neznáme). Do množiny $A$ vrcholů, u nichž
+    ještě není odhad definitivní, dáme všechny vrcholy kromě $s$.
+\item (Volba množiny $N$) \hfil \\
+    Do množiny $N$ právě zpracovávaných vrcholů uložíme všechny vrcholy z $A,$ které mají ze všech vrcholů z $A$ minimální odhad vzdálenosti; tyto vrcholy z $A$ vyřadíme.
+\item (Aktualizace odhadů) \hfil \\
+    Pro každou hranu $e=\{v,y\} \in E,$ kde $v \in N, y\in A,$ porovnáme hodnoty $d(y)$ a $d(v)+w({v,y}).$ Pokud $d(v)+w({v,y}) < d(y)$ (přes vrchol $v$ vede do $y$ kratší cesta, než jsme zatím znali), nastavíme $d(y)$ na tuto hodnotu. Po vyčerpání všech takových hran pokračujeme dalším krokem.
+\item (Test ukončení) \hfil \\
+    Jestliže odhady vzdáleností všech vrcholů v množině $A$ jsou $\infty,$ algoritmus končí, jinak pokračuje krokem 2.
+\end{penumerate}
+Po skončení algoritmu je buď $A = 0$ (je-li $G$ souvislý) nebo $A$ obsahuje pouze vrcholy nedosažitelné cestou z vrcholu $s.$
+
+??? Algoritmus jsem opravil, i když je to vcelku zbytečné ... kdyžtak to někdo zkontrolujte. % -- Tuetschek
+\end{algoritmusN}
+
+\begin{vetaN}{Složitost Dijkstrova algoritmu}
+Lze ho implementovat v čase $O(n \log n + m)$ --- např. pomocí Fibonacciho hald.
+\end{vetaN}
+
+\begin{poznamka}
+Pokud hledáme nejkratší cestu pouze do jednoho zadaného vrcholu $c,$ můžeme ukončit Dijkstrův algoritmus hned poté, co tento vrchol opustí množinu $A$ (jeho vzdálenost se stane definitivní). Výpočet také můžeme urychlit následující heuristikou: máme funkci $h: V(G) \to \langle0,\infty)$ splňující $h(c)=0$ a pro každou hranu $e=\{u,v\} \in E$ platí $|h(u)-h(v)| \leq w(e)$ (v problémech dopravního spojení to může být např. vzdálenost vzdušnou čarou od cíle). Potom při volbě množiny $N$ vybíráme prvky s minimálním součtem dosavadního odhadu a heuristické funkce --- $d(v)+h(v).$ Je-li $h$ kvalitní, dá se čekat, že algoritmus najde definitivní vzdálenost do $c$ rychleji.
+\end{poznamka}
+
+
+\begin{algoritmusN}{Prohledávání do šířky}
+Máme graf $G=(V,E)$ a počáteční vrchol $s.$ Na začátku položíme $V_0 = \{s\},$ v dalších krocích položíme $V_{i+1} = \{v \in V \setminus (V_0 \cup \dots \cup V_i): \exists u \in V_i, \{u,v\} \in E\}.$ Složitost algoritmu je $O(n+m).$
+\end{algoritmusN}
+
+\begin{algoritmusN}{Prohledávání do hloubky}
+??? Poměrně jasné, často vede k exponenciální složitosti. Nutno rozlišovat metodu zpracování prvků --- \textbf{preorder, inorder} nebo \textbf{postorder.}
+\end{algoritmusN}
+
+\begin{algoritmusN}{Hladový (Kruskalův) algoritmus na hledání minimální kostry}
+Mějme souvislý graf $G=(V,E)$ s ohodnocením hran $w.$ Hrany máme uspořádány vzestupně podle váhy, $w(e_1) \leq \dots \leq w(e_n).$
+\begin{penumerate}
+\item Položme $E_0=0$
+\item Z množiny $E_{i-1}$ spočítáme množinu $E_i$ následovně:
+$$
+E_i =
+\begin{cases}
+E_{i-1} \cup \{e_i\} & \text{neobsahuje-li graf $(V,E_{i-1} \cup \{e_i\})$ kružnici}\\
+E_{i-1} & \text{jinak}
+\end{cases}
+$$
+\end{penumerate}
+Algoritmus se zastaví, pokud $E_i$ má $n-1$ hran. Poslední množina $E_i$ jsou hrany minimální kostry grafu $G.$
+\end{algoritmusN}
+
+\begin{vetaN}{Složitost Kruskalova algoritmu}
+Při implementaci potřebujeme v podstatě vyřešit úlohu udržování ekvivalence (UNION-FIND): máme množinu vrcholů, na počátku je rozdělena do jednoprvkových tříd ekvivalence. Navrhněte datové struktury a algoritmus, který efektivně vykonává dvě operace:
+\begin{penumerate}
+\item Sjednocení tříd (UNION): učinit dva vrcholy ekvivalentními t.j. nahradit třídy je obsahující jejich sjednocením.
+\item Testování ekvivalence (FIND): Pro dané dva vrcholy rozhodnout, zda jsou momentálně ekvivalentní.
+\end{penumerate}
+V průběhu algoritmu hledání minimální kostry vykonáme $n-1$ operací UNION --- jednu při každém přidání hrany, a $m$ operací FIND --- při každém testování, zda přidávaná hrana nevytvoří kružnici. \textit{(pozn.: Vrcholy této hrany musí ležet v různých komponentách.)}
+
+Řešení: vrcholy mají přiřazenu značku určující třídu ekvivalence, do které patří; a pro každou třídu ekvivalence existuje seznam jejích vrcholů. Testování ekvivalence je pak porovnání dvou značek o složitosti $O(1)$ a při sjednocení tříd musím přeznačit a přemístit vrcholy jedné ze tříd, což zabere $O(n)$ času. Pokud přeznačujeme vždy menší třídu, vyjde odhad potřebného času $O(n \log n + m).$
+\end{vetaN}
+
+\begin{algoritmusN}{Jarníkův (Primův) algoritmus na hledání minimální kostry grafu}
+Je dán souvislý graf $G=(V,E).$ Budeme postupně vytvářet množiny $V_0, V_1, \dots \subseteq V$ vrcholů a $E_0, E_1,\dots \subseteq$ hran, přičemž $E_0=0$ a $V_0=\{v\},$ kde $v$ je libovolně zvolený vrchol. V $i$-tém kroku algoritmu vybereme z množiny hran $\{\{x,y\} \in E(G); x \in V_{i-1} \land y \in V \setminus V_{i-1}\}$ tu s minimálním ohodnocením (bude to $e_i=\{x_i,y_i\}$) a položíme $V_i=V_{i-1} \cup \{y_i\}$ a $E_i=E_{i-1} \cup \{e_i\}.$ Pokud žádná taková hrana neexistuje, algoritmus končí, to nastane v $(n-1)$-ním kroku a $E_{n-1}$ je množina hran minimální kostry grafu. \textit{(Kostru tedy začínám budovat od jediného vrcholu a v každém kroku k ní přidám nejkratší z hran mezi vrcholy kostry a zbytkem vrcholů.)} \poznamka{Jarníkův algoritmus lze implementovat v čase $O((n+m) \log n).$}
+\end{algoritmusN}
+
+\begin{algoritmusN}{Topologické třídění}
+\textbf{Problém:} V orientovaném grafu $G=(V,E)$ sestrojte prosté zobrazení $f: V \to \{1\dots|V(G)|\}$ tak, aby $\forall (v_1,v_2) \in E; f(v_1)<f(v_2).$ \textit{(Tedy máme očíslovat vrcholy prvními přirozenými čísly tak, aby hrany vedly jen z vrcholu s nižším číslem do vrcholu s vyšším číslem.)}\hfil\break \textbf{Algoritmus:} Nejprve nastavíme čítač na 1. Nalezneme vrchol, do kterého nevede žádná hrana; tento vrchol očíslujeme čítačem a odtrhneme ho od grafu (sestrojíme indukovaný podrgraf) a zvýšíme čítač. Tento krok opakujeme, dokud množina vrcholů grafu není prázdná. Pokud nemůžeme v nějakém kroku nalézt bod, do kterého nevede žádná hrana, nelze graf topologicky setřídit.\hfil\break \textbf{Využití:} Odpovídají-li vrcholy grafu jednotlivým krokům nějakého postupu a hrany časovým závislostem, které je třeba zachovat, odpovídá topologické setřídění tohoto grafu (jednomu z) pořadí, ve kterém je nutné kroky vykonávat.
+\end{algoritmusN}

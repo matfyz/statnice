@@ -1,0 +1,63 @@
+\subsection{Normální tvary výrokových formulí, prenexní tvary formulí predikátové logiky}
+
+\begin{poznamkaN}{Vlastnosti log. spojek}
+Platí:
+\begin{penumerate}
+    \item $A\wedge B\vdash A$; $A,B\vdash A\wedge B$
+    \item $A\leftrightarrow B\vdash A\rightarrow B$; $A\rightarrow B, B\rightarrow A\vdash A\leftrightarrow B$
+    \item $\wedge$ je idempotentní, komutativní a asociativní.
+    \item $\vdash(A_1\rightarrow\dots(A_n\rightarrow B)\dots)
+	\leftrightarrow((A_1\wedge\dots\wedge A_n)\rightarrow B)$
+    \item DeMorganovy zákony: $\vdash\neg(A\wedge B)\leftrightarrow(\neg A\vee\neg B)$;
+	$\vdash\neg(A\vee B)\leftrightarrow(\neg A\wedge\neg B)$
+    \item $\vee$ je monotonní ($\vdash A\rightarrow A\vee B$), idempotentní, komutativní a asociativní.
+    \item $\vee$ a $\wedge$ jsou navzájem distributivní.
+\end{penumerate}
+\end{poznamkaN}
+
+\begin{vetaN}{o ekvivalenci ve výrokové logice}
+Jestliže jsou podformule $A_1\dots A_n$ formule $A$ ekvivalentní s $A'_1\dots A'_n$ ($\vdash A'_i \leftrightarrow A_i$) a $A'$ vytvořím nahrazením $A'_i$ místo $A_i$, je i $A$ ekvivalentní s $A'$. (Důkaz indukcí podle složitosti formule, rozborem případů $A_i$ tvaru $\neg B$, $B\rightarrow C$)
+\end{vetaN}
+
+\begin{lemmaN}{o důkazu rozborem případů}
+Je-li $T$ množina formulí a $A,B,C$ formule, pak $T,(A\vee B)\vdash C$ platí právě když $T,A\vdash C$ a $T,B\vdash C$.
+\end{lemmaN}
+
+\begin{definiceN}{Normální tvary}
+Výrokovou proměnnou nebo její negaci nazveme \emph{literál}. \emph{Klauzule} budiž disjunkce několika literálů. \emph{Formule v normálním konjunktivním tvaru (CNF)} je konjunkce klauzulí. \emph{Formule v disjunktivním tvaru (DNF)} je disjunkce konjunkcí literálů.
+\end{definiceN}
+
+\begin{vetaN}{o normálních tvarech}
+Pro každou formuli $A$ lze sestrojit formule $A_k,A_d$ v konjunktivním, resp. disjunktivním tvaru tak, že $\vdash A\leftrightarrow A_d$, $\vdash A\leftrightarrow A_k$. (Důkaz z DeMorganových formulí a distributivity, indukcí podle složitosti formule)
+\end{vetaN}
+
+\subsubsection*{Prenexní tvary formulí predikátové logiky}
+
+\begin{vetaN}{o ekvivalenci v predikátové logice}
+Nechť formule $A'$ vznikne z $A$ nahrazením některých výskytů podformulí $B_1,\dots,B_n$ po řadě formulemi $B'_1,\dots,B'_n$. Je-li $\vdash B_1\leftrightarrow B'_1,\dots,\vdash B_n\leftrightarrow B'_n$, potom platí i $\vdash A\leftrightarrow A'$.
+\end{vetaN}
+
+\begin{definiceN}{Prenexní tvar}
+Formule predikátové logiky $A$ je v \emph{prenexním tvaru}, je-li $$A\equiv (Q_1 x_1)(Q_2 x_2)\dots(Q_n x_n)B,$$ kde $n\geq 0$ a $\forall i\in\{1,\dots,n\}$ je $Q_i\equiv \forall$ nebo $\exists$, $B$ je otevřená formule a kvantifikované proměnné jsou navzájem různé. $B$ je \emph{otevřené jádro} $A$, část s kvantifikátory je \emph{prefix} $A$.
+\end{definiceN}
+
+\begin{definiceN}{Varianta formule predikátové logiky}
+Formule $A'$ je \emph{varianta} $A$, jestliže vznikla z $A$ postupným nahrazením podformulí $(Q x)B$ (kde $Q$ je $\forall$ nebo $\exists$) formulemi $(Q y)B_x[y]$ a $y$ není volná v $B$. Podle \emph{věty o variantách} je varianta s původní formulí ekvivalentní.
+\end{definiceN}
+
+\begin{lemmaN}{o prenexních operacích}
+Pro převod formulí do prenexního tvaru se používají tyto operace (výsledná formule je s původní ekvivalentní). Pro podformule $B$, $C$, kvantifikátor $Q$ a proměnnou $x$:
+\begin{penumerate}
+    \item podformuli lze nahradit nějakou její variantou
+    \item $\vdash \neg(Q x)B\leftrightarrow(\overline{Q} x)\neg B$
+    \item $\vdash (B\rightarrow (Q x)C)\leftrightarrow(Q x)(B\rightarrow C)$, pokud $x$ není volná v $B$
+    \item $\vdash ((Q x)B\rightarrow C)\leftrightarrow(\overline{Q} x)(B\rightarrow C)$, pokud $x$ není 
+	volná v $C$
+    \item $\vdash ((Q x)B\wedge C)\leftrightarrow (Q x)(B\wedge C)$, pokud $x$ není volná v $C$
+    \item $\vdash ((Q x)B\vee C)\leftrightarrow (Q x)(B\vee C)$, pokud $x$ není volná v $C$
+\end{penumerate}
+\end{lemmaN}
+
+\begin{vetaN}{o prenexních tvarech}
+Ke každé formuli $A$ predikátové logiky lze sestrojit ekvivalentní formuli $A'$, která je v prenexním tvaru. (Důkaz: indukcí podle složitosti formule a z prenexních operací, někdy je nutné přejmenovat volné proměnné)
+\end{vetaN}

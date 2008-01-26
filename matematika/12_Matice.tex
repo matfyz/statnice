@@ -1,0 +1,316 @@
+\def\rank{\mathrm{rank}}
+\def\Ker{\mathrm{Ker\ }}
+\def\dim{\mathrm{dim}}
+
+\section{Matice}
+
+\begin{pozadavky}
+\begin{pitemize}
+	\item Matice a jejich hodnost
+	\item Operace s maticemi a jejich vlastnosti
+	\item Inversní matice
+	\item Regulární matice, různé charakteristiky
+	\item Matice a lineární zobrazení, resp. změny souřadných soustav
+\end{pitemize}
+\end{pozadavky}
+
+\subsection{Matice a jejich hodnost} 
+
+\begin{definice}
+Obdélníkové schéma sestavené z reálných čísel
+$$A=\left( \begin{array}{cccc} a_{11} & a_{12} & \dots & a_{1n} \\ a_{21} & a_{22} & \dots & a_{2n} \\ \vdots & \vdots & \ddots & \vdots \\ a_{m1} & a_{m2} & \dots & a_{mn} \end{array} \right)$$
+nazýváme (reálnou) maticí typu $m \times n$. Prvek $a_{ij}$ se nazývá $ij$-tý \emph{koeficient} matice A. Množinu všech reálných matic typu  $m \times n$ značíme $\mathbb{R}^{m \times n}$. Je-li $m=n$, říkáme, že matice je čtvercová řádu $n$.
+
+Podobně definujeme množinu komplexních matic typu $m \times n$ a značíme ji $\mathbb{C}^{m \times n}$, lze takto definovat množinu matic nad libovolným tělesem.
+\end{definice}
+
+\begin{definiceN}{Jednotková matice}
+Čtvercová matice řádu $n$ tvaru 
+$$I=\left( \begin{array}{cccc} 1 & 0 & \dots & 0 \\ 0 & 1 & \dots & 0 \\ \vdots & \vdots & \ddots & \vdots \\ 0 & 0 & \dots & 1 \end{array} \right)$$
+se nazývá \emph{jednotková matice}.
+\end{definiceN}
+
+\begin{definiceN}{Nulová matice}
+Čtvercovou matici $A$ typu $m\times n$, pro kterou $a_{i,j}=0\ \forall i\in\{1,\dots,m\},\forall j\in\{1,\dots,n\}$ nazveme \emph{nulová matice} a označíme $\mathbf{0}$.
+\end{definiceN}
+
+
+
+\begin{definiceN}{Prostory související s maticí}
+Buď $A$ matice typu $m\times n$ nad tělesem $\mathbb{K}$. Potom jsou s ní spojené tyto vektorové prostory:
+\begin{pitemize}
+    \item \emph{sloupcový prostor, též sloupcový modul} -- podprostor $\mathbb{K}^m$ generovaný sloupci $A$
+    \item \emph{řádkový prostor, též řádkový modul} -- podprostor $\mathbb{K}^n$ generovaný řádky $A$
+    \item \emph{jádro matice} ($\Ker A$) -- podprostor $\mathbb{K}^n$ generovaný všemi řešeními soustavy $Ax=0$
+\end{pitemize}
+
+\noindent Je zřejmé, že elementární maticové úpravy nemění ani řádkový prostor, ani jádro.
+\end{definiceN}
+
+\begin{definiceN}{Hodnost matice}
+Hodnost matice $A$ je maximální počet lineárně nezávislých sloupců matice $A$ (jako vektorů), značíme ji $\rank(A)$. Hodnost matice je rovna dimenzi sloupcového prostoru (to je ekvivalentní definice).
+\end{definiceN}
+
+\begin{vetaN}{O hodnosti matice}
+Pro libovolnou matici $A$ typu $m\times n$ je dimenze jejího sloupcového prostoru rovna dimenzi řádkového prostoru. Tedy hodnost matice je rovna i dimenzi řádkového prostoru a platí $$\rank(A)\leq\min\{m,n\}$$
+
+\begin{dukaz}
+Pro horní trojúhelníkové matice je tato skutečnost zřejmá, dokazuje se, že Gaussova eliminace (tj. elementární maticové úpravy -- násobení vhodnou regulární maticí zleva) nemění hodnost sloupcového prostoru (při operacích s řádky).
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{O dimenzích maticových prostorů}
+Pro matici $A$ s $n$ sloupci platí:
+$$\dim(\Ker A)+\rank(A)=n$$
+\end{vetaN}
+
+\begin{poznamka}
+Po provedení \emph{Gaussovy eliminace} na matici A ($\Rightarrow A^R$) je hodnost matice A rovna počtu nenulových řádků matice $A^R$.
+\end {poznamka}
+
+
+\begin{definiceN}{Regulární matice}
+Čtvercová matice $A$ se nazývá \emph{regulární}, jestliže soustava
+$$Ax=0$$
+má jediné řešení $x=0$ (tzv. \emph{triviální}).
+
+\medskip\noindent
+V opačném případě se nazývá \emph{singulární} (tj. platí $Ax=0$ pro nějaký vektor $x \neq 0$).
+\end{definiceN}
+
+
+\subsection{Operace s maticemi a jejich vlastnosti}
+
+\subsubsection*{Součet a násobení skalárem}
+
+\begin{definiceN}{Sčítání}
+Nechť $A,B$ jsou matice typu $m \times n$. Potom jejich \emph{součtem} $A+B$ nazýváme matici typu $m \times n$ s koeficienty $$(A+B)_{ij} = A_{ij} + B_{ij}$$ pro $i=1,\dots,m; j=1,\dots,n$. Jsou-li $A,B$ různých typů, potom součet $A+B$ není definován.
+\end{definiceN}
+
+\begin{definiceN}{Násobení skalárem}
+Nechť $A,B$ jsou matice typu $m \times n$ a $\alpha$ skalár. Potom $\alpha\cdot A$ je matice typu $m \times n$ s koeficienty $$(\alpha\cdot A)_{ij} = \alpha\cdot A_{ij}$$ pro $i=1,\dots,m; j=1,\dots,n$. Nikdy nepíšeme $A\cdot\alpha$.
+\end{definiceN}
+
+\begin{lemmaN}{Vlastnosti součtu matic a násobení matic skalárem}
+Nechť $A,B,C$ jsou matice typu $m \times n$ a $\alpha, \beta$ skaláry. Potom platí:
+\begin{penumerate}
+	\item $A+B=B+A \hfill \textit{(komutativita)}$
+	\item $(A+B)+C=A+(B+C) \hfill \textit{(asociativita)}$
+	\item $A+\mathbf{0}=A \hfill \textit{(existence nulového prvku)}$
+	\item $A+(-1)A=\mathbf{0} \hfill \textit{(existence opačného prvku)}$
+	\item $\alpha(\beta A)=(\alpha \beta)A$
+	\item $1\cdot A=A$
+	\item $\alpha(A+B)=\alpha A + \alpha B \hfill \textit{(distributivita)}$
+	\item $(\alpha+\beta)A=\alpha A + \beta A \hfill \textit{(distributivita)}$
+\end{penumerate}
+Tedy prostor matic typu $m\times n$ odpovídá vektorovému prostoru.
+\end{lemmaN}
+
+\subsubsection*{Násobení}
+
+\begin{definiceN}{Maticové násobení}
+Je-li A matice typu $m \times p$ a B matice typu $p \times n$, potom $A\cdot B$ je matice typu $m \times n$ definaná předpisem $$(A\cdot B)_{ij} = \sum_{k=1}^p A_{ik} B_{kj}$$ pro $i=1,\dots,m; j=1,\dots,n$.
+\end{definiceN}
+
+
+\begin{lemmaN}{Vlastnosti součinu matic}
+Nechť $A,B,C$ jsou matice, $\alpha$ skalár. Potom
+\begin{penumerate}
+	\item Jestliže součin $(AB)C$ je definován, potom i součin $A(BC)$ je definován a platí $(AB)C=A(BC)$.
+	\item Jestliže $A(B+C)$ je definován, potom i $AB+AC$ je definován a platí $A(B+C)=AB+AC$.
+	\item Jestliže $(A+B)C$ je definován, potom i $AC+BC$ je definován a platí $(A+B)C=AC+BC$.
+	\item Je-li $AB$ definován, je $\alpha (AB)=(\alpha A)B=A(\alpha B)$
+	\item Je-li $A$ typu $m \times n$, potom $I_m A=A I_n =A$.
+\end{penumerate}
+
+\noindent Násobení matic není komutativní - tj. obecně neplatí $AB=BA$.
+\end{lemmaN}
+
+\begin{vetaN}{O hodnosti součinu matic}
+Pro matici $A$ typu $m\times p$ a matici $B$ typu $p\times n$ platí:
+$$\rank(AB)\leq \min\{\rank(A),\rank(B)\}$$
+
+\begin{dukaz}
+Řádkový prostor $AB$ je určitě podprostorem řádkového prostoru matice $B$ a sloupcový prostor $AB$ podprostorem sloupcového prostoru matice $A$.
+\end{dukaz}
+\end{vetaN}
+
+
+\subsubsection*{Transpozice}
+
+
+\begin{definice}
+Pro matici $A \in \mathbb{R}^{m \times n}$ definujeme \emph{transponovanou matici} $A^T \in \mathbb{R}^{n \times m}$ předpisem $$(A^T)_{ji} = A_{ij} \, (i=1, \dots, m; j=1, \dots, n)$$
+\end{definice}
+
+\begin{lemmaN}{Vlastnosti transpozice}
+
+\begin{penumerate}
+	\item $(A^T)^T = A$
+	\item jsou-li $A,B$ stejného typu, je $(A+B)^T = A^T + B^T$
+	\item $(\alpha A)^T=\alpha A^T$, pro každé $\alpha \in \mathbb{R}$
+	\item je-li $AB$ definován, je i $B^T A^T$ definován a platí $(AB)^T = B^T A^T$.
+\end{penumerate}
+\end{lemmaN}
+
+\begin{definiceN}{Symetrická matice}
+Matice A se nazývá \emph{symetrická} jestliže $A^T=A$.
+\end{definiceN}
+
+\begin{veta}
+Pro každou matici $A \in \mathbb{R}^{m \times n}$ je $A^T A$ symetrická.
+\end{veta}
+\begin{veta}
+Pro každou matici $A \in \mathbb{R}^{m \times n}$ platí $\rank(A^T)=\rank(A)$.
+\end{veta}
+
+
+\subsection{Inversní matice}
+
+\begin{veta}
+Ke každé regulární matici $A \in \mathbb{R}^{n \times n}$ existuje právě jedna matice $A^{-1} \in \mathbb{R}^{n \times n}$ s vlastností
+$$A A^{-1} = A^{-1}A=I$$
+Naopak, existuje-li k $A \in \mathbb{R}^{n \times n}$ matice $A^{-1}$ s touto vlastností, potom je A regulární.
+\end{veta}
+
+\begin{definice}
+Matici $A^{-1}$ s touto vlastností nazýváme \emph{inversní maticí} k matici A.
+\end{definice}
+
+\begin{poznamka}
+Inverzní matici mají tedy právě regulární matice.
+\end{poznamka}
+\begin{dusledek}
+Je-li A regulární, je i $A^{-1}$ regulární.
+\end{dusledek}
+
+\begin{vetaN}{Inversní matice je oboustranně inversní}
+Jestliže pro $A,X \in \mathbb{R}^{n \times n}$ platí $XA=I$, potom A je regulární a $X=A^{-1}$. Analogicky, jestliže $AX=I$, potom A je regulární a $X=A^{-1}$.
+\end{vetaN}
+
+\begin{veta}
+Je-li $A \in \mathbb{R}^{n \times n}$ regulární, potom pro každé $b \in \mathbb{R}^n$ je jediné řešení soustavy $Ax=b$ dáno vzorcem $x = A^{-1}b$.
+\end{veta}
+
+\begin{vetaN}{Výpočet inversní matice}
+Pro čtvercovou matici $A$ řádu $n$ nechť je matice $(A\ I)$ (tj. zřetězení sloupců matice $A$ a jednotkové matice $I$ řádu $n$) převedena  Gauss-Jordanovou eliminací na tvar $(I\ X)$. Potom platí: 
+$$X=A^{-1}$$ 
+Jestliže Gauss-Jordanova eliminace není proveditelná až do konce, potom $A$ je singulární a nemá inversní matici.
+
+\medskip
+\begin{dukaz}
+Víme, že Gauss-Jordanova eliminace je vlastně opakované násobení regulárními maticemi zleva. Součin všech těchto matic označme $Q$. Označme $H_{*,j}$ $j$-tý sloupec nějaké (obecné) matice. Potom pro $j\in\{1,\dots,n\}$ platí: $(I\ X)_{*,j}=I_{*,j}=Q(A\ I)_{*,j}=(QA)_{*,j}$, tedy $QA=I$, dále platí $(I\ X)_{*,n+j}=X_{*,j}=(QI)_{*,n+j}=Q_{*,j}$, takže $Q=X$ a tedy $AX=I$.
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Vlastnosti inversní matice}
+Nechť $A,B \in \mathbb{R}^{n \times n}$ jsou regulární matice. Potom platí:
+\begin{penumerate}
+	\item $(A^{-1})^{-1} = A$
+	\item $(A^{T})^{-1} = (A^{-1})^{T}$
+	\item $(\alpha A)^{-1} = \frac{1}{\alpha} A^{-1} \textit{ pro }\alpha \neq 0$
+	\item $(AB)^{-1} = B^{-1} A^{-1}$
+\end{penumerate}
+\end{vetaN}
+
+
+\subsection{Regulární matice, různé charakteristiky}
+
+\begin{vetaN}{Násobení regulární maticí a hodnost}
+Pro čtvercovou regulární matici $R$ řádu $m$ a matici $A$ typu $m\times n$ platí:
+$$\rank(RA)=\rank(A)$$
+
+\medskip
+\begin{dukaz}
+Nerovnost \uv{$\leq$} plyne přímo z věty o hodnosti součinu matic použité pro $RA$, opačná nerovnost z téže věty, použité na matici $R^{-1}\cdot(RA)=A$.
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Násobení regulárních matic}
+Jsou-li $A_1,A_2,\dots,A_q \in \mathbb{R}^{n \times n}$ regulární, $q \ge 1$, potom $A_1 A_2 \dots A_q$ je regulární.
+
+\medskip
+\begin{dukaz}
+Plyne přímo z předchozí věty.
+\end{dukaz}
+\end{vetaN}
+
+
+\begin{poznamkaN}{Podmínky regularity}
+Čtvercová $A \in \mathbb{R}^{n \times n}$ je regulární matice, právě když:
+\begin{pitemize}
+ %	\item $\det A \neq 0$ -- determinanty v sekci 12 jeste neumime
+	\item Její řádky jsou lineárně nezávislé
+	\item Její sloupce jsou lineárně nezávislé
+	\item Její hodnost je právě $n$
+	\item $A^{T}$ je regulární
+	\item $A^{-1}$ je regulární
+\end{pitemize}
+\end{poznamkaN}
+
+Další charakteristiky regulárních matic:
+\begin{pitemize}
+	\item Matice A je regulární právě když je determinant nenulový.
+	\item Právě když po provedení Gaussovy-Jordanovy eliminace dostaneme jednotkovou matici.
+	\item Právě když lze napsat jako součin matic $E_k \times \dots \times E_2 \times E_1 \times I_n$, kde $I_n$ je jednotková matice a $E_1 \times E_k$ jsou elementární matice (odpovídají elementárním řádkovým úpravám, které matici A převádí na redukovaný, řádkově odstupňovaný tvar).
+\end{pitemize}
+
+\subsection{Matice a lineární zobrazení, resp. změny souřadných soustav}
+
+\begin{definice}
+Nechť V, W jsou vektorové prostory nad stejným tělesem (R nebo C). Zobrazení $f: V \rightarrow W$ nazýváme \emph{lineárním zobrazením} jestliže
+\begin{penumerate}
+	\item $f(x+y)=f(x)+f(y)$ pro každé $x,y \in V$
+	\item $f(\alpha\cdot x)=\alpha\cdot f(x)$ pro každé $x \in V$ a každý skalár $\alpha$.
+\end{penumerate}
+\end{definice}
+
+\begin{definiceN}{Souřadnicový vektor}
+Nechť $\mathbb{B}=(x_1,\dots,x_n)$ je báze V. Každý vektor $x \in V$ lze potom vyjádřit právě jedním způsobem jako lineární kombinaci vektorů báze $\mathbb{B}$. Potom aritmetický vektor
+$$[x]_{\mathbb{B}} = \left( \begin{array}{l}\alpha_1 \\ \vdots \\ \alpha_n \end{array} \right)$$
+nazýváme \emph{souřadnicovým vektorem} vektoru x v bázi $\mathbb{B}$ (a $n=\dim V$ a souřadnicový vektor \emph{závisí na výběru báze}).
+\end{definiceN}
+
+
+\begin{definiceN}{Matice lineárního zobrazení}
+Nechť $\mathbb{B}=\{x_1, \dots, x_n\}$ je báze vektorového prostoru $V$, $\mathbb{B}'=\{y_1, \dots, y_m\}$ je báze vekt. prostrou $W$ a nechť $f: V \rightarrow W$ je lineární zobrazení. Potom pro každé $j=1, \dots, n$ lze $f(x_j)$ zapsat právě jedním způsobem ve tvaru
+$$f(x_j) = \sum_{i = 1}^{m} \alpha_{ij} y_j.$$
+
+Matice $A=(\alpha_{ij}) \in \mathbb{R}^{m \times n}$ se nazývá maticí lineárního zobrazení $f$ vzhledem k bázím $\mathbb{B}, \mathbb{B}'$ a značí se
+$$[f]_{\mathbb{B}\mathbb{B}'}.$$
+\end{definiceN}
+
+\begin{pozorovani}
+$[f]_{\mathbb{B}\mathbb{B}'}.$ je matice sestavená ze sloupců
+$$([f(x_1)]_{\mathbb{B}'}, \dots, [f(x_n)]_{\mathbb{B}'}),$$
+které jsou souřadnicovými vektory vektorů $f(x_1), \dots, f(x_n)$ v bázi $\mathbb{B}'$.
+\end{pozorovani}
+
+\begin{veta}
+Nechť $\mathbb{B}$ je báze V, $\mathbb{B}'$ je báze W, a nechť $f: V \rightarrow W$ je lineární zobrazení. Potom pro každé $x \in V$ platí
+$$[f(x)]_{\mathbb{B}'} = [f]_{\mathbb{B} \mathbb{B}'}.[x]_{\mathbb{B}},$$
+kde napravo stojí maticový součin.
+\end{veta}
+
+\begin{vetaN}{Složené zobrazení a maticový součin}
+Nechť $f: U \rightarrow V$, $g: V \rightarrow W$ jsou lineární zobrazení a nechť $\mathbb{B}, \mathbb{B}', \mathbb{B}''$ jsou báze U, V, W. Potom platí
+$$[g \circ f]_{\mathbb{B} \mathbb{B}''}=[g]_{\mathbb{B}'\mathbb{B}''} [f]_{\mathbb{B}\mathbb{B}'}$$
+kde napravo stojí maticový součin.
+\end{vetaN}
+
+\begin{vetaN}{Matice inversního zobrazení}
+Je-li $f: V \rightarrow W$ isomorfismus, potom inversní zobrazení $f^{-1}: W \rightarrow V$ je rovněž isomorfismus a vzhledem k libovolným bázím $\mathbb{B}, \mathbb{B}'$ prostorů V, W platí:
+$$[f^{-1}]_{\mathbb{B}' \mathbb{B}} = [f]^{-1}_{\mathbb{B} \mathbb{B}'}$$
+\end{vetaN}
+
+\begin{vetaN}{Změna souřadnic vektoru při změně báze}
+Nechť jsou dány dvě báze $\mathbb{B}, \mathbb{B}'$ vektorového prostoru $V$. Potom pro každé $x \in V$ platí:
+$$[x]_{\mathbb{B}'} = [\mathrm{id}_V]_{\mathbb{B} \mathbb{B}'}.[x]_{\mathbb{B}}$$
+
+Matice $[\mathrm{id}_V]_{\mathbb{B} \mathbb{B}'}$ se nazývá \emph{maticí přechodu} od báze $\mathbb{B}$ k bázi $\mathbb{B}'$.
+\end{vetaN}
+
+\begin{poznamka}
+Předchozí vzorec vyžaduje znalost hodnot vektorů staré báze $\mathbb{B}$ v nové bází $\mathbb{B}'$. Typická situace ale je, že máme jen starou bázi $\mathbb{B}$ a pomocí ní vyjádříme novou bázi $\mathbb{B}'$. V tom případě můžeme použít vzorec
+$$[x]_{\mathbb{B}'} = [\mathrm{id}_V]^{-1}_{\mathbb{B}' \mathbb{B}} [x]_{\mathbb{B}}$$
+\end{poznamka}

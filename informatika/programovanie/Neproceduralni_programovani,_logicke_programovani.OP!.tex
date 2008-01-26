@@ -1,0 +1,179 @@
+\subsection{Neprocedurální programování, logické programování}
+
+\subsubsection*{Neprocedurální programování}
+\emph{Deklarativní programování} je postaveno na paradigmatu, podle něhož je program založen na tom, co se počítá a ne jak se to počítá. Je zde deklarován vstup a výstup a celý program je chápán jako funkce vyhodnocující vstupy podávající jediný výstup. Například i webovské stránky jsou deklarativní protože popisují, jak by stránka měla vypadat -- titulek, font, text a obrázky -- ale nepopisují, jak konkrétně zobrazit stránky na obrazovce.
+
+\emph{Logické programování} a \emph{funkcionální programování} jsou poddruhy deklarativního programování. Logické programování využívá programování založené na vyhodnocování vzorů - tvrzení a cílů. Klasickým zástupcem jazyka pro podporu tohoto stylu je Prolog.
+
+Tento přístup patří pod deklarativní programování stejně jako funkcionální programování, neboť deklaruje, co je vstupem a co výstupem, a nezabývá se jak výpočet probíhá. Naopak program jako posloupnost příkazů je paradigma imperativní.
+
+\emph{Funkcionální programování} patří mezi deklarativní programovací principy.
+
+Alonzo Church vytvořil formální výpočtový model nazvaný $\lambda$-kalkul. Tento model slouží jako základ pro funkcionální jazyky. Funkcionální jazyky dělíme na:
+\begin{pitemize}
+	\item typované - Haskell
+	\item netypované - Lisp, Scheme
+\end{pitemize}
+
+Výpočtem funkcionálního programu je posloupnost vzájemně ekvivalentních výrazů, které se postupně zjednodušují. Výsledkem výpočtu je výraz v normální formě, tedy dále nezjednodušitelný. Program je chápán jako jedna funkce obsahující vstupní parametry mající jediný výstup. Tato funkce pak může být dále rozložitelná na podfunkce.
+
+\subsubsection*{Prolog}
+
+Prolog je logický programovací jazyk. Název Prolog pochází z francouzského programmation en logique (\uv{logické programování}). Byl vytvořen Alainem Colmerauerem v roce 1972 jako pokus vytvořit programovací jazyk, který by umožňoval vyjadřování v logice místo psaní počítačových instrukcí. Prolog patří mezi tzv. deklarativní programovací jazyky, ve kterých programátor popisuje pouze cíl výpočtu, přičemž přesný postup, jakým se k výsledku program dostane, je ponechán na libovůli systému.
+
+Prolog je využíván především v oboru umělé inteligence a v počítačové lingvistice (obzvláště zpracování přirozeného jazyka, pro nějž byl původně navržen). Syntaxe jazyka je velice jednoduchá a snadno použitelná pravě proto, že byl původně určen pro počítačově nepříliš gramotné lingvisty.
+
+Prolog je založen na \emph{predikátové logice prvního řádu} (konkrétně se omezuje na Hornovy klauzule). Běh programu je pak představován aplikací dokazovacích technik na zadané klauzule. Základními využívanými přístupy jsou \emph{unifikace}, \emph{rekurze} a \emph{backtracking}.
+
+Interpret Prologu se snaží nalézt nejobecnější substituci, která splní daný cíl - tzn. nesubstituuje zbytečně, pokud nemusí (použití interních proměnných -- \_123 atd.). Za dvě proměnné může být substituována jedna interní proměnná (např. při hledání svislé úsečky -- konstantní X souřadnice) -- tomu se říká \emph{unifikace} proměnných. Pro proměnnou, jejíž hodnota může být libovolná, se v prologu užívá znak \uv{\_}. 
+
+Datové typy v prologu se nazývají \emph{termy}. Základním datovým typem jsou \emph{atomy} (začínají malým písmenem, nebo se skládají ze speciálních znaků (\texttt{+ - * / \dots}, nebo jsou to znakové řetězce (\texttt{'text'})). Dále \uv{jsou} v prologu čísla (v komerčních implementacích i reálná), proměnné (velké písmeno) a struktury (definované rekursivně - pomocí funktoru dané arity a příslušným počtem termů, které jsou jeho argumenty -- \texttt{okamzik(datum(1,1,1999),cas(10,10))}). Posledním typem proměnných jsou seznamy, které jsou probírány později.
+
+\medskip\textbf{Základní principy}:
+
+Programování v Prologu se výrazně liší od programování v běžných procedurálních jazycích jako např. C. Program v prologu je databáze faktů a pravidel (dohromady se faktům a pravidlům paradoxně říká procedury), nad kterými je možno klást dotazy formou tvrzení, u kterých Prolog zhodnocuje jejich pravdivost (dokazatelnost z údajů obsažených v databázi).
+
+Například lze do databáze uložit fakt, že Monika je dívka:
+\begin{verbatim}
+dívka(monika).
+\end{verbatim}
+
+Poté lze dokazatelnost tohoto faktu prověřit otázkou, na kterou Prolog odpoví yes (ano):
+\begin{verbatim}
+?- dívka(monika).
+     yes.
+\end{verbatim}
+
+Také se lze zeptat na všechny objekty, o kterých je známo, že jsou dívky (středníkem požadujeme další výsledky):
+\begin{verbatim}
+?- dívka(X).
+     X = monika;
+     no.
+\end{verbatim}
+
+Pravidla (závislosti) se zapisují pomocí implikací, např.
+\begin{verbatim}
+syn(A,B) :- rodič(B,A), muž(A).
+\end{verbatim}
+
+Tedy: pokud B je rodičem A a zároveň je A muž, pak A je synem B. První části pravidla (tj. důsledku) se říká hlava a všemu co následuje za symbolem \texttt{:-} (tedy podmínkám, nutným pro splnění hlavy) se říká tělo. Podmínky ke splnění mohou být odděleny buď čárkou (pak jde o konjunkci, musejí být splněny všechny), nebo středníkem (disjunkce), přičemž čárky mají větší prioritu.
+
+\medskip\textbf{Příklad}:
+
+Typickou ukázkou základů programování v Prologu jsou rodinné vztahy.
+\begin{verbatim}
+sourozenec(X,Y) :- rodič(Z,X), rodič(Z,Y).
+rodič(X,Y) :- otec(X,Y).
+rodič(X,Y) :- matka(X,Y).
+muž(X) :- otec(X,_).
+žena(X) :- matka(X,_).
+matka(marie,monika).
+otec(jiří,monika).
+otec(jiří,marek).
+otec(michal,tomáš).
+\end{verbatim}
+
+Prázdný seznam je označen atomem $[]$, neprázdný se tvoří pomocí funktoru \texttt{'.'} (tečka) - \texttt{.(Hlava,Tělo)}. V praxi se to (naštěstí ;-)) takhle složitě rekurzivně zapisovat nemusí, stačí napsat \texttt{[a,b,c...]}, resp \texttt{[Začátek | Tělo]}, kde začátek je výčet prvků (ne seznam) stojících na začátku definovaného seznamu, a tělo je (rekurzivně) seznam (např. \texttt{[a,b,c|[]]}).
+
+Aritmetické výrazy se samy o sobě nevyhodnocují, dokud jim to někdo nepřikáže. Takže např. predikát \texttt{5*1 = 5} by selhal. Vyhodnocení se vynucuje pomocí operátoru \emph{is} (pomocí = by došlo jen k unifikaci) - není to ale ekvivalent \uv{\texttt{=}} z jiných jazyků. Tento operátor se musí použít na nějakou volnou proměnnou a aritmetický výraz, s jehož hodnotou bude tato proměnná dále svázaná (jako např. \texttt{X is 5*1,X=5} uspěje).
+
+Důležitý je i \emph{operátor řezu} (značíme vykřičníkem). Tento predikát okamžitě uspěje, ale při tom zakáže backtrackování přes sebe zpět. (\texttt{prvek1(X,[X|L]):-!. prvek1(X,[\_|L]):-prvek1(X,L).} - je-li prvek nalezen, je zakázán návrat = najde jen první výskyt prvku). Dále je důležitá negace (\texttt{not(P):- P, !, fail. not(P).} -- uspěje, pokud se nepodaří cíl P splnit). Řez tedy umožňuje ovlivňovat efektivitu prologovských programů, definovat vzájemně se vylučující použití jednotlivých klauzulí procedury, definovat negaci atd.
+
+\subsubsection*{Haskell}
+Haskell je standardizovaný funkcionální programovací jazyk používající zkrácené vyhodnocování, pojmenovaný na počest logika Haskella Curryho. Byl vytvořen v 80. letech 20. století. Posledním polooficiálním standardem je Haskell 98, který definuje minimální a přenositelnou verzi jazyka využitelnou k výuce nebo jako základ dalších rozšíření. Jazyk se rychle vyvíjí, především díky svým implementacím Hugs a GHC (viz níže).
+
+Haskell je jazyk dodržující \emph{referenční transparentnost}. To, zjednodušeně řečeno, znamená, že tentýž (pod)výraz má na jakémkoliv místě v programu stejnou hodnotu. Mezi další výhody tohoto jazyka patří přísné \emph{typování proměnných}, které programátorovi může usnadnit odhalování chyb v programu. Haskell plně podporuje práci se soubory i standardními vstupy a výstupy, která je ale poměrně složitá kvůli zachování referenční transparentnosti. Jako takový se Haskell hodí hlavně pro algoritmicky náročné úlohy minimalizující interakci s uživatelem.
+
+\medskip\textbf{Příklady}:
+
+Definice funkce faktoriálu:
+\begin{verbatim}
+fac 0 = 1
+fac n = n * fac (n - 1)
+\end{verbatim}
+
+Jiná definice faktoriálu (používá funkci product ze standardní knihovny Haskellu):
+\begin{verbatim}
+fac n = product [1..n]
+\end{verbatim}
+
+Naivní implementace funkce vracející n-tý prvek Fibonacciho posloupnosti:
+\begin{verbatim}
+fib 0 = 0 
+fib 1 = 1 
+fib n = fib (n - 2) + fib (n - 1)
+\end{verbatim}
+
+Elegantní zápis řadícího algoritmu quicksort:
+\begin{verbatim}
+qsort [] = []
+qsort (pivot:tail) = 
+  qsort left ++ [pivot] ++ qsort right
+  where
+    left = [y | y <- tail, y < pivot]
+    right = [y | y <- tail, y >= pivot]
+\end{verbatim}
+
+TODO: popsat stráže (případy, otherwise), seznamy, řetězení, pattern matching u parametrů funkcí, lok. definice (where, let) -- patří to sem?
+
+\subsubsection*{Lisp}
+
+Lisp je funkcionální programovací jazyk s dlouhou historií. Jeho název je zkratka pro List processing (zpracování seznamů). Dnes se stále používá v oboru umělé inteligence. Nic ale nebrání ho použít i pro jiné účely. Používá ho například textový editor Emacs, GIMP či konstrukční program AutoCAD.
+
+Další jazyky od něj odvozené jsou například Tcl, Smalltalk nebo Scheme.
+
+
+\medskip\textbf{Syntaxe}:
+Nejzákladnějším zápisem v Lispu je seznam. Zapisujeme ho jako:
+\begin{verbatim}
+(1 2 "ahoj" 13.2)
+\end{verbatim}
+
+Tento seznam obsahuje čtyři prvky:
+\begin{pitemize}
+	\item celé číslo 1
+	\item celé číslo 2
+	\item text \uv{ahoj}
+	\item reálné číslo 13,2
+\end{pitemize}
+
+Jde tedy o uspořádanou čtveřici. Všimněte si, že závorky nefungují tak jako v matematice, ale pouze označují začátek a konec seznamu. Seznamy jsou v Lispu implementovány jako binární strom degenerovaný na jednosměrně vázaný seznam. Co se seznamem Lisp udělá, záleží na okolnostech.
+
+\textbf{Příkazy}: Příkazy píšeme také jako seznam, první prvek seznamu je však název příkazu. Například sčítání provádíme příkazem +, což interpreteru zadáme takto:
+\begin{verbatim}
+(+ 1 2 3)
+\end{verbatim}
+Interpretr odpoví 6.
+
+\textbf{Ukázka kódu}:
+Program hello world lze zapsat několika způsoby. Nejjednoduší vypadá takto:
+\begin{verbatim}
+(format t "Hello, World!")
+\end{verbatim}
+
+Funkce se v Lispu definují pomocí klíčového slova defun:
+\begin{verbatim}
+(defun hello ()
+        (format t "Hello, World!")
+)
+(hello)
+\end{verbatim}
+
+Na prvních dvou řádcích je definice funkce hello, na třetím řádku je tato funkce svým jménem zavolána.
+Funkcím lze předávat i argumenty. V následujícím příkladu je ukázka funkce fact, která vypočítá faktoriál zadaného čísla:
+\begin{verbatim}
+(defun fact (n)
+        (if (= n 0)
+                1
+                (* n (fact (- n 1)))
+        )
+)
+\end{verbatim}
+Pro výpočet faktoriálu čísla 6 předáme tuto hodnotu jako argument funkci fact:
+\begin{verbatim}
+(fact 6)
+\end{verbatim}
+Návratovou hodnotou funkce bude hodnota 720.
+
+\subsubsection*{Logické programování}
+TODO (není součástí otázek pro obor Programování)

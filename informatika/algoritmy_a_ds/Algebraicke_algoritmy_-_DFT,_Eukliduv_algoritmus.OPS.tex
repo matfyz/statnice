@@ -1,0 +1,83 @@
+\subsection{Algebraické algoritmy}
+
+\subsubsection*{Diskrétní Fourierova Transformace (DFT)}
+
+Diskrétní Fourierova transformace se používá, chceme-li zachytit hodnotu (přepokládejme, že $2\pi$-periodické) funkce na intervalu $[-\pi,\pi]$ v nějakých $n$ bodech. To je dobré např. pro vzorkování elektrického nebo zvukového signálu a jiné operace. Pro nějakou funkci nám tak stačí znát vektor dimenze $n$ (a $n$ je počet vzorků na $2\pi$).
+
+Je to založeno na Fourierových řadách -- dá se ukázat, že funkce $1$, $\cos kx$ a $\sin kx$ pro $k\geq 1$ tvoří ortogonální bázi prostoru spojitých funkcí na intervalu $[-\pi,\pi]$. Protože potřebujeme znát jenom konečný počet vzorků, stačí nám jen konečný podprostor s konečnou bází. Máme-li rozklad nějaké $2\pi$-periodické funkce do Fourierovy řady $f(x)= c + \sum_{k=1}^\infty a_k \sin k x + \sum_{k=1}^\infty b_k \cos k x$, dá se jednoduše ukázat, že pro hodnoty v bodech $-\pi,-\pi + \frac{\pi}{n}, -\pi + 2\frac{\pi}{n}, \dots, -\pi + (n-1)\frac{\pi}{n}$ stačí sumy do $\frac{n}{2}-1$ pro sinusové řady a $\frac{n}{2}$ pro kosinové -- vyšší koeficienty v takových bodech jsou nulové. Takže $n$ hodnot funkce $f$ na intervalu $[-\pi,\pi]$ lze reprezentovat vektorem $n$ čísel v bázi $1,\cos x,\dots,\cos \frac{n}{2}x,\sin x,\dots,\sin(\frac{n}{2}-1)x$. 
+
+Jednodušeji to lze ukázat v komplexních číslech -- je známo, že 
+$$e^{ix} = \cos x+ i\cdot\sin x$$
+takže vektor hodnot funkce lze ekvivalentně reprezentovat v bázi $e^{i\cdot 2\pi\frac{k}{n}},\ k\in\{0,\dots,n\}$, neboť všechny vektory původní báze lze zapsat jako lineární kombinace vektorů nové báze. Definujeme hodnotu
+$$\omega := e^{i\cdot 2\pi\frac{1}{n}} \textrm{ (a to je vlastně \uv{něco jako} }\sqrt[n]{1}\textrm{)}$$
+vidíme, že $\omega^k$ je $n$-periodická funkce, takže nezáleží na hranicích sumace ($-\frac{n}{2}+1,\dots,\frac{n}{2}$ je ekvivalentní $0,\dots,n-1$). 
+Potom se posloupnost $n$ komplexních čísel $\alpha_0, \dots, \alpha_{n-1}$ (např. hodnot naší funkce v bodech $-\pi + \frac{2\pi k}{n},\ k\in\{0,\dots,n-1\}$) transformuje na posloupnost $n$ komplexních čísel $A_0, \dots, A_{n-1}$ (do báze $\omega^i,\ i\in\{0,\dots,n-1\}$) použitím vzorečku:
+$$A_j = \sum_{k=0}^{n-1} \alpha_k \omega^{kj}  \;\;\;\;\; j = 0, \dots, n-1$$
+Tento převod označujeme jako \emph{diskrétní Fourierovu transformaci}.
+
+\emph{Inverzní diskrétní Fourierova transformace} je opačný problém -- z $n$ Fourierových koeficientů $A_k$ chceme zpětně vypočítat hodnoty funkce $\alpha_k$ v bodech $-\pi + \frac{2\pi k}{n},\ k\in\{0,\dots,n-1$. Platí:
+
+$$\alpha_j = \frac{1}{n}\sum_{k=0}^{n-1} A_k \omega^{-kj}  \;\;\;\;\; j = 0, \dots, n-1$$
+
+\medskip
+\begin{dukaz}
+Definujeme matici $W: W_{p,q}=\omega^{pq}$, potom $A = W\alpha$ (vektorově), takže $a = W^{-1}A$. Definujeme $W': W'_{p,q}=\omega^{-pq}$ a dokážeme, že $W\cdot W'= n\cdot I_n$. Máme
+$$(W\cdot W')_{p,q} = \sum_{s=0}^{n-1} W_{p,s}\cdot W'_{s,q} = \sum_{s=0}^{n-1} \omega^{(p-q)\cdot s}$$
+a potom pro
+\begin{pitemize}
+    \item $p = q$ platí $\sum_{s=0}^{n-1}\omega^{(p-q)\cdot s} = \sum_{s=0}^{n-1}\omega^0 = \sum_{s=0}^{n-1} 1 = n$
+    \item $p\neq q$ definujeme
+    $$Q:= \omega^{p-q}$$
+    a dostaneme geometrickou posloupnost $Q^0 + Q^1 +\dots +Q^{n-1}$, pro jejíž součet prvních $n$ členů platí vzorec
+    $$ \sum_{s=0}^{n-1} Q^s = Q^0 \frac{Q^{n-1+1} - 1}{Q-1} = 1\frac{1-1}{Q-1}= 0 $$
+\end{pitemize}
+\end{dukaz}
+
+
+\begin{algoritmusN}{Fast Fourier transform (FFT)}
+Fast Fourier transform je algoritmus pro počítání diskrétní Fourierovy transformace vektorů rozměru $n=2^k$ v čase $\Theta(n\log n)$. Mám-li matici Fourierových koeficientů $W, W_{p,q} = \alpha_q \omega^{pq}$, mohu ji rozdělit na liché a sudé sloupce, u sudých vyjádřit $\omega^q$ a pro spodní polovinu řádek (se sumami jdoucími po dvou) mohu snížit exponent u $\omega$ o $n/2$ (díky periodicitě) a vyjdou stejná čísla:
+\begin{align*}
+    A_j &= \sum_{k=0}^{n-1} \alpha_k \omega^{kj}\ &j\in\{0,\dots,n-1\}\\
+    \\
+    A_j &= \sum_{k=0}^{\frac{n}{2}-1} \alpha_{2k}\omega^{2kj} + \omega^j \sum_{k=0}^{\frac{n}{2}-1} \alpha_{2k+1}\omega^{2kj}\ &j\in\{0,\dots,\frac{n}{2}-1\}\\    
+    A_{j+\frac{n}{2}} &= \sum_{k=0}^{\frac{n}{2}-1} \alpha_{2k}\omega^{2k(j+\frac{n}{2})} + \omega^{(j+\frac{n}{2})} \sum_{k=0}^{\frac{n}{2}-1} \alpha_{2k+1}\omega^{2k(j+\frac{n}{2})}\ &j\in\{0,\dots,\frac{n}{2}-1\}\\
+\end{align*}
+
+\textit{Poznámka: pro rychlé a jednoduché pochopení těch blektů co jsem tu napsal doporučuji Kučerův program Algovision}\\ \texttt{http://kam.mff.cuni.cz/\~{}ludek/AlgovisionPage.html} \\ \textit{DFT je tam názorně a přehledně ukázaná.}
+\end{algoritmusN}
+
+TODO: Související obecné \uv{věci} o Fourierově transofrmaci, použití při spektrální analýze (Nyquist-Shannon sampling theorem), datové kompresi (Diskrétní kosinová transformace), násobení polynomů (+násobení velkých integerů).
+
+\subsubsection*{Euklidův algoritmus}
+
+Euklidův algoritmus je postup (algoritmus), kterým lze určit největšího společného dělitele dvou přirozených čísel, tzn. nejvyšší číslo takové, že beze zbytku dělí obě čísla.
+
+Algoritmus (pomocí rekurze):
+\begin{verbatim}
+function gcd(a, b)
+    if b = 0 return a
+    else return gcd(b, a mod b)
+\end{verbatim}
+
+Algoritmus (pomocí iterace):
+\begin{verbatim}
+function gcd(a, b)
+    while b ≠ 0
+        t := b
+        b := a mod b
+        a := t
+    return a
+\end{verbatim}
+
+Algoritmus (jednoduchý ale neefektivní):
+\begin{verbatim}
+function gcd(a, b)
+    while b ≠ 0
+        if a > b
+            a := a - b
+        else
+            b := b - a
+    return a
+\end{verbatim}
+
+Doba provádění programu je závislá na počtu průchodů hlavní smyčkou. Ten je maximální tehdy, jsou-li počáteční hodnoty u a v rovné dvěma po sobě jdoucím členům Fibonacciho posloupnosti. Maximální počet provedených opakování je tedy $\log_\phi (3-\phi)v \approx 4{,}785 \log v + 0{,}6273 = O(\log v)$. Průměrný počet kroků pak je o něco nižší, přibližně $\frac{12 \ln 2}{\pi^2}\log v \approx 1{,}9405 \log v = O(\log v)$.

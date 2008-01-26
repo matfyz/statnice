@@ -1,0 +1,88 @@
+\subsection{Vícevrstevné architektury}
+
+TODO: předělat, tohle je jen copy \& paste z Wiki a slajdů VUT Brno
+
+
+\begin{obecne}{Multitier architecture}
+Multi-tier architecture (often referred to as n-tier architecture) is a client-server architecture, originally designed by Jonathon Bolster of Hematites Corp, in which an application is executed by more than one distinct software agent. For example, an application that uses middleware to service data requests between a user and a database employs multi-tier architecture. The most widespread use of "multi-tier architecture" refers to three-tier architecture
+\end{obecne}
+
+
+\begin{obecne}{Základ kooperativního zpracování}
+Faktory ovlivňující architekturu:
+\begin{pitemize}
+\item požadavky na interoperabilitu zdrojů 
+\item růst velikosti zdrojů 
+\item růst počtu klientů 
+\end{pitemize}
+Typy služeb v databázové technologii:
+\begin{pitemize}
+\item prezentační služby: příjem vstupu, zobrazování výsledků 
+\item prezentační logika: řízení interakce (hierarchie menu, obrazovek)
+\item logika aplikace: operace realizující algoritmus aplikace
+\item logika dat: podpora operací s daty (integritní omezení, ...)
+\item datové služby: akce s databází (definice a manipulace, transakční zpracování, ...) 
+\item služby ovládání souborů: vlastní V/V operace
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Varianty architektury klient-server}
+\begin{pitemize}
+    \item \textbf{Klient-server se vzdálenými daty} \\
+Na serveru jsou jen datové služby a ovládání souborů, zbytek zajišťují klienti. Problémem jsou velké nároky na přenosovu kapacitu od klienta k serveru a HW zatížení klientských stanic
+    \item \textbf{Klient-server se vzdálenou prezentací} \\
+Na klientské stanici jsou jen prezentační služby a prezentační logika, zbytek je na serveru. Nevýhodou je právě zátěž na HW serveru.
+    \item \textbf{Klient-server s rozdělenou logikou} \\
+Část logiky aplikací i logiky dat je na serveru a část zpracovává klient. Jde o vyvážené řešení, které má ale horší rozšířitelnost.
+    \item \textbf{Třívrstvá architektura} \\
+Zahrnuje dva servery -- aplikační a databázový, spojené rychlou linkou. Z hlediska zátěže a rozšířitelnosti nejvýhodnější.
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Přínos architektury klient/server a třívrstvé architektury}
+\begin{pitemize}
+ \item pružnější rozdělení práce \item lze použít horizontální(více serverů) i vertikální(výkonnější server) škálování \item aplikace mohou běžet na levnějších zařízeních \item na klientských stanicích lze používat oblíbený prezentační software \item standardizovaný přístup umožňuje zpřístupnit další zdroje \item centralizace dat podporuje účinnější ochranu \item u třívrstvé architektury centralizace údržby aplikace, možnost využití sdílených objektů (business objects) několika aplikacemi
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Podpora pro rozdělení zátěže v architektuře klient/server}
+\begin{pitemize}
+ \item deklarativní integritní omezení \item databázové triggery \item uložené podprogramy
+\end{pitemize}
+\end{obecne}
+
+
+\begin{obecne}{Three-tier architecture}
+'Three-tier' is a client-server architecture in which the user interface, functional process logic ("business rules"), data storage and data access are developed and maintained as independent modules, most often on separate platforms. The term "three-tier" or "three-layer", as well as the concept of multitier architectures, seems to have originated within Rational Software.
+
+The three-tier model is considered to be a software architecture and a software design pattern.
+
+Apart from the usual advantages of modular software with well defined interfaces, the three-tier architecture is intended to allow any of the three tiers to be upgraded or replaced independently as requirements or technology change. For example, a change of operating system from Microsoft Windows to Unix would only affect the user interface code.
+
+Typically, the user interface runs on a desktop PC or workstation and uses a standard graphical user interface, functional process logic may consist of one or more separate modules running on a workstation or application server, and an RDBMS on a database server or mainframe contains the data storage logic. The middle tier may be multi-tiered itself (in which case the overall architecture is called an "n-tier architecture").
+
+The 3-Tier architecture has the following 3-tiers:
+\begin{pitemize}
+    \item Presentation Tier
+    \item Application Tier/Logic Tier/Business Logic Tier
+    \item Data Tier
+\end{pitemize}
+\end{obecne}
+
+
+\begin{obecne}{Web Development usage}
+
+In the Web development field, three-tier is often used to refer to Websites, commonly Electronic commerce websites, which are built using three tiers:
+\begin{pitemize}
+    \item A front end Web server serving static content
+    \item A middle dynamic content processing and generation level Application server, for example Java EE platform.
+    \item A back end Database, comprising both data sets and the Database management system or RDBMS software that manages and provides access to the data.
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Other Considerations}
+
+To further confuse issues, the particular data transfer method between the 3 tiers must also be considered. The data exchange may be file-based, client-server, event-based, etc. Protocols involved may include one or more of SNMP, CORBA, Java RMI, Sockets, UDP, or other proprietary combinations/permutations of the above types and others. Typically a single "middle-ware" implementation of a single protocol is chosen as the "standard" within a given system, such as J2EE (which is Java specific) or CORBA (which is language/OS neutral.) The importance of the decision of which protocol is chosen affects such issues as the ability to include legacy applications/libraries, performance, maintainability, etc. When choosing a "middle-ware protocol" (not to be confused with the "middle-of-the-three-tiers") engineers should not be swayed by "public opinion" about a protocol's modern-ness, but should consider the technical benefits and suitability to solve a problem. (for example CGI is very old and "out of date" but is still quite useful and powerful, so is shell scripting, and UDP for that matter)
+
+Ideally the high-level system abstract design is based on business rules and not on the front-end/back-end technologies. The tiers should be populated with functionality in such a way as to minimize dependencies, and isolate functionalities in a coherent manner - knowing that everything is likely to change, and changes should be made in the fewest number of places, and be testable.
+\end{obecne}

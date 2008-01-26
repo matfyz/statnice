@@ -1,0 +1,169 @@
+\subsection{Synchronizační primitiva, vzájemné vyloučení}
+
+\subsubsection*{Pojmy}
+
+\emph{Race conditions}: výsledek operace závisí na plánování
+
+\emph{Vzájemné vyloučení (mutual exclusion)}: kritickou operaci provádí nejvýše jeden proces. Podmínky vzájemného vyloučení:
+\begin{penumerate}
+	\item Žádné dva procesy nemohou být najednou ve stejné kritické sekci
+	\item Nemohou být učiněny žádné předpoklady o rychlosti nebo počtu CPU
+	\item Žádný proces mimo kritickou sekci nesmí blokovat jiný proces
+	\item Žádný proces nesmí čekat nekonečně dlouho v kritické sekci
+\end{penumerate}
+
+\emph{Kritická sekce}: část programu, kde se provádí kritická operace
+
+Metody dosáhnutí vzájemného vyloučení: aktivní čekání (busy waiting) a pasivní čekání/blokování.
+
+\subsubsection*{Aktivní čekání}
+\emph{Vlastnosti}: spotřebovává čas procesoru, vhodnější pro předpokládané krátké doby čekání, nespotřebovává prostředky OS, rychlejší.
+
+Je možné použít např. \emph{zakázání přerušení} (vhodné pro jádro OS). Používání \emph{zámků} nefunguje:
+\begin{verbatim}
+int lock;
+void proc(void) {
+  for (;;) {
+    nekritická_sekce();
+    while (lock != 0);
+    lock = 1;
+    kritická_sekce();
+    lock = 0;
+  }
+}
+\end{verbatim}
+ale \emph{důsledné střídání} ano (to ale porušuje podmínku 3.)
+
+\begin{verbatim}
+int turn = 0;
+
+void p1(void)                void p2(void)
+{                            {
+  for (;;) {                   for (;;) {
+    while (turn != 0);           while (turn != 1);
+    kritická_sekce();            kritická_sekce();
+    turn = 1;                    turn = 0;
+    nekritická_sekce();          nekritická_sekce();
+  }                            }
+}                            }
+\end{verbatim}
+
+\emph{Petersonovo řešení}:
+\begin{verbatim}
+#define N 2                   /* počet procesů */
+ 
+int turn;
+int interested[N];            /* kdo má zájem */
+ 
+void enter_region(int proc) { /* proc: kdo vstupuje */
+int other;
+ 
+  other = 1-proc;             /* číslo opačného procesu */
+  interested[proc] = TRUE;    /* mám zájem o vstup */
+  turn = proc;                /* nastav příznak */
+  while (turn == proc && interested[other] == TRUE);
+}
+ 
+void leave_region(int proc) { /* proc: kdo vystupuje */
+  interested[proc] = FALSE;   /* už odcházím */
+}
+\end{verbatim}
+ 
+\emph{Instrukce TSL} (spin-lock) - je nutné aby ji podporoval HW (všechny současné procesory nějakou mají):
+\begin{verbatim}
+enter_region:
+    tsl   R,lock           ; načti zámek do registru R a
+                           ; nastav zámek na 1
+    cmp   R,#0             ; byl zámek nulový?
+    jnz   enter_region     ; byl-li nenulový, znova
+    ret                    ; návrat k volajícímu - vstup do
+                           ; kritické sekce
+ leave_region:
+    mov   lock,#0          ; ulož do zámku 0
+    ret                    ; návrat k volajícímu
+\end{verbatim}
+
+\subsubsection*{Pasivní čekání}
+\emph{Vlastnosti}: proces je ve stavu blokován, vhodné pro delší doby čekání, spotřebovává prostředky OS, pomalejší.
+
+Postup používající Sleep/Wakeup (implementovány OS, atomické operace - sleep uspí volající proces, wakeup probudí udaný proces) nefunguje (viď Problém producent/konzument).
+
+\textbf{Semafory}... Sémantika:
+\begin{verbatim}
+Down(Semaphore s) {
+  wait until s > 0, then s := s-1;
+  /* must be atomic once s > 0 is detected */
+}
+\end{verbatim}
+(pokud je čítač $>$ 0, sníží čítač o 1 a pokračuje dál; pokud je čítač $=$ 0, operace DOWN se zablokuje a proces je přidán do fronty čekající na tomto semaforu)
+
+\begin{verbatim}
+Up(Semaphore s) {
+  s := s+1;   /* must be atomic */
+}
+\end{verbatim}
+(pokud je fronta neprázdná, vybere libovolný proces a ten probudí za DOWN; jinak zvětší čítač o 1)
+
+\begin{verbatim}
+Init(Semaphore s, Integer v) {
+  s := v;
+}
+\end{verbatim}
+
+Je možné \uv{používať} aj sémantiku, kde sa hodnota vždy zníži/zvýši o 1 (a je možné sa teda dostať do záporných hodnôt semafóru)... Špeciálny (binárny) typ semaforu, kde sú povolené len hodnoty 0 a 1 (v Up sa miesto $s:=s+1$ volá $s:=1$) sa nazýva \emph{mutex} a používa sa na riadenie prístupu k jednej premennej.
+
+\textbf{Monitory}
+\par Implementovány překladačem, lze si představit jako třídu C++ (všechny proměnné privátní, funkce mohou být i veřejné), vzájemné vyloučení v jedné instanci (zajištěno synchronizací na vstupu a výstupu do/z veřejných funkcí, synchronizace implementována blokovacím primitivem OS). ???TODO
+
+\textbf{Zprávy}
+\par Operace SEND a RECEIVE, zablokování odesílatele/příjemce, adresace proces/mailbox, rendez-vous...
+
+\textbf{RWL - read-write lock}, \textbf{bariéry}...
+
+Ekvivalence primitiv - pomocí jednoho blokovacího primitiva lze implementovat jiné blokovací primitivum.
+
+Rozdíly mezi platformami: Windows - jednotné funkce pro pasivní čekání, čekání na více primitiv, timeouty. Unix - OS implementuje semafor, knihovna pthread.
+
+\subsubsection*{Klasické synchronizační problémy}
+\textbf{Problém producent/konzument}
+\par Producent vyrába predmety, konzument ich spotrebúva. Medzi nimi je sklad pevnej veľkosti (N). Konzument nemá čo spotrebúvať ak je sklad prázdny; producent prestane vyrábať, ak je sklad plný. 
+
+\begin{verbatim}
+int N = 100;
+int count = 0;
+void producer(void) {
+    int item;
+    while(TRUE) {
+        produce_item(&item);
+        if(count==N) sleep ();
+        enter_item(item);
+        count++;
+        if(count == 1) wake(consumer);
+    }
+}
+void consumer(void) {
+    int item;
+    while(TRUE) {
+        if(count==0) sleep ();
+        remove_item(&item);
+        count--;
+        if(count==N-1)
+            wake(producer);
+        consume_item(&item);
+    }
+}
+\end{verbatim}
+
+\begin{penumerate}
+	\item Buffer je prázdny, a konzument práve prečítal count, aby zistil, či je rovný nule
+	\item Preplánovanie na producenta
+	\item Producent vytvorí item a zvýši count
+	\item Producent zistí, či je count rovný jednej. Zistí že áno, čo znamená že konzument bol predtým zablokovaný (pretože muselo byť 0), a zavolá wakeup
+	\item Teraz môže dôjsť k zablokovaniu: konzument sa uspí, pretože si myslí, že nemá čo zobrať; producent bude chvíľu produkovať a dôjde "preplneniu" $\Rightarrow$ uspí sa; spí producent aj konzument :o) 
+\end{penumerate}
+
+\textbf{Problém obědvajících filosofů}
+\par Pět filosofů sedí okolo kulatého stolu. Každý filosof má před sebou talíř špaget a jednu vidličku. Špagety jsou bohužel slizké a je třeba je jíst dvěma vidličkami. Život filosofa sestává z období jídla a období přemýšlení. Když dostane hlad, pokusí se vzít dvě vidličky, když se mu to podaří, nají se a vidličky odloží.
+
+\textbf{Problém ospalého holiče}
+\par Holič má ve své oficíně křeslo na holení zákazníka a pevný počet sedaček pro čekající zákazníky. Pokud v oficíně nikdo není, holič se posadí a spí. Pokud přijde první zákazník a holič spí, probudí se a posadí si zákazníka do křesla. Pokud přijde zákazník a holič už střihá a je volné místo v čekárně, posadí se, jinak odejde.

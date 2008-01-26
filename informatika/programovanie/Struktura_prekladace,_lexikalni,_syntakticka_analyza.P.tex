@@ -1,0 +1,192 @@
+\subsection{Struktura překladače, lexikální, syntaktická analýza}
+
+Zdroj: poznámky a slidy z přednášek Principy překladačů Dr. J. Yaghoba
+
+\subsubsection*{Překladače}
+
+\begin{definiceN}{Překladač}
+Formální definice: \emph{překladač} je zobrazení $L_{in}\to L_{out}$ pro nějaké dva jazyky $L_{in},L_{out}$, vstupní generovaný gramatikou $G_{in}$, výstupní generovaný gramatikou $G_{out}$ nebo přijímaný automatem $A_{out}$. Je to takové zobrazení, kde $\forall w\in L_{in}\ \exists w'\in L_{out}$. Pro $w\notin L_{in}$ zobrazení neexistuje.
+
+Neformálně jde o stroj, který nějaký zdrojový kód (v nějakém zdrojovém jazyce) převádí na cílový kód (v cílovém jazyce) a případně vypisuje chybová hlášení.
+
+Definice neříká nic o třídách jazyků a gramatik, ve kterých překladač operuje. Běžné programovací jazyky jsou \uv{plus minus} bezkontextové -- nebo se na bezkontextové převádějí, aby byly rozpoznatelné něčím prakticky implementovatelným (tedy zásobníkovým automatem, Turingovy stroje jsou poněkud složité).
+\end{definiceN}
+
+
+\begin{priklady}
+Příklady použití překladačů:
+\begin{pitemize}
+    \item (překvapivě) překlad programů, psaných v nějakém vyšším programovacím jazyce, do strojového kódu cílové platformy
+    \item syntax-highlighting (většinou lexikálně řízený)
+    \item pretty printer
+    \item statické kontroly programu (hledání chyb bez spouštění programů)
+    \item interpretery (např. skriptovacích jazyků, run-time moduly pro interpretované jazyky jako je Java)
+    \item databázové stroje, dotazovací jazyky
+\end{pitemize}
+\end{priklady}
+
+
+\begin{obecne}{Překlad programu}
+Program (pro jednoduchost jediný modul) se 
+\begin{penumerate}
+    \item ze zdrojového kódu v nějakém programovacím jazyce \emph{preprocesorem} (což je taky překladač, upravující zdrojový kód na textové úrovni) převede na textový soubor (připravený pro další překlad),
+    \item \emph{překladačem} se převede dál do assemblerového kódu (jde o kód v jiném jazyce, mnohem bližším cílové architektuře -- jde o textový popis instrukcí procesoru),
+    \item \emph{assemblerem} se převádí na \uv{object-file} -- modul, ve kterém už jazyk odpovídá strojovému kódu cílové CPU,
+    \item nakonec \emph{linker}, resp. \emph{loader} připojí další informace a vytvoří finální spustitelný kód.
+\end{penumerate}
+\end{obecne}
+
+\begin{obecne}{Fáze překladu překladačem}
+Tradičně se překladače dělí na dvě fáze -- \emph{front-end} a \emph{back-end}. První z nich je zaměřená hlavně na analýzu zdrojového kódu po lexikální a syntaktické stránce a její převod do nějakého mezikódu, tj. přípravu pro back-end. Úkolem back-endu je pak z předpřipravené formy vygenerovat finální kód v cílovém jazyce.
+
+První fáze se dále dělí na tyto části:
+\begin{penumerate}
+    \item \emph{lexikální analýza} -- převádí vstupní text do binární formy, na sled identifikátorů a konstant; hodnoty objektů ukládá do spec. tabulek 
+    \item \emph{syntaktická analýza} -- abstraktní část, nezajímá se o hodnoty a význam elementů jazyka, úkolem je rozpoznat, zda vstupní slovo (vstup) patří do jazyka; v dnešních překladačích staví tzv. \uv{syntaktický strom} kódu
+    \item \emph{sémantická analýza} -- zkoumá sémantiku (význam, smysl) elementů jazyka (např. u sčítání proměnných kontrola typů, používání definovaných proměnných atd.)
+    \item \emph{generování mezikódu} -- úzce svázané se sémantickou analýzou, načítá hodnoty lexikálních elementů z tabulek a vytváří binární formu kódu, v ideálním případě nezávislou na vstupním ani výstupním jazyce
+    \item \emph{optimalizace nad mezikódem} -- díky překladu do nějakého abstraktního mezikódu lze nad ním potom provádět různé obecné (teoreticky dokázané) optimalizace, aby byl výsledný kód ekvivalentní s původním, ale rychlejší při provádění cílovým strojem
+\end{penumerate}
+
+Backend má na starosti hlavně
+\begin{penumerate}
+    \item \emph{generování kódu} -- vytváří už kód pro konkrétní cílový stroj / architekturu / CPU. 
+    \item \emph{optimalizace nízkoúrovňového kódu} -- optimalizace, zaměřené na vlastnosti konkrétních CPU a cílový jazyk (tj. takové, které nad obecným mezikódem s vysokou abstrakcí provést nejde)
+\end{penumerate}
+
+Všechny fáze překladače (většinou, když se pominou třeba staší verze GCC a podobně) sdílejí jednotné \emph{tabulky symbolů} -- hodnot lexikálních elementů a jiných věcí a obsluhu chyb. Překladač musí rozpoznat všechny chyby, ale bez velké časové režie, navíc nesmí mít falešné poplachy. Taky by neměl vyrábět chyby sám ;-).
+
+V dřívějších překladačích se vstupní kód procházel několikrát, protože nebylo technicky možné ho udržet celý v paměti. Dnes je potřeba většinou jen jeden přechod, ale někdy je nutných víc (např. dopředné skoky v assembleru -- nevím ještě jak daleko skáču).
+\end{obecne}
+
+\begin{poznamkaN}{Syntax-driven compilation}
+Nejdůležitější částí dnešních překladačů bývá syntaktická analýza; provádí se často najednou se sémantickou analýzou a generováním mezikódu -- vše mívá na starosti jediný zásobníkový automat. Navíc si často sám vyvolává lexikální analýzu, ta je jím tedy řízená, takže se taková technika označuje \emph{syntaxí řízený překlad}.
+\end{poznamkaN}
+
+\begin{obecne}{Automatické generování (částí) překladače}
+Protože dnešní programovací jazyky jsou relativně složité (gramatiky které je generují mají řádově stovky přepisovacích pravidel), konstrukce automatů přijímajících takové jazyky \uv{ručně} je příliš náročná. Proto existují nástroje, které generují některé části překladače -- generátor lexikálních analyzátorů -- \uv{scannerů} -- (popíšu lexikální elementy a struktury a co s nimi dělá a vypadne mi analyzátor jako kód v jazyce C) je např. \emph{Flex}, pro výrobu parserů (syntaktických analyzátorů) z popisu gramatiky slouží např. \emph{Bison}, \emph{Coco/R} nebo \emph{ANTLR}. Některé známé překladače mají ale i tak ručně generované parsery (GCC).
+
+Existují i generátory generátorů kódu (ale jejich méně, protože to je dost složité) -- pro popis výstupního CPU dostanu z instrukčního mezikódu kód přímo pro něj. Instrukční mezikód může být pro více architektur úplně stejný. Příkladem tohoto je \emph{Mono JIT Compiler}.
+\end{obecne}
+
+
+\begin{obecne}{Mezikód}
+(Vysokoúrovňový) \emph{mezikód} je vlastně jakési rozhraní pro přechod (rozdělení i spolupráci) mezi front-endem a back-endem. Jde o binární reprezentaci zdrojového kódu, má být nezávislý na vstupním i výstupním jazyce. Pokud tomu tak je, je možné např. kombinovat různé back-endy a front-endy, jako tomu je u GCC (více back-endů pro 1 front-end) nebo .NET (více front-endů). Většinou ale je mezikód o něco posunutý buď více k závislosti na back-endu nebo na front-endu.
+
+Mezikód je možné reprezentovat několika způsoby -- např. syntaktickým stromem (vhodné v paměti), postfixovým zápisem (linearizace stromu) nebo tříadresovým kódem (lineární, sekvence příkazů $x:= y\ \mathrm{op}\ z$).
+\end{obecne}
+
+\begin{obecne}{Graf toku řízení}
+Graf toku řízení je graf, vytvářený překladači (větš. pro 1 funkci) za účelem optimalizací a také generování výsledného kódu. Uzly -- \emph{základní bloky} -- jsou nepřerušované výpočty (bez instrukcí skoků a bez cílů skoků uvnitř bloků), z nichž první instrukce bývá cílem skoku nebo vstupním bodem funkce. Hrany pak reprezentují skoky -- pro podmíněné skoky a case příkazy pak z uzlů vede více hran.
+\end{obecne}
+
+\subsubsection*{Lexikální analýza}
+
+\begin{definiceN}{Lexikální analýza}
+Lexikální analýza je část překladače, zodpovědná za rozpoznávání jednotlivých nedělitelných elementů zdrojového jazyka (např. klíčová slova, identifikátory, závorky atd.) a jejich převod na nějakou binární reprezentaci, vhodnou pro syntaktickou analýzu (např. uložení názvů identifikátorů do tabulek symbolů). V zásadě jde o rozpoznávání regulárních výrazů. Historicky šlo o provedení analýzy na celém zdrojáku a přeposlání do další fáze, dnes je většinou ovládaná ze syntaktické analýzy (opakované volání \uv{vrať další element}). Slouží také ke zvětšení \uv{výhledu} dalších fází (jedním elementem přestává být jeden znak, je jím jeden element vstupního jazyka).
+\end{definiceN}
+
+\begin{definiceN}{Token, pattern}
+\emph{Token} je výstup lexikální analýzy -- jeden nedělitelný element zdrojového jazyka. Je zároveň vstupem syntaktické analýzy (tam se nazývá \emph{terminál}). Lexikální analýza uvažuje množinu řetězců, které produkují pro syntaktickou analýzu stejný token (např. díky ignore-caseovosti nebo jako důsledek sloučení všech řetězcových nebo číselných konstant pod stejný token, protože s nimi je dále nakládáno bez ohledu na hodnotu). Množina řetězců, produkujících daný token, se popisuje urč. pravidly -- \emph{patternem}, kde se obvykle užívá regulárních výrazů.
+\end{definiceN}
+
+\begin{definiceN}{Lexém}
+\emph{Lexém} neboli \emph{lexikální element} je sekvence znaků ve zdrojovém kódu, která (většinou) odpovídá nějakému patternu nějakého tokenu. Např. komentáře ale jako svůj výstup žádný token nemají.
+\end{definiceN}
+
+\begin{definiceN}{Literál}
+\emph{Literál} je konstanta ve vstupním jazyce -- má svoji hodnotu (atribut), ukládanou do tabulek symbolů.
+\end{definiceN}
+
+\begin{poznamkaN}{Atributy tokenů}
+Je-li jeden token rozpoznáván více patterny, nebo je-li to literál, má nějaké další atributy (většinou jenom jeden), které jeho význam upřesňují -- např. token \uv{relační operátor} má zpřesnění \uv{menší nebo rovno}, token \uv{číselný literál} má zpřesnění \uv{12345}.
+\end{poznamkaN}
+
+\begin{obecne}{Problémy lex. analýzy}
+Mezi některé problémy, které syntaktická analýza musí řešit, patří
+\begin{pitemize}
+    \item Počítání zarovnání -- některé jazyky (Python) mají zarovnání na řádce jako svoji syntaktickou konstrukci
+    \item Identifikátory s mezerami (rozlišit identifikátor od jiné konstrukce, i víceslovné)
+    \item Klíčová slova jako identifikátory (někdy se mohou překrývat)
+    \item Kontextově závislé tokeny -- token závisí na jiných informacích (např. \texttt{a*b;} v C -- jde o násobení, nebo deklaraci pointerové proměnné), tady je nutné tokeny slučovat pro oba významy ???
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Pozadí lex. analýzy}
+Na pozadí lexikálního analyzátoru většinou pracuje nějaký konečný automat (protože rozpoznávání regulárních výrazů -- hodnotou reg. výrazu je reg. jazyk -- je práce pro konečné automaty). Po každém rozpoznaném tokenu je potřeba automat uvést zpět do výchozího stavu.
+\end{obecne}
+
+\begin{obecne}{Lexikální chyby}
+Chyba v lexikální analýze nastane tehdy, když konečný automat nemůže pokračovat dál a není v koncovém stavu (např. pokud nalezne neplatný znak, nebo neukončený řetězec na konci řádky apod.). Většina lexikálních analyzátorů (pomineme Turbo Pascal ;-)) by měla být schopna nějakého \uv{rozumného} zotavení z chyby -- vypsat chybu a domyslet chybějící znak nebo neplatný znak ignorovat apod., tj. nezastavit se na první chybě. I logické zotavení může ale scanner úplně rozhodit a ten pak vyhazuje nesmyslné chyby. Je také spousta chyb, které lexikální analýza nepozná a projeví se až u syntaktické analýzy, např. \texttt{beign} místo \texttt{begin}, chápané jako identifikátor. 
+\end{obecne}
+
+\begin{poznamkaN}{Bufferování vstupu}
+Syntaktická analýza časově zabere cca 60-80\% překladu, takže se pro její urychlení používá bufferování -- nečte se po znacích, ale o něco napřed. Problémem pak jsou např. \texttt{\#include} direktivy (jsou-li ve vstupním jazyce) -- v okamžiku vložení jiného souboru je scanner v nějakém stavu apod.; scannery musí mít pak možnost přepínat mezi více vstupními soubory (manipulovat s několika buffery).
+\end{poznamkaN}
+
+\subsubsection*{Syntaktická analýza}
+
+\begin{definiceN}{Syntaktická analýza}
+Syntaktická analýza je část překladače, zodpovědná za:
+\begin{penumerate}
+    \item rozhodnutí, zda dané slovo (vstup) patří do zpracovávaného jazyka
+    \item syntaxí řízený překlad
+    \item stavbu derivačního stromu (nalezení přepisovacích pravidel ze startovacího neterminálu gramatiky na vstupní posloupnost tokenů -- terminálů)
+\end{penumerate}
+
+Většina programovacích jazyků je bezkontextová, proto je syntaktická analýza představována zásobníkovým automatem. Syntaktická analýza operuje s gramatikou daného jazyka (snaží se o přepis abstraktních neterminálů na terminály -- tokeny jazyka).
+\end{definiceN}
+
+\begin{definiceN}{Derivační strom}
+Derivační strom je \uv{grafická} reprezentace slova vstupního jazyka, nebo spíše derivací, které bylo potřeba provést, aby se v gramatice startovací symbol přepsal na dané slovo (posloupnost terminálů). Uzly takového grafu jsou neterminály i terminály gramatiky jazyka (v listech ale jsou jen terminály, ve vnitřních uzlech neterminály). Hrany grafu představují přepsání podle pravidla gramatiky -- vedou od neterminálu který se přepisuje, ke všem neterminálům nebo terminálům na které se přepisuje (mluvíme o bezkontextových gramatikách, takže na levé straně stojí jen jeden neterminál).
+
+Přepsání v gramatice bohužel nemusí být jednoznačné (tj. pro stejnou posloupnost neterminálů existuje více platných derivačních stromů). Přikladem je problém \uv{dangling else} z jazyků typu Pascal nebo C -- mám-li za sebou 2x \texttt{if-then} a pak jedno \texttt{else}, nemusí být (z gramatiky) jasné, ke kterému \texttt{if-then} ono \texttt{else} patří. Takové problémy lze (a je nutné) odstranit převodem na jednoznačnou gramatiku (např. přes další neterminál).
+\end{definiceN}
+
+\begin{obecne}{Levá rekurze, levá faktorizace, nebezkontextovost}
+Levá rekurze v gramatice se objevuje, pokud je v ní neterminál $A$, pro který platí $A\Rightarrow^{*} A\alpha$ pro nějaké $\alpha\neq\lambda$. Tj. přes $A$ je možné projít kolikrát chci a vytvořit posloupnost $\alpha\alpha\dots$. Pokud parser začíná u startovacího neterminálu a hledá derivace na na terminály \uv{shora dolů} (to jeden z druhů scannerů dělá), neví jakou hloubku rekurze má použít. Proto je nutné i levou rekurzi, stejně jako nejednoznačnosti, z gramatiky napřed odstranit její úpravou (zde opět pomůže přechod přes nový neterminál).
+
+Problémem je i levá faktorizace -- případ, kdy se v gramatice vyskytují pravidla jako $A\to \alpha\beta$ a zároveň $A\to \alpha\gamma$. I ten je možné řešit úpravou gramatiky (přenos rozhodnutí na pozdější dobu, kdy bude známo, který ze symbolů $\beta,\gamma$ si vybrat).
+
+Může se také i pro běžné konstrukce z programovacích jazyků stát, že nevyhovují bezkontextovým gramatikám -- např. kontrola deklarace identifikátoru před použitím, kontrola počtu parametrů funkce apod. Zde syntaktická analýza bezkontextovým způsobem nestačí a tyto případy je třeba řešit jinak.
+\end{obecne}
+
+\begin{definiceN}{Názvosloví gramatik, FIRST a FOLLOW}
+Gramatiky se v teorii překladačů označují dvěma až třemi znaky a číslem v závorce, obecně ve tvaru $PXY(k)$, kde:
+\begin{pitemize}
+    \item $X$ je směr čtení vstupu (V našem případě vždy $L$, tj. zleva doprava),
+    \item $Y$ jsou druhy derivace ($L$ – levé, $R$ – pravé derivace),
+    \item $P$ označuje prefix (ještě jemnější dělení na třídy u některých gramatik) a
+    \item $k$ představuje \emph{výhled} (lookahead), každý parser totiž vidí jen na jeden nebo několik tokenů dopředu a další neuvažuje. Obvykle je to celé číslo, většinou 1, ale také 0 nebo obecně $k$.
+\end{pitemize}
+Příklady: $LL(1), LR(0), LR(1), LL(k), SLR(1), LALR(1)$
+
+Množiny \emph{FIRST} a \emph{FOLLOW} představují množinu použitelných neterminálů na urč. místech (začátky řetězců derivovaných z nějakého pravidla, resp. řetězce které mohou následovat po nějakém neterminálu) a používají se pro konstrukci parserových automatů pro nějakou gramatiku.
+\end{definiceN}
+
+TODO: formalizovat FIRST a FOLLOW, neni to moc slozite?
+
+\begin{definiceN}{Analýza shora dolů}
+Analýza shora dolů je technika parserů, kdy se parser snaží najít nejlevější derivaci pro vstupní řetězec. Pokouší se tedy zkonstruovat derivační strom pro daný vstup počínaje kořenem a přidáváním uzlů do stromu -- rozhoduje se, podle kterého pravidla gramatiky přepíše. Pravidlo pro odstranění nejednoznačnosti je provádění \emph{jen levých derivací}, proto pak automatům vadí levá rekurze a musí se odstraňovat. Techniky pro nalezení přepisovacího pravidla jsou:
+\begin{pitemize}
+    \item \emph{Rekurzivní sestup} pomocí procedur -- pro každý neterminál existuje jedna procedura, která se rozhodne, které pravidlo použije na základě výhledu. Pro rozhodování se sestavují množiny FIRST a FOLLOW každého neterminálu. Potom musí zkontrolovat, jestli pravá strana tohoto pravidla odpovídá vstupu (přičemž výskyt neterminálu na pravé straně znamená zavolání jemu příslušné procedury).     
+    \item \emph{Nerekurzivní analýza s predikcí} -- je implementováno automatem s explicitním zásobníkem: ten má \emph{parsovací tabulku}, která se liší podle gramatiky (sama práce automatu je vždy stejná) -- jsou v ní řádky odpovídající neterminálům a sloupce terminálům, v políčkách jsou přepisovací pravidla  nebo chyby. Na zásobník automatu se ukládají symboly gramatiky a ze vstupu se čtou (lineárně terminály). V každém kroku se automat rozhodne podle vstupu a vrcholu zásobníku -- je-li tam terminál, vyhodí se a ukazatel vstupu se posune (nebo se skončí); je-li na zásobníku neterminál, rozhoduje se podle tabulky (položka určená vstupem a neterminálem, buďto se použije přepisovací pravidlo nebo skončí chybou). Konstrukce tabulky je opět závislá na množinách FIRST a FOLLOW.
+\end{pitemize}
+Analýza shora dolů je používána v parserech jednoduchých jazyků ($LL(1)$ gramatiky s řešením konfliktů zvětšením výhledu na $k$ terminálů) -- v generátorech parserů ANTLR a Coco/R, například.
+\end{definiceN}
+
+\begin{definiceN}{Analýza zdola nahoru, LR automat}
+Parsery s analýzou zdola nahoru se pokoušejí najít pozpátku nejpravější derivaci pro vstupní řetězec -- zkonstruovat derivační strom pro daný vstup počínaje listy a stavěním zespodu až po kořen stromu. V jednom redukčním kroku je tak podřetězec odpovídající pravé straně pravidla gramatiky nahrazen neterminálem z levé strany pravidla. Analýza zdola nahoru se používá ve např. v generátoru parserů Bison -– je schopná vytvořit parsery pro $LALR(1), GLR(1)$ gramatiky, které jsou oproti $LL(1)$ parserům \uv{silnější} (Třída rozpoznávaných jazyků LR(1) je vlastní nadmnožina LL(1)), všechny běžné programovací jazyky zapsatelné bezkontextovou gramatikou sem patří. Navíc se dá implementovat zhruba stejně efektivně jako metoda shora dolů.
+
+V analýze zdola nahoru se používá nějaký zásobníkový automat (\emph{LR automat}) čtoucí ze vstupu, parametrizovaný tabulkami \emph{ACTION} a \emph{GOTO}. Na zásobníku se pak uchovávají stavy a symboly gramatiky (nebo jen stavy). Vrchol zásobníku představuje aktuální stav. V počáteční konfiguraci je pointer vstupu nastavený na začátek a na zásobníku je počáteční stav. V každém kroku podle stavu a tokenu na vstupu adresuji tabulku ACTION a získám akci k provedení:
+\begin{pitemize}
+    \item \emph{SHIFT} $s$ -- posune vstup o 1 terminál, který přidá na zásobník spolu s novým stavem $s$.
+    \item \emph{REDUCE} $A\to\alpha$ -- zruší ze zásobníku tolik dvojic stavů a symbolů, jak dlouhé je $\alpha$, na zásobník dá $A$ a stav, který najde v tabulce GOTO na pozici odpovídající neterminálu $A$ a aktuálnímu stavu
+    \item \emph{ACCEPT} -- generuje nějaký výstup, slovo je úspěšně rozpoznáno
+    \item \emph{ERROR} -- zahlásí chybu
+\end{pitemize}
+V LR automatech v klidu projdou i gramatiky s levou rekurzí. Obecně se v nich používají nějaké $LR(k)$ gramatiky, většinou \uv{rozšířené} -- doplněné o \uv{tečky}, ukazatele pozice v pravidlech, které pomáhají s rozpoznáním konce vstupu. Ke konstrukci tabulek ACTION a GOTO jsou opět potřeba množiny FIRST a FOLLOW, nyní rozšířené na $k$ symbolů.
+\end{definiceN}
+
+
+TODO: přidat popis LR(1) a LALR(1) gramatik?

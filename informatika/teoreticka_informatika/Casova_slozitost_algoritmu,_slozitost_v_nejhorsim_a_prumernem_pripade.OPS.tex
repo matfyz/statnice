@@ -1,0 +1,78 @@
+\subsection{Časová složitost algoritmů, složitost v nejhorším a průměrném případě}
+
+
+\begin{definiceN}{časová složitost}
+  \textbf{Časovou složitostí} algoritmu rozumíme závislost jeho časových nároků na
+  velikosti konkrétních vstupních dat. Analogicky se definuje i \textbf{paměťová
+  složitost}. Dobu zpracování úlohy o velikosti $n$ značíme $T(n)$\\
+  Časovou složitost často zkoumáme z několik hledisek:
+  \begin{pitemize}
+    \item \textbf{v nejhorším případě}~-- maximální počet operací pro nějaká data, 
+    \item \textbf{v nejlepším případě}~-- minimální počet operací pro nějaká data,
+    \item \textbf{v průměrném (očekávaném) případě}~-- průměr pro všechna možná
+  vstupní data (někdy též střední hodnota náhodné veličiny $T(n)$).
+  \end{pitemize}
+
+  \begin{poznamka}
+  Jako jednu \uv{operaci}, nebo-li \emph{krok algoritmu} rozumíme jednu elementární 
+  operaci nějakého abstraktního stroje (např. Turingova stroje), proveditelnou v 
+  konstantním čase. Intuitivně
+  je možné chápat to jako několik operací počítače, které dohromady netrvají více,
+  než nějakou pevně danou dobu.
+  \end{poznamka}
+\end{definiceN}
+
+\begin{poznamka}
+  Časová složitost problému je rovna složitosti nejlepšího algoritmu řešícího
+  daný problém.
+\end{poznamka}
+
+\pagebreak[4]
+\subsubsection*{Asymptotická složitost}
+
+\begin{definice}
+  Řekneme, že funkce $f(n)$ je \textbf{asymptoticky menší nebo rovna} než $g(n)$,
+  značíme $f(n)$ je $O(g(n))$, právě tehdy, když
+  $$ \exists c>0\ \exists n_0\ \forall n>n_0: 0 \leq f(n) \leq c \cdot g(n)$$
+  Funkce $f(n)$ je \textbf{asymptoticky větší nebo rovna} než $g(n)$, značíme
+  $f(n)$ je $\Omega(g(n))$, právě tehdy, když
+  $$ \exists c>0\ \exists n_0\ \forall n>n_0: 0 \leq c \cdot g(n) \leq f(n)$$
+  Funkce $f(n)$ je \textbf{asymptoticky stejná} jako $g(n)$, značíme $f(n)$ je
+  $\Theta(g(n))$, právě tehdy, když
+  $$ \exists c_1,c_2>0\ \exists n_0\ \forall n>n_0: 0 \leq c_1 \cdot g(n) \leq
+  f(n) \leq c_2 \cdot g(n)$$
+\end{definice}
+
+\begin{poznamka} 
+  Asymptotická složitost zkoumá chování algoritmů na \uv{velkých} datech a dle
+  jejich složitosti je zařazuje do skupin (polynomiální, exponenciální\dots).
+  Při zkoumání se zanedbávají aditivní a multiplikativní konstanty. 
+\end{poznamka}
+
+\subsubsection*{Amortizovaná složitost}
+
+\begin{definiceN}{Amortizovaná složitost}
+  \emph{Amortizovaná časová složitost} počítá průměrný čas na jednu operaci při provedení
+  posloupnosti operací. Používá se typicky pro počítání časové složitosti operací
+  nad datovými strukturami. Dává realističtější horní odhad složitosti
+  posloupnosti operací, než počítání s nejhorším případem u každé operace.
+\end{definiceN}
+
+\begin{obecne}{Agregační metoda}
+  Spočítáme (nejhorší možný) čas $T(n)$ pro posloupnost operací. Amortizovaná cena
+  jedné operace je potom $\frac{T(n)}{n}$.
+\end{obecne}
+
+\begin{obecne}{Účetní metoda}
+  Od každé operace \uv{vybereme} určitý \uv{obnos}, ze kterého \uv{zaplatíme} za
+  danou operaci a pokud něco zbude, dáme to na účet. Pokud je operace dražší než
+  kolik je její obnos, tak potřebný rozdíl vybereme z účtu. Zůstatek na účtu
+  musí být stále nezáporný. Pokud uspějeme, tak \uv{obnos} = amortizovaná cena
+  jedné operace.
+\end{obecne}
+
+\begin{poznamka}
+  Jde o to, že některá operace může trvat krátce, ale \uv{rozháže} datovou
+  strukturu, takže následující operace potřebují víc času. Nebo naopak trvá
+  dlouho a datovou strukturu \uv{uspořádá}, takže ostatní operace jsou kratší.
+\end{poznamka}

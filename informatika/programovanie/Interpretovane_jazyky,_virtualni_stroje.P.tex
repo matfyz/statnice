@@ -1,0 +1,58 @@
+\subsection{Interpretované jazyky, virtuální stroje}
+
+\subsubsection*{Interpretovaný jazyk}
+
+Zdrojový jazyk se nepřekládá do kódu skutečného procesoru, ale do kódu nějakého abstraktního stroje... Interpret přeložený do kódu skutečného stroje simuluje zvolený abstraktní stroj.
+
+Důvodem může být např. málo prostoru pro překladač (8-bity a BASIC), nebo přenositelnost -- stejný abstraktní stroj může běžet na různých OS i různých architekturách CPU (AS/400, Java).
+
+Tato metoda má i problémy:
+
+\begin{pitemize}
+	\item Problém s rychlostí - dá se řešit pomocí JIT (Just-In-Time compilation): Pokud interpret narazí na kód abstraktního stroje, který ještě není přeložen, okamžitě ho přeloží na kód cílového stroje a uloží si ho vedle do své cache
+	\item Problémy s přenositelností - nevhodné změny v chování abstraktního stroje mohou přivodit problémy s přenositelností (Java)
+	\item Jak zvolit abstraktní stroj - aby pokryl chování všech zdrojových jazyků (např .NET)
+\end{pitemize}
+
+\begin{obecne}{Použití dynamické paměti v interpretovaných jazycích}
+Pokud je dynamická paměť podporována, pak výhradně s garbage collectorem, protože:
+\begin{pitemize}
+	\item Ukazatele jsou pod kontrolou
+	\item Snadnější programování
+	\item Rychlejší práce s dynamickou pamětí (program obvykle nepotřebuje tolik paměti, aby GC vůbec musel zasahovat, takže se pouze souvisle alokuje; simulátor abstraktního ale obvykle zabere více paměti, než by musel)
+\end{pitemize}
+\end{obecne}
+
+\subsubsection*{Zo \uv{starých} textov :-)}
+
+In computer programming an emph{interpreted language} is a programming language whose implementation often takes the form of an interpreter. Theoretically, any language may be compiled or interpreted, so this designation is applied purely because of common implementation practice and not some underlying property of a language.
+
+Many languages have been implemented using both compilers and interpreters, including Lisp, C, BASIC, and Python. While Java and C\# are translated to a form that is intended to be interpreted, just-in-time compilation is often used to generate machine code.
+
+An \emph{interpreter} is a computer program that essentially compiles and executes (interprets) another computer program "on-the-fly" at runtime.
+
+In computer science the term "interpreter" is sometimes used instead of the term emulator. There are software interpreters and hardware interpreters. We will denote interpreter as a software interpreter. It can also refer to a program that performs compilation as well as emulation. Most interpreters available today generally compile source code when the code is first encountered during program execution, rather than in a separate phase prior to execution.
+
+An interpreter has a number of advantages over a compiler, including:
+\begin{pitemize}
+	\item because it can be tailored to a specific programming language making it simpler to implement and more compact (BASIC was supported on many early home computers for this reason).
+	\item it allows program implementation to be independent of the characteristics of the host cpu (the Java interpreter is a good example of this).
+\end{pitemize}
+
+The main disadvantage of interpreters is that when a program is interpreted, it runs slower than if it had been compiled. The difference in speeds could be tiny or great; often an order of magnitude and sometimes more.
+
+\medskip\textbf{Bytecode interpreter}
+
+There is a spectrum of possibilities between interpreting and compiling, depending on the amount of analysis performed before the program is executed. For example, Emacs Lisp is compiled to bytecode, which is a highly compressed and optimized representation of the Lisp source, but is not machine code (and therefore not tied to any particular hardware). This "compiled" code is then interpreted by a bytecode interpreter (itself written in C). The compiled code in this case is machine code for a virtual machine, which is implemented not in hardware, but in the bytecode interpreter. The same approach is used with the Forth code used in Open Firmware systems: the source language is compiled into "F code" (a bytecode), which is then interpreted by an architecture-independent virtual machine.
+
+\medskip\textbf{Just-in-time compilation}
+
+Just-in-time compilation, or JIT, refers to a technique where bytecode is compiled to native machine code at runtime; giving the high execution speed of running native code at the cost of increased startup-time as the bytecode is compiled. It has gained attention in recent years, which further blurs the distinction between interpreters, byte-code interpreters and compilation. JIT is available for both the .NET and Java platforms. The JIT technique is a few decades old, appearing in languages such as Smalltalk in the 1980s.
+
+In computer science, a \emph{virtual machine} is software that creates a virtualized environment between the computer platform and its operating system, so that the end user can operate software on an abstract machine.
+
+The original meaning of virtual machine, sometimes called a hardware virtual machine, is that of a number of discrete identical execution environments on a single computer, each of which runs an operating system (OS).
+
+Another meaning of virtual machine is a piece of computer software that isolates the application being used by the user from the computer.
+
+A Java Virtual Machine (JVM) is a set of computer software programs and data structures which implements a specific virtual machine model. This model accepts a form of computer intermediate language, commonly referred to as Java bytecode, which conceptually represents the instruction set of a stack-oriented, capability architecture. This code is most often generated by Java language compilers, although the JVM can also be targeted by compilers of other languages. JVMs using the "Java" trademark may be developed by other companies as long as they adhere to the JVM standard published by Sun (and related contractual obligations).

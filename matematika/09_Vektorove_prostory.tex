@@ -1,0 +1,279 @@
+\section{Vektorové priestory}
+
+\begin{poziadavky}
+\begin{pitemize}
+\item Základné vlastnosti vektorových priestorov, podpriestorov generovania, lineárna závislost a nezávislosť.
+\item Veta o výmene
+\item Konečne generované vektorové priestory, báza.
+\item Lineárne zobrazenie.
+\end{pitemize}
+\end{poziadavky}
+
+\noindent Ako zdroj pre vypracovanie otázky boli použité vlastné poznámky z prednášok Lineárna algebra Jiřího Fialu a suborkové texty.
+
+\subsection{Definície}
+\begin{definicia}
+Nech $(T,+,\cdot)$ je teleso a $V$ je množina (jej prvky nazývame \emph{vektory}) s binárnou operáciou $+$ a $\cdot :T \times V\to V$ je zobrazenie, potom $(V,+,\cdot)$ sa nazýva \textbf{vektorový prostor} nad telesom $T$ ak je splnených nasledujúcich 8 axiomov.
+\begin{penumerate}
+\item[(SA)] $\forall u,v,w \in V: \quad (u+v)+w = u+(v+w)$ \hfill\textit{(asociativita súčtu)}
+\item[(SK)] $\forall u,v \in V: \quad u+v = v+u$ \hfill\textit{(komutativita súčtu)}
+\item[(S0)] $\exists {\bf 0}\in V: \quad u + {\bf 0} = {\bf 0} + u = u$ \hfill\textit{(neutrálný prvok súčtu)}
+\item[(SI)] $\forall u \in V \, \exists -u \in V: \quad u + (-u) = {\bf 0}$ \hfill\textit{(inverzný prvok súčtu)}
+\item[(NA)] $\forall a,b \in T \, \forall u \in V: \quad (a\cdot b) \cdot u = a \cdot (b \cdot u)$ \hfill\textit{(asociativita súčinu)}
+\item[(N1)] $\forall u \in V: \quad 1 \cdot u = u$ \hspace{0.5cm} kde $1 \in T$ je jednotkový prvok telesa T
+\item[(D1)] $\forall a,b \in T \, \forall u \in V: \quad (a+b) \cdot u = a \cdot u + b \cdot u$ \hfill\textit{(distributivita)}
+\item[(D2)] $\forall a \in T \, \forall u,v \in V: \quad a \cdot (u+v) = a \cdot u + a \cdot v$ \hfill\textit{(distributivita)}
+\end{penumerate}
+\end{definicia}
+
+\pagebreak[2]
+\begin{prikladySK}
+\begin{pitemize}
+\item $\{{\bf 0}\}$ \dots  triviálny vektorový priestor
+\item $T^{n}$ aritmetický vektorový priestor dimenzie $n$ nad telesom $T$. Ide o usporiadané $n$-tice, kde + je definované predpisom
+$$(x_{1}, \dots, x_{n}) + (y_{1}, \dots, y_{n}) = (x_{1} + y_{1}, \dots ,x_{n} + y_{n})$$
+a násobenie predpisom
+$$\alpha(x_1, \dots, x_n)=(\alpha x_1, \dots, \alpha x_n)$$
+\item Z každého telesa $T$ je možné vybudovať vektorový priestor rovnakej veľkosti $V=T^{1}$
+\item $\mathbb{R}$, $\mathbb{Q}$, $\mathbb{C}$, $\mathbb{Z}_{p}$, \dots, $\mathbb{R}^{2}$, $\mathbb{Q}^{2}$, \dots 
+\item Matice typu $m \times n$ nad $T$ (pre konkrétne $m$, $n$)
+\item Polynomy nad $T$ (napríklad obmedzeného stupňa)
+\end{pitemize}
+\end{prikladySK}
+
+\subsection{Vlastnosti vektorových priestorov}
+
+\begin{pozorovanie}
+\begin{penumerate}
+\item ${\bf 0}$, $-u$ sú určené jednoznačne.
+\item $\forall a \in T \ \forall u \in V: \quad a \cdot {\bf 0} = 0 \cdot u = {\bf 0}$
+\item $\forall a \in T \ \forall u \in V: \quad a \cdot u = {\bf 0} \ \Rightarrow\ a = 0 \ \lor\ u = {\bf 0}$.
+\end{penumerate}
+\end{pozorovanie}
+
+\begin{definicia}
+Nech $(V,+, \cdot )$ je vektorový priestor nad telesom T a $U \subseteq V, U \not= \emptyset$ taká, že
+\begin{pitemize}
+\item $\forall u,v \in U: \quad u+v \in U$ \hfill\textit{(uzavretosť na súčet)}
+\item $\forall u \in U \, \forall a \in T: \quad a \cdot u \in U$ \hfill\textit{(uzavretosť na súčin)}
+\end{pitemize}
+potom $(U,+, \cdot )$ nazývame \textbf{podpriestorom} $V$.
+\end{definicia}
+
+\begin{pozorovanie}
+Podpriestor je tiež vektorový priestor.
+\end{pozorovanie}
+
+\begin{vetaSK}
+Prienik ľubovolného systému podpriestorov je podpriestor.
+\end{vetaSK}
+
+\begin{definiciaN}{Lineárny obal, množina generátorov}
+Nech $V$ je vektorový priestor nad telesom T a $X$ je podmnožina $V$, potom 
+$$\mathcal{L}(X) = \bigcap\{U|X \subseteq U, U \,\mathrm{je\ podpriestor}\, V\}$$
+je podpriestor $V$ generovaný $X$ nazývaný \textbf{lineárny obal $X$}. Množina $X$ sa potom nazýva \emph{systém generátorov} podpriestoru $\mathcal{L}(X)$. 
+
+Keď $\mathcal{L}(X)=V$, potom $X$ je systém generátorov vektorového priestoru $V$.
+\end{definiciaN}
+
+\begin{definice}
+\textbf{Spojení dvou podprostorů} je podprostor
+$$W_1 \oplus W_2 = \mathcal{L}(W_1 \cup W_2)$$
+\end{definice}
+
+\begin{vetaSK}
+Lineárny obal $\mathcal{L}(X)$ obsahuje všetky lineárne kombinácie vektorov z~X.
+$$\mathcal{L}(X) = \{w\big|w = \sum_{i=1}^{n}{a_{i}u_{i}}, n \geq 0, n \,\mathrm{\textit{konečné}}, \forall i: \, a_{i} \in T, u_{i} \in X\}$$
+Špeciálne v prípade, že $X=\emptyset$ a teda $n=0$, platí $\mathcal{L}(X)=\{0\}$.
+\end{vetaSK}
+
+\begin{definicia}
+Nech $V$ je vektorový priestor nad telesom T, potom $n$-tica vektorov $v_{1}, \dots ,v_{n} \in V$ je \textbf{lineárne nezávislá}, ak rovnica
+$$a_{1}v_{1} + a_{2}v_{2} + \dots + a_{n}v_{n} = {\bf 0}$$
+má iba triviálne riešenie $a_{i} = 0$ pre všetky $i \in \{1, 2, \dots, n\}$
+
+Nekonečná množina vektorov je lineárne nezávislá, ak každá jej konečná podmnožina je lineárne nezávislá.
+\end{definicia}
+
+\begin{pozorovanie}
+$X$ je lineárne nezávislá práve keď $\forall u \in X: \, u \not\in \mathcal{L}(X \setminus \{u\})$
+\end{pozorovanie}
+
+\pagebreak[3]
+\begin{veta}
+\begin{penumerate}
+\item Obsahuje-li systém $x_1, \dots, x_n$ nulový vektor, je závislý.
+\item Obsahuje-li systém $x_1, \dots, x_n$ dva stejné vektory, je závislý.
+\item Pro libovolná reálná čísla $\beta_2, \dots, \beta_n$ je systém $x_1, \dots, x_n$ lineárně závislý, právě když je systém $x_1+\sum_{i=2}^n \beta_i x_i, x_2, \dots, x_n$ lineárně závislý. \textit{(Inak povedané, ak pričítame k jednému vektoru ľubovolnú lineárnu kombináciu ostatných vektorov, nezmeníme tým ich lineárnu závislosť.)}
+\end{penumerate}
+\end{veta}
+
+\begin{veta}
+\begin{penumerate}
+	\item Podsystém lineárně nezávislého systému je lineárně nezávislý.
+	\item Nadsystém systému generátorů je systém generátorů.
+\end{penumerate}
+\end{veta}
+
+\begin{definicia}
+Nech $V$ je vektorový priestor. Množina $X \subseteq V$ sa nazýva \textbf{báza} vektorového priestoru $V$ ak
+\begin{pitemize}
+	\item je lineárne nezávislá
+	\item $\mathcal{L}(X) = V$
+\end{pitemize}
+\textit{(Inak povedané, báza je lineárne nezávislý systém generátorov.)}
+\end{definicia}
+
+\begin{vetaSK}
+Každý prvok vektorového priestoru možem vyjadriť ako lineárnu kombináciu prvkov jeho báze a toto vyjadrenie je jednoznačné.
+\end{vetaSK}
+
+\begin{definicia}
+Vyjadrenie vektoru $u \in V$ vzhladom k báze $X$ sa nazýva \textbf{vektor súradníc}. Značí sa $[u]_{X}$.
+
+$(x_{1}, \dots , x_{n}) = X$ je báza $V$, $u \in V: u = a_{1}x_{1} + a_{2}x_{2} + \dots +a_{n}x_{n}$
+
+$[u]_{X} = (a_{1}, \dots , a_{n})$
+\end{definicia}
+
+\subsection{Veta o výmene}
+\begin{lemmaN}{o výmene}
+Nech $v_{1},v_{2}, \dots ,v_{n}$ je systém generátorov priestoru $V$ a pre $u \in V$ platí $u = a_{1}v_{1} + a_{2}v_{2} + \dots +a_{n}v_{n}$, potom platí 
+$$\forall i: \, a_{i} \not= 0 \Rightarrow \mathcal{L}(v_{1},v_{2}, \dots, v_{i-1}, u, v_{i+1}, \dots, v_{n}) = V$$
+\textit{(Inak povedané, vektor bázy ktorý sa ``podielal'' na vytvorení vektoru $u$, možme s $u$ zameniť.)}
+\end{lemmaN}
+
+\begin{dokaz}
+Pre ľubovolné $w \in V$, môžme písať $w = b_{1}v_{1} + b_{2}v_{2} + \dots b_{n}v_{n}$.
+Do tohoto vyjadrenia miesto $v_{i}$ dosadíme vyjadrenie $v_i$ z rovnice $u = a_{1}v_{1} + a_{2}v_{2} + \dots + a_{n}v_{n}$, čím dostaneme vyjadrenie ľubovolného $w$ pomocou $v_{1},v_{2}, \dots, v_{i-1}, u, v_{i+1}, \dots, v_{n}$, z čoho výplýva, že tieto vektory sú tiež systém generátorov.
+\end{dokaz}
+
+\pagebreak[3]
+\begin{vetaSKN}{Steinitzova o výmene}
+Nech $V$ je vektorový priestor, $X \subseteq V$ je lineárne nezávislá a $Y \subseteq V$je konečný systém generátorov. Potom existuje $Z \subseteq V$ také, že
+\begin{pitemize}
+	\item $|Z| = |Y|$
+	\item $\mathcal{L}(Z) = V$
+	\item $Z \setminus X \subseteq Y$
+	\item $X \subseteq Z$
+\end{pitemize}
+\textit{(V krátkosti povedané - každý nezávislý systém vektorov $X$ je možné, pridaním vektorov zo systému generátorov $Y$, rozšíriť na systém generátorov $V$.)}
+\end{vetaSKN}
+
+\begin{dokaz}
+Ak $X \subseteq Y$ sme hotoví a $Z=Y$.
+Inak vezmeme $Y$ a postupne do neho začneme pridávať prvky z $X \setminus Y$.
+Pri každom pridaní, podľa lemmy o výmene, jeden prvok z tejto množiny odstránime. Po poslednej iterácii získame hľadané $Z$.
+
+(Pri každej iterácií vyhadzujeme jeden prvok, ktorý nepatrí do $X$, pretože $X$ je lineárne nezávislá.)
+\end{dokaz}
+
+\begin{dosledok}
+Ak má $V$ konečnú bázu, majú všetky bázy rovnakú veľkosť.
+\end{dosledok}
+
+\begin{dosledok}
+Ak má $V$ konečnú bázu, potom môžme každú lineárne nezávislú množinu $X$ doplniť na bázu.
+\end{dosledok}
+
+\begin{definicia}
+Veľkosť bázy konečne generovaného priestoru $V$ sa nazýva \textbf{dimenzia} priestoru $V$. Značíme $\dim(V)$.
+\end{definicia}
+
+\begin{veta}
+Buďte $W_1, W_2$ konečně generované podprostory vektorového
+prostoru $V.$ Potom
+$$\dim W_1+\dim W_2 = \dim(W_1 \cap W_2)+\dim(W_1 \oplus W_2)$$
+\end{veta}
+
+\subsection{Lineárne zobrazenie}
+
+\begin{definiceN}{lineární zobrazení}
+Mějme vektorové prostory $V,W$. Řekneme, že zobrazení $f: V \to W$ je \textbf{lineární}, jestliže pro libovolná $x,y \in V$ a $a, b \in T$ platí
+$$f(a \cdot x + b \cdot y) = a \cdot f(x) + b \cdot f(y)$$
+\end{definiceN}
+
+\begin{definiceN}{lineární operátor}
+Lineární zobrazení $f: V \rightarrow V$ se nazývá \emph{lineární operátor}.
+\end{definiceN}
+
+\begin{priklady}
+\begin{penumerate}
+    \item Identické zobrazení $V$ na $V$ (to je příklad lineárního operátoru).
+    \item Buď $\alpha$ pevné reálné číslo. Zobrazení $V \to V$ dané předpisem $x \to \alpha x.$
+    \item Derivace je lineární zobrazení z množiny reálných spojitých funkcí $C_1(J)$ do množiny reálných funkcí $F(J).$
+    \item V $\mathbb{R}^2$ jsou lineární zobrazení např. zrcadlení $(x,y)\mapsto(-x,y)$ nebo zkosení $(x,y)\mapsto(x+y,y)$.
+\end{penumerate}
+\end{priklady}
+
+\begin{definiceN}{Hodnost lineárního zobrazení}
+Pro lineární zobrazení $f:U\to V$ mezi dvěma vekt. prostory definujeme \emph{jádro zobrazení} ($\mathrm{Ker\ }f$) jako množinu $\mathrm{Ker\ }f=f^{-1}[\{0\}]$. \emph{Obraz} zobrazení $f$ ($\mathrm{Im\ }f$) je množina $\mathrm{Im\ }f=f[U]$. Jako \emph{hodnost zobrazení} $f$ označíme číslo $\mathrm{dim}(\mathrm{Ker\ }f)$.
+\end{definiceN}
+
+
+\begin{vetaN}{Základní vlastnosti lineárního zobrazení}
+Nechť $f: V \rightarrow W$ je lineární zobrazení. Potom platí:
+\begin{penumerate}
+	\item $f(\mathbf{0}_V) = \mathbf{0}_W$
+	\item $\mathrm{Im\ }f$ je podprostor prostoru W
+	\item $\mathrm{Ker\ }(f)$ je podprostor prostoru V
+	\item $f$ je prosté, právě když $\mathrm{Ker\ }(f) = \{0\}$
+	\item je-li $\dim V = \dim W$ a je-li zobrazení $f$ prosté, potom je $f$ bijekce a inversní zobrazení $f^{-1}: W \rightarrow V$ je opět lineární.
+\end{penumerate}
+\end{vetaN}
+
+\begin{vetaN}{O dimenzi obrazu a jádra}
+Pro $f:U\to V$ mezi dvěma vektorovými prostory konečné dimenze platí:
+$$\mathrm{dim}(\mathrm{Ker\ }f)+\mathrm{dim}(\mathrm{Im\ }f)=\mathrm{dim}(U)$$
+\end{vetaN}
+
+\begin{vetaN}{Báze určuje lineární zobrazení}
+Mějme dány vektorové prostory $V,W$ a bázi $B=b_1,\dots,b_n$ prostoru $V$. Potom pro každé lineární zobrazení $f:B\to W$ existuje právě jedno lineární zobrazení $g:V\to W$ takové, že $f(b_i)=g(b_i)\ \forall i\in\{1,\dots,n\}$.
+
+\emph{Jiná formulace:} Pro libovolné vektory $y_1,\dots,y_n\in W$ existuje právě jedno lineární zobrazení $g:V\to W$ takové, že $g(b_i)=y_i\ \forall i\in\{1,\dots,n\}$.
+\end{vetaN}
+
+
+\begin{definiceN}{Isomorfismus}
+Lineární zobrazení se nazývá \emph{isomorfismus}, existuje-li k němu inversní lineární zobrazení. Pokud existuje isomorfismus $V \to W$, říkáme, že prostory $V$ a $W$ jsou \emph{isomorfní}.
+\end{definiceN}
+
+\begin{veta}
+Je-li lineární zobrazení bijektivní, je to isomorfismus.
+\end{veta}
+
+\begin{vetaN}{Isomorfismus vekt. prostorů nad $\mathbb{T}$}
+Každý $n$-dimensionální vektorový prostor nad tělesem $\mathbb{T}$ je isomorfní vekt. prostoru $\mathbb{T}^n$ (tj. jehož prvky jsou uspořádané $n$-tice prvků z $\mathbb{T}$).
+\end{vetaN}
+
+\begin{vetaN}{Další vlastnosti lin. zobrazení}
+\begin{penumerate}
+    \item Je-li lineární zobrazení prosté, zachovává lineární nezávislost.
+    \item Je-li na (surjekce), zachovává vlastnost \uv{být systémem generátorů}.
+\end{penumerate}
+\end{vetaN}
+
+\begin{vetaN}{Skládání lineárních zobrazeni}
+Nechť $f: U \rightarrow V$, $g: V \rightarrow W$ jsou lineární zobrazení. Potom složené zobrazení $g \circ f: U \rightarrow W$ definované předpisem
+$$ (g \circ f)(x) = g(f(x)) \,\, \textit{pro } x \in U$$
+je rovněž lineárním zobrazením.
+\end{vetaN}
+
+
+\begin{vetaN}{Sčítání a násobky lin. zobrazení}
+Nechť $f, g$ jsou lineární zobrazení z vekt. prostoru $V$ do $W$, $\alpha$ skalár. Potom zobrazení $f+g: V \rightarrow W$ a $\alpha f: V \rightarrow W$ definovaná předpisem
+$$(f+g)(x) = f(x) + g(x), \, x \in V$$
+$$(\alpha f)(x) = \alpha f(x), \, x \in V$$
+jsou lineární zobrazení $V$ do $W$.
+\end{vetaN}
+
+\begin{vetaN}{Množina lineárních zobrazení je vekt. prostor}
+Množina lineárních zobrazení prostoru $V$ do prostoru $W$ s operacemi sčítání a násobení skalárem, definovanými v předchozí větě, tvoří vektorový prostor, který značíme $L(V,W)$.
+\end{vetaN}
+
+\begin{veta}
+Nechť $\dim V=n$ a $\dim W=m$. Potom prostor $L(V,W)$ je isomorfní prostoru $\mathbb{R}^{m\times n}$. V důsledku toho je
+$$\dim L(V,W) = mn$$
+\end{veta}
+
+

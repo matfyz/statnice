@@ -1,0 +1,38 @@
+\subsection{Síťové, systémové a adresářové služby, vzdálený přístup}
+
+TODO: tohle je jenom copy\&paste z Wiki
+
+\subsubsection*{Síťové služby}
+
+\begin{pitemize}
+    \item DNS dává jména IP a MAC adresám
+    \item DHCP přiděluje IP adresy
+    \item autentizační služby
+    \item e-mail
+    \item tisk
+    \item NFS (Network File System) umožňuje sdílení souborů a zdrojů 
+\end{pitemize}
+
+\subsubsection*{Systémové služby}
+
+\subsubsection*{Adresářové služby}
+Speciální aplikace pro ukládání záznamů. Typicky se vyhledává hodně a data se
+mění málo a jednoduše (bez transakcí). Používá se pro uložení údajů o lidech a
+zdrojích (tiskárny).
+
+Pro přístup se používá standard LDAP, který byl navržen jako odlehčená verze protokolu X.500 ze světa ISO/OSI.
+
+\begin{obecne}{Implementace adresářových služeb}
+  \begin{pitemize}
+    \item NIS od Sun-u (příkazy začínají na yp kvůli starému názvu Yellow Pages)
+    \item Active Directory od MS
+    \item OpenLDAP, Kerberos (open-source) 
+  \end{pitemize}
+\end{obecne}
+
+\subsubsection*{Vzdálený přístup}
+
+\begin{pitemize}
+    \item SSH - Secure SHell 
+    \item Telnet
+\end{pitemize}

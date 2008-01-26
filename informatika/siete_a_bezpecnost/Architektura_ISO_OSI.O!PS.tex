@@ -1,0 +1,57 @@
+\subsection{Architektura ISO/OSI}
+
+\subsubsection*{Úvod}
+\begin{definice}
+\textbf{Síťový model} je ucelená představa o tom, jak mají být sítě řešeny (obsahuje: počet vrstev, co má která vrstva na starosti; neobsahuje: konkrétní představu jak která vrstva plní své úkoly - tedy konkrétní protokoly). Příkladem je \emph{referenční model ISO/OSI} (konkrétní protokoly vznikaly samostatně a dodatečně).
+\textbf{Síťová architektura} navíc obsahuje konkrétní protokoly - napr. \emph{rodina protokolů TCP/IP}.
+\end{definice}
+
+Referenčný model ISO/OSI (International Standards Organization / Open Systems Interconnection) bol pokusom vytvoriť univerzálnu sieťovú architektúru - ale skončil ako sieťový model (bez protokolov). Pochádza zo \uv{sveta spojov} - organizácie ISO, a bol \uv{oficiálnym riešením}, presadzovaným \uv{orgánmi štátu}; dnes už prakticky odpísaný - prehral v súboji s TCP/IP. ISO/OSI bol reakciou na vznik proprietárnych a uzavretých sietí. Pôvodne mal model popisovať chovanie otvorených systémov vo vnútri aj medzi sebou, ale bolo od toho upustené a nakoniec z modelu ostal len sieťový model (popis funkcionality vrstiev) a konkrétne protokoly pre RM ISO/OSI boli vyvíjané samostatne (a dodatočne zaraďované do rámca ISO/OSI).
+
+Model vznikal maximalistickým spôsobom - obsahoval všetko čo by mohlo byť v budúcnosti potrebné. Vďaka rozsiahlosti štandardu sa implementovali len jeho niektoré podmnožiny - ktoré neboli (vždy) kompatibilné. Vznikol GOSIP (Government OSI Profile) určujúci podmnožinu modelu, ktorú malo mať implementované všetko štátne sieťové vybavenie. Naproti tomu všetkému TCP/IP vzniklo naopak - najprv navrhnutím jednoduchého riešenia, potom postupným obohacovaním o nové vlastnosti (tie boli zahrnuté až po preukázaní \uv{životaschopnosti}).
+
+\subsubsection*{7 vrstev}
+Kritériá pri návrhu vrstiev boli napr.: rovnomerná vyťaženosť vrstiev, čo najmenšie dátové toky medzi vrstvami, možnosť prevziať už existujúce štandardy (X.25), odlišné funkcie mali patriť do odlišných vrstiev, funkcie na rovnakom stupni abstrakcie mali patriť do rovnakej vrstvy. Niektoré vrstvy z finálneho návrhu sa používajú málo (relačná a prezentačná), niektoré zase príliš (linková - rozpadla sa na 2 podvrstvy LLC+MAC).
+
+\begin{center}
+\begin{tabular}{|c|l|}
+	\hline
+	aplikační vrstva & vrstvy orientované na podporu aplikací\\
+	prezentační vrstva &\\
+	relační vrstva &\\
+	\hline
+	transportní vrstva & přispůsobovací vrstva \\
+	\hline
+	síťová vrstva & vrstvy orientované na přenos dat\\
+	linková vrstva & \\
+	fyzická vrstva & \\
+	\hline
+\end{tabular}
+\end{center}
+
+\textbf{Fyzická vrstva} sa zaoberá prenosom bitov (kódovanie, modulácia, synchronizácia...) a ponúka teda služby typu pošli a príjmi bit (pričom neinterpretuje význam týchto dát). Pracuje sa tu s veličinami ako je \emph{šírka pásma}, \emph{modulačná a prenosová rýchlosť}.
+
+\textbf{Linková vrstva} prenáša vždy celé bloky dát (rámce/frames), používa pritom fyzickú vrstvu a prenos vždy funguje len k priamym susedom. Môže pracovať spoľahlivo či nespoľahlivo, prípadne poskytovať QoS/best effort. Ďalej zabezpečuje riadenie toku - zaistenie toho, aby vysielajúci nezahltil príjemcu. Delí sa na dve podvrstvy - MAC (prístup k zdieľanému médiu - rieši konflikty pri viacnásobnom prístupe k médiu) a LLC (ostatné úlohy).  
+
+\textbf{Sieťová vrstva} prenáša pakety (packets) - fakticky ich vkladá do linkových rámcov. Zaručuje doručenie paketov až ku konečnému adresátovi (tj. zabezpečuje smerovanie). Môže používať rôzne algoritmy smerovania - ne/adaptívne, izolované, distribuované, centralizované... (v architektúre TCP/IP je to IP vrstva)
+
+\textbf{Transportná vrstva} zabezpečuje komunikáciu medzi koncovými účastníkmi (end-to-end) a môže meniť nespoľahlivý charakter komunikácie na spoľahlivý, menej spoľahlivý na viac spoľahlivý, nespojovaný prenos na spojovaný... Príkladom sú napr. TCP a UDP. Ďalšou úlohou je rozlišovanie jednotlivých entit (na rozdiel od napr. sieťovej vrstvy) v rámci uzlov - procesy, démony, úlohy (rozlišuje sa zväčša nepriamo - napr. v TCP/IP pomocou portov).
+
+\textbf{Relačná vrstva} zaisťuje vedenie relácií - šifrovanie, synchronizáciu, podporu transakcií. Je to najkritizovanejšia vrstva v ISO/OSI modele, v TCP/IP úplne chýba.
+
+\textbf{Prezentačná vrstva} slúži na konverziu dát, aby obe strany interpretovali dáta rovnako (napr. reálne čísla, rôzne kódovanie textov). Ďalej má na starosti konverziu dát do formátu, ktorý je možné preniesť: napr. linearizácia viacrozmerných polí, dátových štruktúr; konverzia viacbajtových položiek na jednotlivé byty (little vs. big endian). \emph{Poznámka}: Zápis čísla 1234H v Big endian je [12:34:--:--] (sun, motorola), v Little endian [--:--:34:12] (intel, amd, ethernet).
+
+\textbf{Aplikačná vrstva} mala pôvodne obsahovať aplikácie - ale tých je veľa a nebolo možné ich štandardizovať. Teraz teda obsahuje len \uv{jadro} aplikácií - tie, ktoré malo zmysel štandardizovať (email a pod.). Ostatné časti aplikácií (GUI) boli vysunuté nad aplikačnú vrstvu.
+
+\subsubsection*{Kritika}
+Model ISO/OSI:
+\begin{pitemize}
+	\item je príliš zložitý, ťažkopádny a obtiažne implementovateľný
+	\item je príliš maximalistický
+	\item nerešpektuje požiadavky a realitu bežnej praxe
+	\item počítal skôr s rozľahlými sieťami ako s lokálnymi
+	\item niektoré činnosti (funkcie) zbytočne opakuje na každej vrstve
+	\item jednoznačne uprednostňuje spoľahlivé a spojované prenosové služby (ale tie sú spojené s veľkou réžiou $\Rightarrow$ spoľahlivosť si efektívnejšie zabezpečia koncové uzly)
+\end{pitemize}
+
+Možnosť nespoľahlivého/nespojovaného spojenia bolo pridané do štandardu až dodatočne, napriek tomu bol porazený architektúrou TCP/IP. Používajú sa však niektoré prevzaté prokoly - X.400 (elektronická pošta), X.500 (adresárové služby - odľahčením vznikol úspešný protokol LDAP).

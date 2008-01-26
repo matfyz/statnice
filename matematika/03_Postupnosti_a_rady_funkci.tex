@@ -1,0 +1,310 @@
+\section{Posloupnosti a řady funkcí}
+
+\begin{pozadavky}
+\begin{pitemize}
+	\item Spojitost za předpokladu stejnoměrné konvergence
+	\item Mocninné řady
+	\item Taylorovy řady
+	\item Fourierovy řady
+\end{pitemize}
+\end{pozadavky}
+
+Táto otázka je vypracovaná hlavne podľa skrípt prof. Kalendu, takže je možné že niektoré vety (napr. od prof. Pultra) budú mať iné znenie. Hlavne časť o Fourierových funkciách vyzerá byť prednášaná odlišne (menej obecne)\dots ;-(
+\begin{flushright}
+\textit{andree}
+\end{flushright}
+
+\subsection{Spojitost za předpokladu stejnoměrné konvergence}
+
+\begin{definiceN}{Bodová/stejnoměrná konvergence posloupnosti funkcí}
+Řekneme, že posloupnost funkcí $f_n$ \emph{konverguje bodově k funkci $f$ na množině $M$} (značíme $f_n \rightarrow f$), jestliže pro každé  $x \in M$ platí $\lim_{n \rightarrow \infty} f_n(x) = f(x)$, tj. jestliže
+$$\forall x \in M\, \forall \varepsilon > 0\, \exists n_0 \in \mathbb{N}\, \forall n \in \mathbb{N}, n \ge n_0: |f_n(x)-f(x)| < \varepsilon$$
+
+Řekneme, že posloupnost $f_n$ \emph{konverguje stejnoměrně k funkci $f$ na množině $M$} (značíme $f_n \rightrightarrows f$), jestliže
+$$\forall \varepsilon > 0\, \exists n_0 \in \mathbb{N}\, \forall n \in \mathbb{N}, n \ge n_0\, \forall x \in M: |f_n(x)-f(x)| < \varepsilon$$
+
+Řekneme že posloupnost funkcí je \emph{stejnoměrně konvergentní} na $M$, jestliže konverguje k nějaké funkci na $M$.
+\end{definiceN}
+
+\begin{definice}
+$\{f_n\}$ \emph{konverguje lokálně stejnoměrně} k funkci $f$ na množině $M$ (značíme $f_n \rightrightarrows^{loc} f$ na $M$), jestliže pro každé $x \in M$ existuje $\varepsilon > 0$ takové, že $f_n \rightrightarrows f$ na $M \cap (x-\varepsilon, x+\varepsilon)$. 
+\end{definice}
+
+\begin{vetaN}{Kritérium stejnoměrné konvergence}
+Nechť $M$ je (neprázdná) množina, $f$ funkce definovaná na $M$ a $\{f_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $M$. Pak $f_n \rightrightarrows f$, právě když:
+$$\lim_{n \rightarrow \infty} \sup\{|f_n(x)-f(x)|; x \in M\} = 0, $$
+tj. existuje $n_0 \in \mathbb{N}$ takové, že pro $n \ge n_0$ je $sup\{|f_n(x)-f(x)|; x \in M\}$ definováno (a konečné) a tato posloupnost má limitu 0.
+\end{vetaN}
+
+\begin{vetaN}{Bolzano-Cauchyho podmínka pro stejnoměrnou konvergenci}
+Nechť $M$ je (neprázdná) množina, $\{f_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $M$. Pak posloupnost $f_n$ je stejnoměrně konvergentní na $M$, právě když:
+$$\forall \varepsilon > 0\, \exists n_0 \in \mathbb{N}\, \forall m, n \in \mathbb{N}, m \ge n_0, n \ge n_0\, \forall x \in M: |f_n(x)-f_m(x)| < \varepsilon$$
+\end{vetaN}
+
+\begin{vetaN}{O záměně limit, Moore-Osgoodova}
+Nechť $a, b \in \mathbb{R}^*, a<b$, $f$ je funkce definovaná na $(a,b)$ a $\{f_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $(a,b)$. Dále nechť $f_n \rightrightarrows f$ na $(a,b)$ a pro každé $n \in \mathbb{N}$ existuje vlastní $\lim_{x \rightarrow a+} f_n(x) = c_n$. Pak existují vlastní limity $\lim_{n \rightarrow \infty} c_n$ a $\lim_{x \rightarrow a+} f(x)$ a platí:
+$$\lim_{n \rightarrow \infty} c_n =\lim_{x \rightarrow a+} f(x)$$
+Analogicky v bodě $b$ zleva...
+
+\begin{poznamka}
+Jiný zápis je, že platí:
+$$\lim_{n \rightarrow \infty} \lim_{x \rightarrow a+} f_n(x) = \lim_{x \rightarrow a+} \lim_{n \rightarrow \infty} f_n(x)$$
+a navíc jsou tyto limity vlastní, pokud pro každé $n \in \mathbb{N}$ existuje vlastní limita $\lim_{x \rightarrow a+} f_n(x)$ a posloupnost $f_n$ je stejnoměrně konvergentní na $(a,b)$ pro nějaké $b>a$. Tato věta platí i pro \uv{oboustranné} limity.
+\end{poznamka}
+\end{vetaN}
+
+\begin{vetaN}{Spojitost limitní funkce}
+Nechť $I \subset \mathbb{R}$ je interval, f funkce definovaná na $I$ a $\{f_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $I$. Jestliže $f_n$ je spojitá na I pro každé $n \in \mathbb{N}$ a $f_n \rightrightarrows^{loc} f$ na $I$, pak $f$ je spojitá na $I$.
+\end{vetaN}
+
+\begin{vetaN}{Záměna limity a derivace}
+Nechť $a, b \in \mathbb{R}, a<b$ a $\{f_n\}_{n=1}^{\infty}$ je posloupnost funkcí definovaných na intervalu $(a, b)$, které mají v každém bodě $(a,b)$ vlastní derivaci. Nechť dále platí:
+\begin{penumerate}
+	\item Existuje takové $x_0 \in (a,b)$, že posloupnost $\{f_n(x_0)\}$ je konvergentní
+	\item Posloupnost $\{f_n'\}$ je stejnoměrně konvergentní na $(a,b)$
+\end{penumerate}
+Pak posloupnost $\{f_n\}$ je stejnoměrně konvergentní na $(a,b)$, a označíme-li $f$ její limitu, pak funkce $f$ má v každém bodě $x \in (a,b)$ vlastní derivaci a platí $f'(x) = \lim_{n \rightarrow \infty} f_n'(x)$.
+\end{vetaN}
+
+\begin{definiceN}{Bodová/stejnoměrná konvergence řady funkcí}
+Řekneme, že řada $\sum_{n=1}^{\infty} u_n$ \emph{konverguje bodově na množině $M$}, pokud posloupnost jejich částečných součtů je bodově konvergentní na $M$, tj, pro každé $x \in M$ konverguje řada $\sum_{n=1}^{\infty} u_n(x)$.
+
+\emph{Součtem řady} $\sum_{n=1}^{\infty} u_n$ nazveme funkci
+$$S(x) = \sum_{n=1}^{\infty} u_n(x) = \lim_{n \rightarrow \infty} s_n(x), \, x \in M,$$
+pokud řada konverguje bodově na $M$.
+
+Řekneme, že řada $\sum_{n=1}^{\infty} u_n$ \emph{konverguje stejnoměrně na množině $M$}, pokud posloupnost jejich částečných součtů je stejnoměrně konvergentní na $M$.
+
+Je-li navíc $M \subset \mathbb{R}$, řekneme, že řada $\sum_{n=1}^{\infty} u_n$ \emph{konverguje lokálně stejnoměrně na množině $M$}, pokud posloupnost jejich částečných součtů je lokálně stejnoměrně konvergentní.
+\end{definiceN}
+
+\begin{vetaN}{Nutná podmínka stejnoměrné konvergence řady}
+Nechť řada $\sum_{n=1}^{\infty} u_n$ konverguje stejnoměrně na množině $M$. Pak $u_n \rightrightarrows 0$ na $M$.
+\end{vetaN}
+
+\begin{vetaN}{Srovnávací kritérium pro stejnoměrnou konvergenci}
+Nechť M je (neprázdná) množina a $\{u_n\}_{n=1}^{\infty}$, $\{v_n\}_{n=1}^{\infty}$ dvě posloupnosti funkcí definovaných na M, pro které platí $|u_n(x)| \le v_n(x)$ pro všechna $x \in M$. Jestliže řada $\sum_{n=1}^{\infty} v_n$ konverguje stejnoměrně na M, pak i řada $\sum_{n=1}^{\infty} u_n$ konverguje stejnoměrně na $M$.
+\end{vetaN}
+
+\begin{vetaN}{Weierstrassovo kritérium}
+Nechť $M$ je (neprázdná) množina, $\{u_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $M$ a $\sum_{n=1}^{\infty} c_n$ konvergentní řada reálných čísel. Pokud pro každé $x \in M$ platí $|u_n(x)| \le c_n$, pak řada $\sum_{n=1}^{\infty} u_n$ konverguje stejnoměrně na $M$.
+\end{vetaN}
+
+\begin{vetaN}{Leibnizovo kritérium pro stejnoměrnou konvergenci}
+Nechť $M$ je (neprázdná) množina, $\{u_n\}_{n=1}^{\infty}$ posloupnost funkcí definovaných na $M$ splňujících \emph{obě} podmínky:
+
+\begin{penumerate}
+	\item Pro všechna $x \in M$ a $n \in \mathbb{N}$ je $u_n(x) \ge u_{n+1}(x) \ge 0$
+	\item $u_n \rightrightarrows 0$ na $M$
+\end{penumerate}
+Pak řada $\sum_{n=1}^{\infty} (-1)^{n}u_n$ konverguje stejnoměrně na $M$.
+\end{vetaN}
+
+\begin{vetaN}{Dirichletovo a Abelovo kritérium}
+Nechť $M$ je (neprázdná) množina a $\{u_n\}_{n=1}^{\infty}$, $\{v_n\}_{n=1}^{\infty}$ dvě posloupnosti funkcí definovaných na $M$, přičemž pro každé $x \in M$ a každé $n \in \mathbb{N}$ platí $v_n(x) \ge v_{n+1}(x) \ge 0$. Nechť navíc platí alespoň jedna z podmínek:
+\begin{enumerate}
+	\item (Abelovo) Řada $\sum_{n=1}^{\infty} u_n$ konverguje stejnoměrně na M, % a funkce $v_1$ je shora omezená na $M$ -- to je malo, ne? (Tuetschek)
+	pro každé pevné $x$ je posloupnost hodnot funkcí $\{v_n(x)\}$ monotónní (klidně pro každé $x$ jinak)
+	a existuje $K\in\mathbb{R}$ takové, že $\forall n\in\mathbb{N}\ \forall x\in M: |v_n(x)|<K$ 
+	(tj. $\{v_n\}$ je stejnoměrně omezená na $M$). % tahle verze Abelova kriteria je podle Picka a Klazara
+	\item (Dirichletovo) Existuje $K \in \mathbb{R}$ takové, že pro všechna $x \in M$ a $n \in \mathbb{N}$ je $|u_1(x) + \dots + u_n(x)| \le K$
+	(tj. posloupnost část. součtů $\{\sum_{i=1}^n u_n(x)\}$ je \emph{stejnoměrně omezená} na $M$)
+	a dále $v_n \rightrightarrows 0$ na $M$ (konverguje stejnoměrně k nulové funkci).
+\end{enumerate}
+
+Pak řada $\sum_{n=1}^{\infty} u_n\cdot v_n$ konverguje stejnoměrně na $M$.
+\end{vetaN}
+
+(\emph{Pozn. autora: Dále platí i věty ekvivalentní větám o záměně limit při posloupnostech\dots})
+
+\subsection{Mocninné řady}
+
+\begin{definice}
+Nechť $a \in \mathbb{R}$ a $\{c_n\}_{n=0}^{\infty}$ je posloupnost reálných čísel. Nekonečnou řadu funkcí tvaru $\sum_{n=0}^{\infty} c_n(x-a)^n$ nazýváme \emph{mocninnou řadou o středu $a$}.
+\end{definice}
+
+\begin{definice}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$. Jejím \emph{poloměrem konvergence} rozumíme číslo
+$$R = \sup\{r \in \left<0, +\infty\right); \sum_{n=0}^{\infty}|c_n|r^n \textit{konverguje}\}\textrm{,}$$
+je-li uvedená množina shora omezená. Není-li shora omezená, klademe $R = +\infty$.
+\end{definice}
+
+\begin{veta}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$ a $R$ její poloměr konvergence.
+\begin{penumerate}
+	\item Je-li $|x-a| < R$, pak řada $\sum_{n=0}^{\infty} c_n(x-a)^n$ konverguje absolutně;\\
+		Je-li $|x-a| > R$, pak řada $\sum_{n=0}^{\infty} c_n(x-a)^n$ diverguje.
+	\item Je-li $r \in (0,R)$, pak řada $\sum_{n=0}^{\infty} c_n(x-a)^n$ konverguje stejnoměrně na množině $\overline{B}(a,r) = \{x \in \mathbb{R}; |x-a|\le r\}=\left<a-r,a+r\right>$.
+	\item Řada $\sum_{n=0}^{\infty} c_n(x-a)^n$ konverguje lokálně stejnoměrně na množině $B(a,R) = \{x \in \mathbb{R}; |x-a| < R\}$.
+\end{penumerate}
+
+Body 2. a 3. jsou vlastně ekvivalentní. Je-li $R=\infty$, pak řada konverguje lokálně stejnoměrně na celém $\mathbb{R}$. 
+\end{veta}
+
+\begin{poznamka}
+Množině $B(a, R)$, kde $R$ je poloměr konvergence mocninné řady $\sum_{n=0}^{\infty} c_n(x-a)^n$, se říká \emph{kruh konvergence}.
+\end{poznamka}
+
+\begin{vetaN}{Výpočet poloměru konvergence}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$ a $R$ její poloměr konvergence.
+\begin{penumerate}
+	\item Jestliže $L = \limsup_{n \rightarrow \infty} \sqrt[n]{|c_n|}$, pak
+		$$R=\left\{ \begin{array}{ll} \frac{1}{L}, & L>0, \\ +\infty, & L=0 \end{array}\right.$$
+	\item Týž vzoreček platí, je-li $L = \limsup_{n \rightarrow \infty} \left|\frac{c_{n+1}}{c_n}\right|$
+\end{penumerate}
+První bod plyne z Cauchyova odmocninového kritéria konvergence řady, druhý z D'Alembertova podílového kritéria. Stejné tvrzení platí i pro limity daných výrazů v případě, že existují.
+\end{vetaN}
+
+\begin{vetaN}{...\uv{jen} pomocná pro následující}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$ a $R$ její poloměr konvergence. Pak i mocninné řady $\sum_{n=0}^{\infty} n.c_n(x-a)^{n-1}$ a $\sum_{n=0}^{\infty} \frac{c_n}{n+1}(x-a)^{n+1}$ mají poloměr konvergence R.
+\end{vetaN}
+
+\begin{vetaN}{Derivace a integrace mocninné řady}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$ a $R>0$ její poloměr konvergence. Definujme funkci $f(x) = \sum_{n=0}^{\infty} c_n(x-a)^n, x \in B(a,R)$. Pak platí:
+\begin{penumerate}
+	\item Funkce $f$ je spojitá na $B(a, R)$.
+	\item Funkce $f$ má v každém bodě $x \in B(a,R)$ vlastní derivaci a platí $f'(x) = \sum_{n=0}^{\infty} n\cdot c_n(x-a)^{n-1}$.
+	\item Funkce $F(x) = \sum_{n=0}^{\infty} \frac{c_n}{n+1}(x-a)^{n+1}$ je primitivní funkcí k $f$ na $B(a, R)$.
+\end{penumerate}
+\end{vetaN}
+
+
+\subsection{Taylorovy řady}
+
+\begin{definice}
+Nechť funkce $f$ má v bodě $a$ derivace všech řádů. Pak řadu $\sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$ nazýváme \emph{Taylorovou řadou funkce $f$ o středu $a$ v bodě $x$}.
+\end{definice}
+
+\begin{poznamka}
+Nechť funkce $f$ má v bodě $a$ derivace všech řádů a $x \in \mathbb{R}$. Pak funkce $f$ je v bodě $x$ součtem své Taylorovy řady o středu $a$, právě když $\lim_{n \rightarrow \infty} (f(x) - T_n^a(x))=0$.
+\end{poznamka}
+
+\begin{veta}
+Nechť $x > a$ a funkce $f$ má v každém bodě intervalu $\left<a,x\right>$ derivace všech řádů. Jestliže platí podmínka
+\begin{pitemize}
+	\item existuje $C \in \mathbb{R}$ takové, že pro každé $t \in (a,x)$ a každé $n \in \mathbb{N}$ je $|f^{(n)}(t)| \le C$,
+\end{pitemize}
+pak funkce $f$ je v bodě x součtem své Taylorovy řady o středu $a$. Analogicky pro případ $x < a$.
+\end{veta}
+
+\begin{veta}
+Nechť $\sum_{n=0}^{\infty} c_n(x-a)^n$ je mocninná řada o středu $a$ a $R>0$ její poloměr konvergence. Definujme funkci $f(x) = \sum_{n=0}^{\infty} c_n(x-a)^n, x \in B(a,R)$. Pak řada $$\sum_{n=0}^{\infty} c_n(x-a)^n$$ je \emph{Taylorovou řadou funkce $f$} o středu $a$, tj. pro každé $n \in \mathbb{N} \cup \{0\}$ platí $c_n = \frac{f^{(n)}(a)}{n!}$.
+\end{veta}
+
+\textbf{Význam Taylorových řad}:
+\begin{pitemize}
+\item aproximace funkcí -- příklady (Taylorovy řady elementárních funkcí):
+	$$\forall x \in \mathbb{R}: \exp x=\sum_{k=0}^{\infty} \frac{1}{k!}x^k$$
+	$$\forall x \in \mathbb{R}: \sin x=\sum_{k=0}^{\infty} \frac{(-1)^{k-1}}{(2k-1)!}x^{2k-1} \;\;\;\;\dots$$
+\item zjednodušení důkazů -- příklad (Důkaz binomické věty): % Zdroj: Pultrova skripta
+    \par\medskip
+    Rozvineme funkci $f(x)=(1+x)^{\alpha}$ v okolí nuly. Indukcí lze ověřit, že 
+    $f^{(k)}(x)=\alpha(\alpha-1)\cdot\dots\cdot(\alpha-k+1)\cdot(1+x)^{\alpha-k}$. 
+    Taylorova řada funkce $f(x)=(1+x)^{\alpha}$ konverguje na $(-1,1)$ a je rovna hodnotě $(1+x)^{\alpha}$:
+    $$(1+x)^{\alpha}=\sum_{k=0}^{\infty}\frac{\alpha(\alpha-1)\cdot\dots\cdot(\alpha-k+1)}{k!}x^k=\sum_{k=0}^{\infty}\binom{\alpha}{k}x^k$$
+    a to dává binomickou větu.
+\end{pitemize}
+
+\subsection{Fourierovy řady}
+
+\subsubsection{Obecné Fourierovy řady}
+
+\begin{definice}
+Nechť $\{\varphi_n\}_{n=1}^{\infty}$ je posloupnost komplexních funkcí na $\left<a,b\right>$, z nichž žádná není konstantně nulová. Řekneme, že tato posloupnost tvoří \emph{ortogonální (krátce OG) systém na $\left<a,b\right>$}, jestliže pro každá dvě různá $m, n\in \mathbb{N}$ platí:
+$$\int_a^b \varphi_m \overline{\varphi_n} = 0$$
+Pokud navíc
+$$\int_a^b |\varphi_n|^2= 1$$
+pro všechna $n \in \mathbb{N}$, říkáme, že jde o \emph{ortonormální systém}.
+\end{definice}
+
+\begin{poznamka}
+Příklady OG systémů:
+\begin{pitemize}
+	\item Systém tvořený funkcemi $\exp \frac{2k\pi i x}{p}, k \in \mathbb{Z}$ je OG na intervalu $\left<a, a+p\right>$ pro každé $a \in \mathbb{R}$
+	\item Systém tvořený funkcemi $1, \cos \frac{2k\pi x}{p}, \sin \frac{2k\pi x}{p}, k \in \mathbb{N}$ je OG na intervalu \par$\left<a, a+p\right>$ pro každé $a \in \mathbb{R}$
+\end{pitemize}
+\end{poznamka}
+
+\begin{veta}
+Nechť $\{\varphi_n\}_{n=1}^{\infty}$ je posloupnost komplexních funkcí na $\left<a,b\right>$, $\{a_n\}_{n=0}^{\infty}$ je posloupnost komplexních čísel. Jestliže
+$$f(x) = \sum_{n=1}^{\infty} a_n \varphi_n(x), \, x \in \left<a,b\right>,$$
+a uvedená řada konverguje stejnoměrně na $\left<a,b\right>$, pak pro každé $n \in \mathbb{N}$ platí
+$$a_n = \frac{\int_a^b f\overline{\varphi_n}}{\int_a^b |\varphi_n|^2}.$$
+\end{veta}
+
+\begin{definiceN}{po částech spojitá funkce}
+Řekneme, že funkce $f$ je \emph{po částech spojitá na $\left<a,b\right>$}, jestliže existuje $D=\{x_i\}_{j=0}^{N}$ dělení intervalu $\left<a,b\right>$ takové, že pro každé $j \in \{1,\dots,N\}$ je funkce $f$ spojitá na intervalu $(x_{j-1}, x_j)$ a v krajních bodech tohoto intervalu má vlastní jednostranné limity.
+\end{definiceN}
+
+\begin{definice}
+Nechť $\{\varphi_n\}_{n=1}^{\infty}$ je OG systém na $\left<a,b\right>$ a funkce $f$ je po částech spojitá na $\left<a,b\right>$. Pro $n \in \mathbb{N}$ položme
+$$a_n = \frac{\int_a^b f\overline{\varphi_n}}{\int_a^b |\varphi_n|^2}.$$
+Tato čísla nazýváme \emph{Fourierovými koeficienty funkce $f$ vzhledem k OG systému $\{\varphi_n\}_{n=1}^{\infty}$ na $\left<a,b\right>$} a řadu
+$$\sum_{n=1}^{\infty} a_n \varphi_n$$
+nazýváme \emph{Fourierovou řadou $f$ vzhledem k OG systému $\{\varphi_n\}_{n=1}^{\infty}$ na $\left<a,b\right>$}.
+\end{definice}
+
+\subsubsection{Trigonometriké Fourierovy řady}
+
+\begin{definiceN}{po částech spojitá periodická funkce}
+Buď funkce $f$ periodická s periodou $p > 0$. Řekneme, že je \emph{po částech spojitá}, je-li po částech spojitá na intervalu $\left<0,p\right>$.
+\end{definiceN}
+
+\begin{poznamka}
+Nechť $f$ je $p$-periodická funkce a $a,b \in \mathbb{R}$.
+\begin{penumerate}
+	\item Pak $f$ je počástech spojitá na $\left<a, a+p\right>$, právě když je po částech spojitá na $\left<b, b+p\right>$.
+	\item $\int_a^{a+p}f = \int_b^{b+p}f$, pokud alespoň jeden z těchto integrálů existuje.
+\end{penumerate}
+\end{poznamka}
+
+\begin{definice}
+Nechť funkce $f$ je $p$-periodická po částech spojitá funkce. Jejími \emph{trigonometrickými Fourierovými koeficienty} rozumíme čísla
+$$a_n = \frac{2}{p} \int_0^p f(x)\cos \frac{2\pi nx}{p}dx, \, n \in \mathbb{N} \cup \{0\}$$
+$$b_n = \frac{2}{p} \int_0^p f(x)\sin \frac{2\pi nx}{p}dx, \, n \in \mathbb{N}$$
+\end{definice}
+
+\begin{definice}
+\emph{Trigonometrickou Fourierovou řadou} funkce $f$ pak rozumíme řadu
+$$\frac{a_0}{2} + \sum_{n=1}^{\infty} \left( a_n \cos \frac{2\pi nx}{p} + b_n \sin \frac{2\pi nx}{p}\right)$$
+\end{definice}
+
+\begin{poznamkaN}{Besselova nerovnost}
+Besselova nerovnost pro trigonometrické Fourierovy řady má tvar
+$$\frac{|a_0|^2}{4}p + \sum_{n=1}^{\infty} (|a_n|^2 + |b_n|^2)\frac{p}{2} \le \int_0^p |f|^2.$$
+Podobná nerovnost platí i pro obecné Fourierovy řady.
+\par\medskip\noindent
+(Riemann-Lebesgue) důsledkem této nerovnosti je fakt, že $\lim a_n = \lim b_n = 0$.
+\end{poznamkaN}
+
+\begin{vetaN}{Persevalova rovnost}
+Pro trigonometrické Fourierovy řady platí v Besselově nerovnosti rovnost. Pro funkce s periodou $2\pi$ potom platí:
+$$\frac{1}{\pi} \int_{-\pi}^{\pi} |f|^2= \frac{|a_0|^2}{2}+\sum_{n=1}^{\infty} (|a_n|^2 + |b_n|^2) \,\,\,\textit{(jedna z variant zápisu)}$$
+\end{vetaN}
+
+\begin{poznamka}
+Nechť $f$ je $p$-periodická po částech spojitá funkce taková, že všechny její trigonometrické Fourierovy koeficienty jsou nulové. Pak $f(x)=0$ pro všechna $x \in \left<0,p\right>$ s výjimkou konečně mnoha bodů.
+\end{poznamka}
+
+\begin{vetaN}{Symetrie funkce a Trigonometrické Fourierovy koeficienty}
+Nechť $f$ je $p$-periodická po částech spojitá funkce, $a_n, n \in \mathbb{N} \cup \{0\}$ a $b_n, n \in \mathbb{N}$, její trigonometrické Fourierovy koeficienty. Pak platí
+\begin{penumerate}
+	\item Pro všechna $n \in \mathbb{N} \cup \{0\}$ je $a_n=0$, právě když $f(-x) = -f(x)$ pro všechna $x \in \left<0,p\right>$ s výjimkou konečně mnoha bodů.
+	\item Pro všechna $n \in \mathbb{N}$ je $b_n=0$, právě když $f(-x) = f(x)$ pro všechna $x \in \left<0,p\right>$ s výjimkou konečně mnoha bodů.
+\end{penumerate}
+\end{vetaN}
+
+\begin{definice}
+Nechť $f$ je $p$-periodická po částech spojitá funkce. Řekneme, že $f$ je \emph{po částech hladká}, jestliže $f'$ je po částech spojitá.
+\end{definice}
+
+\begin{vetaN}{O konvergenci Fourierových řad}
+Nechť $f$ je po částech hladká p-periodická funkce. Pak platí:
+\begin{penumerate}
+	\item Trigonometrická Fourierova řada funkce $f$ konverguje bodově na $\mathbb{R}$ a její součet v bodě $x \in \mathbb{R}$ je $\frac{1}{2} \left( \lim_{t\rightarrow x-} f(t) + \lim_{t\rightarrow x+} f(t)\right)$
+	\item Je-li $f$ navíc spojitá na intervalu $(a,b)$, pak její trigonometrická Fourierova řada konverguje lokálně stejnoměrně na $(a,b)$ a její součet je $f(x)$ pro každé $x \in (a,b)$.
+	\item Je-li navíc spojitá na $\mathbb{R}$, pak její trigonometrická Fourierova řada konverguje stejnoměrně na $\mathbb{R}$ a její součet je $f(x)$ pro každé $x \in \mathbb{R}$.
+\end{penumerate}
+\end{vetaN}
+
+% derivacia FR?: podle me netreba, ani Pick ani Klazar ani Pultr to nemaji ve skriptech / neprednaseli -- Tuetschek

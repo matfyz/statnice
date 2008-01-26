@@ -1,0 +1,49 @@
+\subsection{Sběrnice, protokoly}
+
+\begin{pitemize}
+	\item \textbf{Struktura sběrnice}: datové linky, adresové linky, řídící linky
+	\item \textbf{Synchronní přenos} (vznik události je dán hodinovým signálem) vs. \textbf{asynchronní přenos} (vznik události je určen předcházející událostí~-- napr. signalizáciou začiatku dát) 
+	\item \textbf{Parametry sběrnice}: 
+	\begin{pitemize}
+	  \item \emph{datová šířka}~-- počet přenášených bitů v jednom okamžiku,
+	  \item \emph{kapacita}~-- počet bitů přenesených za čas,
+	  \item \emph{rychlost}~-- kapacita sběrnice normovaná k jednotce informace. 
+	\end{pitemize}  
+	\item \textbf{Řízení požadavků}: 
+	\begin{pitemize}
+	  \item \emph{centrální}~-- náhodné, dle pořadí vzniku požadavků, prioritní,
+	  \item \emph{distribuované}~-- kolizní (CSMA/CD), token bus, prioritní linka (daisy chain).
+	\end{pitemize} 
+	\item \textbf{Přenos dat po sběrnici} může probíhat buď za účasti procesoru (zdroj $\rightarrow$ CPU $\rightarrow$ cíl), nebo bez. Bez procesoru to může být např.:
+	\begin{pitemize}
+		\item dávkový režim~-- domluva mezi CPU a řadičem na době obsazení sběrnice (napr. pomocou zdvihnutia \uv{lock flagu} na zbernici)
+		\item kradení cyklů~-- řadič na dobu přenosu \uv{uspí} procesor (nelze uspat na dlouho, je to technicky náročnější)
+		\item transparentní režim~-- řadič rozezná, kdy procesor nepoužívá sběrnici, obvykle nelze větší přenosy najednou
+		\item DMA (Direct Memory Access)~-- speciální jednotka pro provádění přenosů dat (mezi zařízeními a pamětí)
+	\end{pitemize}
+	Jednou z technik, používaných k přenosu dat po sběrnici řadiči DMA, je \emph{scatter-gather}. Znamená to, že v rámci jednoho přenosu se zpracovává víc ne nutně souvislých bloků dat. 
+	\begin{pitemize}
+	    \item \emph{scatter}~-- DMA řadič v rámci 1 přenosu uloží z 1 místa data na několik různých míst (např hlavičky TCP/IP - jinak zbytečné kopírování)  
+	    \item \emph{gather}~-- např. při stránkování paměti - načítání stránek, které fyzicky na disku nemusí být u sebe, složení na 1 místo do paměti.
+	\end{pitemize}
+\end{pitemize}
+
+Příklady sběrnic:
+\begin{pitemize}
+	\item ISA, EISA
+	\item ATA, ATAPI~-- UltraDMA, Serial-ATA (SATA)
+	\item SCSI (Small Computer System Interface)
+	\item PCI, PCI-X, PCI Express
+	\item AGP (Advanced Graphics Port)
+	\item USB (Universal Serial Bus)
+	\item FireWire (IEEE 1394)
+	\item RS485
+	\item $I^{2}C$
+\end{pitemize}
+
+Příbuzné sběrnic:
+\begin{pitemize}
+	\item IrDA
+	\item Bluetooth
+	\item Wi-Fi, WiMAX 
+\end{pitemize}

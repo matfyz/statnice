@@ -1,0 +1,221 @@
+\subsection{Transakční zpracování, vlastnosti transakcí, uzamykací protokoly, zablokování}
+
+\begin{definiceN}{Transakce}
+\emph{Transakce} je jistá posloupnost nebo specifikace posloupnosti akcí práce s databází, jako
+jsou čtení, zápis nebo výpočet, se kterou se zachází jako s jedním celkem.
+\end{definiceN}
+
+Hlavním smyslem používání transakcí, tj. \emph{transakčního zpracování}, je
+udržení databáze v konzistentním stavu. Jestliže na sobě některé operace závisí,
+sdružíme je do jedné transakce a tím zabezpečíme, že budou vykonány buď
+všechny, nebo žádná. Databáze tak před i po vykonání transakce bude v
+konzistentním stavu. Aby se uživateli transakce jevila jako jedna atomická
+operace, je nutné zavést příkazy COMMIT a ROLLBACK. První z nich signalizuje
+databázi úspěšnost provedení transakce, tj. veškeré změny v databázi se stanou
+trvalými a jsou zviditelněny pro ostatní transakce, druhý příkaz signalizuje
+opak, tj. databáze musí být uvedena do původního stavu.
+
+Tyto příkazy většinou není nutné volat explicitně, např. příkaz COMMIT je vyvolán po
+normálním ukončení programu realizujícího transakci. Příkaz ROLLBACK pro svou
+funkci vyžaduje použití tzv. \emph{žurnálu} (logu) na nějakém stabilním
+paměťovém médiu. Žurnál obsahuje historii všech změn databáze v jisté časové
+periodě.
+
+Jednoduchá transakce vypadá většinou takto:
+\begin{penumerate}
+  \item Začátek transakce,
+  \item provedení několika dotazů -- čtení a zápisů (žádné změny v databázi nejsou zatím vidět pro
+  okolní svět),
+  \item Potvrzení (příkaz COMMIT) transakce (pokud se transakce povedla, změny
+  v databázi se stanou viditelné).
+\end{penumerate}
+Pokud nějaký z provedených dotazů selže, systém by měl celou transakci zrušit a
+vrátit databázi do stavu v jakém byla před zahájením transakce (operace ROLLBACK).
+
+Transakční zpracování je také ochrana databáze před hardwarovými nebo
+softwarovými chybami, které mohou zanechat databázi po částečném zpracování
+transakce v nekonzistentním stavu. Pokud počítač selže uprostřed provádění
+některé transakce, transakční zpracování zaručí, že všechny operace z
+nepotvrzených (\uv{uncommitted}) transakcí budou zrušeny. 
+
+\subsubsection*{Vlastnosti transakcí}
+
+Podívejme se nyní na vlastnosti požadované po transakcích. Obvykle se používá
+zkratka prvních písmen anglických názvů vlastností \textbf{ACID}~-- atomicity,
+consistency, isolation (independence), durability. 
+\begin{description}
+  \item[atomicita] -- transakce se tváří jako jeden celek, musí buď proběhnout
+  celá, nebo vůbec ne.
+  \item[konzistence] -- transakce transformuje databázi z jednoho konzistentního
+  stavu do jiného konzistentního stavu.
+  \item[nezávislost] -- transakce jsou nezávislé, tj. dílčí efekty transakce
+  nejsou viditelné jiným transakcím.
+  \item[trvanlivost] -- efekty úspěšně ukončené (potvrzené,\uv{commited})
+  transakce jsou nevratně uloženy do databáze a nemohou být zrušeny.
+\end{description}
+
+Transakce mohou být v uživatelských programech prováděny paralelně (spíše
+zdánlivě paralelně, stejně jako je paralelismus multitaskingu na jednoprocesorových
+strojích jen zdánlivý, zajistí to ale možnost paralelizace \uv{nedatabázových} 
+akcí a pomalé transakce nebrzdí rychlé). Je
+zřejmé, že posloupnost transakcí může být zpracována paralelně různým způsobem.
+Každá transakce se skládá z několika akcí. Stanovené pořadí provádění akcí
+více transakcí v čase nazveme \textbf{rozvrhem}.
+
+Rozvrh, který splňuje následující podmínky, budeme nazývat \textbf{legální}:
+\begin{pitemize}
+  \item Objekt je nutné mít uzamknutý, pokud k němu chce transakce přistupovat.
+  \item Transakce se nebude pokoušet uzamknout objekt již uzamknutý jinou
+  transakcí (nebo musí počkat, než bude objekt odemknut).
+\end{pitemize}
+
+Důležitými pojmy pro paralelní zpracování jsou sériovost či uspořádatelnost.
+\textbf{Sériové rozvrhy} zachovávají operace každé transakce pohromadě (a 
+provádí se jen jedna transakce najednou). Pro $n$
+transakcí tedy existuje $n!$ různých sériových rozvrhů. Pro získání korektního
+výsledku však můžeme použít i rozvrhu, kde jsou operace různých transakcí
+navzájem prokládány.
+Přirozeným požadavkem na korektnost je, aby efekt paralelního zpracování
+transakcí byl týž, jako kdyby transakce byly provedeny v nějakém sériovém rozvrhu.
+Předpokládáme-li totiž, že každá transakce je korektní program, měl by vést
+výsledek sériového zpracování ke konzistentnímu stavu. O systému zpracování
+transakcí, který zaručuje dosažení konzistentního stavu nebo stejného stavu
+jako sériové rozvrhy, se říká, že zaručuje \textbf{uspořádatelnost}.
+
+Mohou se vyskytnout problémy, které uspořádatelnosti zamezují. Ty nazýváme \emph{konflikty}. Plynou z pořadí dvojic akcí různých transakcí na stejném objektu. Existují tři typy konfliktních situací:
+\begin{penumerate}
+    \item WRITE-WRITE -- přepsání nepotvrzených dat
+    \item READ-WRITE -- neopakovatelné čtení
+    \item WRITE-READ -- čtení nepotvrzených (\uv{uncommitted}) dat
+\end{penumerate}
+
+Řekneme, že rozvrh je \emph{konfliktově uspořádatelný}, je-li konfliktově ekvivalentní nějakému sériovému rozvrhu (tedy jsou v něm stejné, tj. žádné konflikty). Test na konfliktovou uspořádatelnost se dá provést jako test acykličnosti grafu, ve kterém konfliktní situace představují hrany a transakce vrcholy. Konfliktová uspořádatelnost je slabší podmínka než uspořádatelnost -- nezohledňuje ROLLBACK (\emph{zotavitelnost} -- zachování konzistence, i když kterákoliv transakce selže) a dynamickou povahu databáze (vkládání a mazání objektů). Zotavitelnosti se dá dosáhnout tak, že každá transakce $T$ je potvrzena až poté, co jsou potvrzeny všechny ostatní transakce, které změnily data čtená v $T$. Pokud v zotavitelném rozvrhu dochází ke čtení změn pouze potvrzených transakcí, nemůže dojít ani k jejich \emph{kaskádovému rušení}.
+
+Při zpracování (i uspořádatelného) rozvrhu může dojít k situaci \emph{uváznutí} -- \emph{deadlocku}. To nastane tehdy, pokud jedna transakce $T_1$ čeká na zámek na objekt, který má přidělený $T_2$ a naopak. Situaci lze zobecnit i na více transakcí. Uváznutí lze buď přímo zamezit charakterem rozvrhu, nebo detekovat (hledáním cyklu v grafu čekajících transakcí, tzv. \uv{waits-for} grafu) a jednu z transakcí \uv{zabít} a spustit znova.
+
+\medskip
+K zajištění uspořádatelnosti a zotavitelnosti a zabezpečení proti kaskádovým rollbackům a deadlocku se používají různá schémata (požadavky na rozvrhy). Jedním z nich jsou uzamykací protokoly.
+
+\subsubsection*{Uzamykací protokoly}
+
+Vytváření rozvrhů a testování jejich uspořádatelnosti není pro praxi zřejmě ten
+nejvhodnější způsob. Pokud ale budeme transakce konstruovat podle určitých
+pravidel, tak za určitých předpokladů bude každý jejich rozvrh uspořádatelný.
+Soustavě takových pravidel se říká \textbf{protokol}.
+
+Nejznámější protokoly jsou založeny na dynamickém zamykání a odemykání objektů v
+databázi. Zamykání (operace LOCK) je akce, kterou vyvolá transakce na objektu,
+aby ho chránila před přístupem ostatních transakcí.
+
+\begin{definiceN}{Dobře formovaná transakce}
+Transakci nazveme \textbf{dobře formovanou} pokud podporuje přirozené požadavky
+na transakce:
+\begin{penumerate}
+  \item transakce zamyká objekt, chce-li k němu přistupovat,
+  \item transakce nezamyká objekt, který již je touto transakcí uzamčený,
+  \item transakce neodmyká objekt, který není touto transakcí zamčený,
+  \item po ukončení transakce jsou všechny objekty uzamčené touto transakcí
+  odemčeny.
+\end{penumerate}
+\end{definiceN}
+
+\paragraph{Dvoufázový protokol (2PL)} -- Dvoufázová transakce v první fázi
+zamyká vše co je potřeba a od prvního odemknutí (druhá fáze) již jen odemyká co
+měla zamčeno (již žádná operace LOCK). Tedy transakce musí mít všechny objekty
+uzamčeny předtím, než nějaký objekt odemkne. Dá se dokázat, že pokud jsou
+všechny transakce v dané množině transakcí dobře formované a dvoufázové, pak
+každý jejich legální rozvrh je uspořádatelný.
+
+Dvoufázový protokol zajišťuje uspořádatelnost, ale ne zotavitelnost ani
+bezpečnost proti kaskádovému rušení transakcí nebo uváznutí.
+
+\paragraph{Striktní dvoufázový protokol (S2PL)} -- Problémy 2PL jsou nezotavitelnost
+a kaskádové rušení transakcí. Tyto nedostatky lze odstranit pomocí striktních
+dvoufázových protokolů, které uvolňují zámky až po skončení transakce (COMMIT).
+Zřejmá nevýhoda je omezení paralelismu. 2PL navíc stále nevylučuje možnost deadlocku.
+
+\paragraph{Konzervativní dvoufázový protokol (C2PL)} -- Rozdíl oproti 2PL je
+ten, že transakce žádá o všechny své zámky, ještě než se začne
+vykonávat. To sice vede občas k zbytečnému zamykání (nevíme co přesně budeme
+potřebovat, tak radši zamkneme víc), ale stačí to již k prevenci uváznutí
+(deadlocku).
+
+\subsubsection*{\uv{Vylepšení} zamykacích protokolů}
+
+\paragraph{Sdílené a výlučné zámky} -- Nevýhodou 2PL je, že objekt může mít
+uzamčený pouze jedna transakce. Abychom uzamykání provedli precizněji, je dobré
+vzít na vědomí rozdíl mezi operacemi READ a WRITE. \emph{Výlučný zámek}
+(W\_LOCK) může být aplikován na objekty jak pro operaci READ tak pro WRITE,
+\emph{sdílený zámek} (R\_LOCK) uzamyká objekt, který chceme pouze číst. Jeden
+objekt potom může být uzamčen sdíleným zámkem více transakcí a zvyšuje se tak
+možnost paralelního zpracování. Budeme-li s těmito zámky zacházet stejně jako u
+2PL, opět máme zaručenou uspořádatelnost rozvrhu, ovšem nikoliv absenci uváznutí.
+
+
+\paragraph{Strukturované uzamykání (multiple granularity)} -- Objekty jsou v
+tomto případě chápány hierarchicky dle relace \emph{obsahuje}. Například
+databáze obsahuje soubory, které obsahují stránky a ty zase obsahují jednotlivé
+záznamy. Na tuto hierarchii se můžeme dívat jako na strom, ve kterém každý
+vrchol obsahuje své potomky. Když transakce zamyká objekt (vrchol) zamyká také
+všechny jeho potomky. Protokol se tak snaží minimalizovat počet zámků, tím
+snížit režii a zvýšit možnosti paralelního zpracování.
+
+
+\subsubsection*{Alternativní protokoly}
+
+\paragraph{Časová razítka} -- Další z protokolů zaručující uspořádatelnost je
+využití časových razítek. Na začátku dostane transakce $T$ \emph{časové
+razítko}~-- $TS(T)$ (časová razítka jsou unikátní a v čase rostou), abychom věděli
+pořadí, ve kterém by měli být transakce vykonány. Každý objekt v databázi má
+\emph{čtecí razítko}~-- $RTS(O)$ (read timestamp), které je aktualizováno, když je
+objekt čten, a \emph{zapisovací razítko}~-- $WTS(O)$ (write timestamp), které je
+aktualizováno, když nějaká transakce objekt mění.
+
+Pokud chce transakce $T$ číst objekt $O$ mohou nastat dva případy:
+\begin{pitemize}
+
+  \item $TS(T) < WTS(O)$, tzn. někdo změnil objekt $O$ potom co byla spuštěna
+  transakce $T$. V tomto případě musí být transakce zrušena a spouštěna znovu (a
+  tedy s jiným časovým razítkem).
+
+  \item $TS(T) > WTS(O)$, tzn. je bezpečné objekt číst. V tomto případě $T$
+  přečte $O$ a $RTS(O)$ je nastaveno na $\max\{TS(T),\ RTS(O)\}$.
+
+\end{pitemize}
+
+Pokud chce transakce $T$ zapisovat do objektu $O$ rozlišujeme případy tři:
+\begin{pitemize}
+
+  \item $TS(T) < RTS(O)$, tzn. někdo četl $O$ poté co byla spuštěna $T$ a
+  předpokládáme, že si pořídil lokální kopii. Nemůžeme tedy $O$ změnit, protože
+  by lokální kopie přestala být platná a tedy je nutné $T$ zrušit a spustit
+  znova.
+
+  \item $TS(T) < WTS(O)$, tzn. někdo změnil $O$ po startu $T$. V tomto případě
+  přeskočíme write operaci a pokračujeme dále normálně. $T$ nemusí být
+  restartována.
+
+  \item V ostatních případech $T$ změní $O$ a $WTS(O)$ je nastaveno na $TS(T)$.
+\end{pitemize}
+
+\paragraph{Optimistické protokoly} -- V situaci kdy se většina transakcí
+neovlivňuje, je režie výše uvedených protokolů zbytečně velká a můžeme použít
+takzvaný optimistický protokol. V protokolu můžeme rozlišit tři fáze.
+\begin{penumerate}
+
+  \item \textbf{Fáze čtení:} Čtou se objekty z databáze do lokální paměti a jsou
+  na nich prováděny potřebné změny.
+
+  \item \textbf{Fáze kontroly:} Po dokončení všech změn v lokální paměti je
+  vyvolán pokus o zapsání výsledků do databáze. Algoritmus zkontroluje, zda
+  nehrozí potenciální kolize s již potvrzenými transakcemi, nebo s některými
+  právě probíhajícími. Pokud konflikt existuje, je třeba spustit algoritmus pro
+  řešení kolizí, který se je snaží vyřešit. Pokud se mu to nepodaří, je využita
+  poslední možnost a tou je zrušení a restartování transakce.
+
+  \item \textbf{Fáze zápisu:} Pokud nehrozí žádné konflikty, jsou data z lokální
+  paměti zapsány do databáze a transakce potvrzena.
+
+\end{penumerate}
+
+

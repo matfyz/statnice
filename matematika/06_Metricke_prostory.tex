@@ -1,0 +1,330 @@
+\def\Real{\mathbb{R}}
+\def\Euklid{\mathbb{E}}
+\def\impl{\ \Rightarrow\ }
+
+\section{Metrické prostory}
+
+\begin{pozadavky}
+\begin{pitemize}
+    \item Definice metrického prostoru, příklady.
+    \item Spojitost a stejnoměrná spojitost.
+    \item Kompaktní prostory a jejich vlastnosti, úplné prostory.
+\end{pitemize}
+\end{pozadavky}
+
+\begin{center}
+Při přepracovávání a rozšiřování této otázky jsem použil skripta Prof. A. Pultra z matematické analýzy \\
+(\texttt{http://kam.mff.cuni.cz/\~{}pultr/ma.ps})
+\end{center}
+\begin{flushright}
+-- Tuetschek
+\end{flushright}
+
+\subsection{Definice metrického prostoru, příklady}
+
+\subsubsection*{Metrický prostor, metrika}
+
+\begin{definiceN}{Metrický prostor}
+\emph{Metrický prostor} je dvojice $(M, d)$, kde $M$ je množina a $d: M \times M \rightarrow \mathbb{R}$ je zobrazení, zvané \emph{metrika}, splňující tři axiomy:
+\begin{penumerate}
+\item $d(x, y) = 0 \Leftrightarrow x = y$
+\item $d(x, y) = d(y, x)$ \hfill \emph{(symetrie)}
+\item $d(x, y) \le d(x, z) + d(z, y)$ \hfill\emph{(trojúhelníková nerovnost)}
+\end{penumerate}
+Metrické prostory jsou abstrakcí jevu vzdálenosti. Z axiomů 1. a 3. vyplývá nezápornost hodnot metriky (která se ale většinou explicitně uvádí jako součást prvního axiomu). Prvky metrického prostoru nazveme \emph{body}.
+\end{definiceN}
+
+\begin{obecne}{Příklady metrik}
+Nechť $M = \mathbb{R}^n$ a $p \ge 1$ je reálné číslo. Na $M$ definujeme metriky\\(kde $x = (x_1, x_2, \dots, x_n)$, $y = (y_1, y_2, \dots , y_n)$)
+$$d_p(x, y) = \left(\sum_{i=1}^{n}|x_i - y_i|^p\right)^{1/p}$$
+
+\noindent Potom:\begin{penumerate}
+\item Pro $p = 1, n = 1$ dostáváme metriku $|x − y|$.
+\item Pro $p = 2, n \ge 2$ dostáváme euklidovskou metriku
+$$d_2(x, y) = \parallel x − y \parallel = \sqrt{(x_1-y_1)^2+(x_2-y_2)^2+\dots+(x_n-y_n)^2}$$
+\item Pro $p = 1, n \ge 2$ dostáváme tzv. pošťáckou metriku a pro $p \rightarrow \infty$ maximovou
+metriku
+$$d_1(x, y) = \max_{1 \le i \le n} |x_i − y_i|$$
+\end{penumerate}
+\par\medskip\noindent
+Buď $X$ libovolná množina. $F(X)$ označme množinu všech omezených funkcí $f:X\to\Real$ a definujme funkci $d$ předpisem
+$$d(f,g)=\sup_{x\in X}|f(x)-g(x)|$$
+Pak $(F(X),d)$ je metrický prostor (s tzv. supremovou metrikou).
+\par\medskip\noindent
+Úplně triviální příklad metriky dostaneme, když na nějaké množině $X$ položíme $d(x,y)=1$ pro $x\neq y$ a $d(x,x)=0$.
+\end{obecne}
+
+\begin{definiciaN}{euklidovský priestor}
+\textbf{Euklidovským priestorom} rozumieme metrický priestor $(\Real^n, d_2)$, kde $d_2$ je funkcia daná predpisom $d_2(x,y)=\sqrt{\sum_{i=1}^n(x_i-y_i)^2}$.
+\end{definiciaN}
+
+\subsubsection*{Otevřené a uzavřené množiny}
+
+\begin{definiciaN}{otvorená a uzavretá guľa}
+Nech $(M,d)$ je metrický priestor, $x \in M, r > 0$, potom
+\begin{pitemize}
+\item \textbf{otvorenou guľou} (\emph{$r$-okolím}) so stredom $x$ a polomerom $r$ nazveme množinu
+$$B(x,r)=\{y \in M | d(x,y)<r\}$$
+\item \textbf{uzavretou guľou} (\emph{$r$-okolím}) so stredom $x$ a polomerom $r$ nazveme množinu
+$$\overline{B}(x,r) = \{y \in M | d(x,y) \le r \}$$
+\end{pitemize}
+\end{definiciaN}
+
+\begin{definiciaN}{otvorená a uzavretá množina}
+Nech $(M,d)$ je metrický priestor, $G \subseteq M$, potom
+\begin{pitemize}
+\item $G$ je \textbf{otvorená} v $M$, ak
+$$\forall x \in G\;\exists r >\;0:\; B(x,r)\subseteq G$$
+(tj. množina $G$ je okolím každého svojho bodu)
+\item $G$ je \textbf{uzavretá} v $M$, ak jej doplnok $M \setminus G$ je otvorený v $M$.
+\end{pitemize}
+\par\medskip\noindent
+Otvorená guľa je otvorená množina v každom metrickom priestore. Podobné tvrdenie platí aj pre uzavretú guľu.
+\end{definiciaN}
+
+\begin{vetaSKN}{vlastnosti otvorených množín}
+Nech $(M,d)$ je metrický priestor, potom platí
+\begin{penumerate}
+\item $\emptyset$, $M$ sú otvorené v $M$
+\item konečný prienik otvorených množín je otvorená množina v $M$
+\item ľubovoľne veľké zjednotenie otvorených množín je otvorená množina v $M$
+\end{penumerate}
+\end{vetaSKN}
+
+\begin{vetaSKN}{vlastnosti uzavretých množín}
+Nech $(M,d)$ je metrický priestor, potom platí
+\begin{penumerate}
+\item $\emptyset$, $M$ sú uzavreté v $M$
+\item ľubovoľný prienik uzavretých množín je uzavretá množina v $M$
+\item konečné zjednotenie uzavretých množín je uzavretá množina v $M$
+\end{penumerate}
+\end{vetaSKN}
+
+\begin{definiciaN}{uzáver}
+\textbf{Uzáverom} množiny $A$ v metrickom priestore $(M,d)$ nazývame množinu
+$$\overline{A} = \bigcap_{\forall F}\{F|F \text{ uzavretá}, A \subseteq F \subseteq M\}$$
+\end{definiciaN}
+
+\begin{definiciaN}{vnútro}
+\textbf{Vnútrom} množiny $A$ v metrickom priestore $(M,d)$ nazývame množinu
+$$\mathrm{int }A = A^0 = \bigcup_{\forall F}\{F|F \subset A, F \text{ otvorená}\}$$
+\end{definiciaN}
+
+\begin{definiceN}{Vzdálenost bodu od množiny}
+V metrickém prostoru $(X,\rho)$ buď $A\subset X$ množina a $x\in(X,\rho)$ bod. \emph{Vzdálenost bodu $x$ od množiny $A$} je číslo $\rho(x,A)=\inf\{\rho(x,y)|y\in A\}$.
+\end{definiceN}
+
+\begin{vetaSKN}{vlastnosti uzáveru}
+Nech $(M,d)$ je metrický priestor a $A,B$ množiny v nem, potom platí:
+\begin{penumerate}
+\item $\overline{\emptyset} = \emptyset$, $\overline{M} = M$
+\item $A \subset B \Rightarrow \overline{A} \subset \overline{B}$
+\item $\overline{\overline{A}} = \overline{A}$
+\item $\overline{A \cup B} = \overline{A} \cup \overline{B}$
+\item charakteristika uzáveru: $\overline{A} = \{x \in M| d(x,A) = 0\}$
+\item $\overline{A}$ je najmenšia uzavretá množina obsahujúci $A$, preto $A$ je uzavretá práve keď $\overline{A}=A$.
+\end{penumerate}
+\end{vetaSKN}
+
+\subsubsection*{Posloupnost bodů}
+
+\begin{definiceN}{Konvergence posloupnosti bodů}
+Řekneme, že posloupnost bodů $(x_n)_{n\geq 0}$ nějakého metrického prostoru $(X,\rho)$ \emph{konverguje k bodu $x$} ($x_n\to x$), nebo že $x=\lim_{n\geq 0} x_n$,  jestliže
+$$\forall\varepsilon>0\ \exists n_0:n\geq n_0\impl\rho(x_n,x)<\varepsilon$$
+\end{definiceN}
+
+\begin{poznamkaN}{vlastnosti konvergence}
+Nechť je dán metrický prostor $(X,\rho)$ a v něm posloupnost bodů $(x_n)_{n\geq 0}$. Potom platí:
+\begin{penumerate}
+    \item Jestliže pro nějaký bod $y\in X$ platí $\exists n_0\in\mathbb{N}: \forall n\geq n_0: x_n = y$, pak $x_n\to y$
+    \item Nechť $x_n\to y_1$ a zároveň $x_n\to y_2$. Potom $y_1=y_2$.
+    \item Vybraná posloupnost z konvergentní posloupnosti konverguje ke stejnému bodu.
+\end{penumerate}
+\end{poznamkaN}
+
+\begin{poznamkaN}{Ekvivalentní definice uzavřené množiny}
+Množina $M\subset(X,\rho)$ je uzavřená, jestliže každá posloupnost bodů $(x_n)_{n\geq 0}$, která v $M$ leží a konverguje, v $M$ má také svou limitu.
+\end{poznamkaN}
+
+\subsection{Spojitost a stejnoměrná spojitost}
+
+\subsubsection*{Spojitá a stejnoměrně spojitá zobrazení}
+
+\begin{definiceN}{Spojité zobrazení}
+Pro metrické prostory $(X,\rho)$ a $(Y,\sigma)$ je zobrazení $f:X\to Y$ \emph{spojité v bodě} $x\in X$, jestliže
+$$\forall\varepsilon>0\ \exists\delta>0: \rho(x,y)<\delta\impl \sigma(f(x),f(y))<\varepsilon$$
+Zobrazení $f$ je \emph{spojité}, pokud je spojité v každém bodě $x\in X$.
+\end{definiceN}
+
+\begin{vetaN}{Vlastnosti spojitosti}
+Nechť je dáno zobrazení $f:X\to Y$ mezi dvěma metrickými prostory $(X,\rho)$, $(Y,\sigma)$. Pak jsou následující tvrzení ekvivalentní:
+\begin{penumerate}
+    \item $f$ je spojité
+    \item pro každou konvergentní posloupnost $(x_n)_{n\geq 0}$ v $X$ platí $f(\lim x_n)=\lim f(x_n)$
+    \item pro každé $x$ a každé okolí $U$ bodu $f(x)$ existuje okolí $V$ bodu $x$ takové, že $f[V]\subseteq U$
+    \item obrazy otevřených množin z $Y$ zobrazením $f^{-1}(U)$ jsou v $X$ otevřené
+    \item obrazy uzavřených množin z $Y$ zobrazením $f^{-1}(U)$ jsou v $X$ uzavřené
+    \item pro každou $M\subseteq X$ platí $f[\overline{M}]\subseteq \overline{f[M]}$
+\end{penumerate}
+\end{vetaN}
+
+\begin{definiceN}{Stejnoměrně spojité zobrazení}
+Řekneme, že zobrazení$f:(X,\rho)\to(Y,\sigma)$ je \emph{stejnoměrně spojité}, jestliže
+$$\forall\varepsilon>0\ \exists\delta>0\text{ takové, že }\forall(x,y)\text{ platí }\rho(x,y)<\delta\impl\sigma(f(x),f(y))<\varepsilon$$
+\end{definiceN}
+
+\begin{vetaN}{Skládání zobrazení}
+Složení dvou spojitých (nebo stejnoměrně spojitých) zobrazení je spojité (resp. stejnoměrně spojité).
+\end{vetaN}
+
+\begin{definiceN}{homeomorfismus}
+Existuje-li ke (stejnoměrně) spojitému zobrazení $f:(X,\rho)\to(Y,\sigma)$ inverzní (stejnoměrně) spojité zobrazení $f^{-1}$, řekneme, že $f$ je \emph{(stejnoměrný) homeomorfismus} a prostory $X$ a $Y$ jsou \emph{(stejnoměrně) homeomorfní}. Pokud je takové $f$ identické zobrazení z $(X,\rho_1)$ do $(X,\rho_2)$, říkáme, že metriky $\rho_1$ a $\rho_2$ jsou \emph{(stejnoměrně) ekvivalentní} (jiná definice ekvivalentních metrik je, že dvě metriky jsou ekvivalentní, jestliže mají metrické prostory $(X,\rho_1)$ a $(X,\rho_2)$ tytéž otevřené množiny).
+\end{definiceN}
+
+\begin{vetaN}{aritmetika zobrazení}
+Jsou-li $f,g$ spojité funkce $(X,\rho)\to\Real$ (kde $(X,\rho)$ je metrický prostor) a $\alpha\in\Real$, potom i funkce $f+g$, $\alpha\cdot f$, $f\cdot g$ a $\frac{f}{g}$ (má-li tato smysl) jsou spojité. Platí i pro spojitost zobrazení v nějakém bodě $x_0\in X$.
+
+\begin{dukaz}
+Důkaz této věty je vlastně stejný jako důkaz věty o aritmetice limit pro reálné funkce (jen pracujeme se zobrazeními na metrických prostorech).
+\end{dukaz}
+\end{vetaN}
+
+\begin{definiceN}{Stejnoměrná konvergence posloupnosti zobrazení}
+Řekneme, že posloupnost $(f_n)_{n\geq 0}$ zobrazení z $(X,\rho)$ do $(Y,\sigma)$ \emph{konverguje stejnoměrně} k zobrazení $f:X\to Y$ ($f_n\rightrightarrows f$), jestliže
+$$\forall\varepsilon>0\ \exists n_0:\forall n\geq n_0\ \forall x\in X\ \sigma(f_n(x),f(x))<\varepsilon$$ 
+\end{definiceN}
+
+\begin{vetaN}{spojitost limitního zobrazení}
+Jsou-li $f_n$ spojité a $f_n\rightrightarrows f$, pak je i $f$ spojité.
+\end{vetaN}
+
+\subsubsection*{Podprostor metrického prostoru}
+
+\begin{definiceN}{Podprostor}
+Pro metrický prostor $(X,\rho)$ a množinu $X_1\subset X$ vezmeme funkci $\rho_1:X_1\times X_1\to\Real$ danou předpisem $\rho_1(x,y)=\rho(x,y)\ \forall x,y\in X_1$. Pak $(X_1,\rho_1)$ je \emph{podprostor} metrického prostoru $(X,\rho)$ (indukovaný podmnožinou $X_1$).
+\end{definiceN}
+
+\begin{poznamka}
+Zobrazení vložení $j:(X_1,\rho)\to(X,\rho)$, $j(x)=x\ \forall x\in X_1$ je stejnoměrně spojité.
+\end{poznamka}
+
+\begin{vetaN}{Vlastnosti podprostorů}
+Buď $Y$ podprostor metrického prostoru $X$. Potom platí:
+\begin{penumerate}
+    \item o okolí bodů: $B_Y(x,\varepsilon)=B_X(x,\varepsilon)\cap Y$
+    \item $U$ je otevřená množina v $Y$, právě když existuje otevřená mn. $V$ v $X$ taková, že $U=V\cap Y$ (to samé platí i pro uzavřené množiny)
+    \item o uzávěru množiny: $\overline{A}^Y=\overline{A}^X\cap Y$
+\end{penumerate}
+\end{vetaN}
+
+\begin{vetaN}{Podprostor zachovává spojitost}
+Pro $f:(X,\rho)\to (Y,\sigma)$ (stejnoměrně) spojité zobrazení a $X_1\subseteq X$, $Y_1\subseteq Y$ takové, že $f[X_1]\subseteq Y_1$ je $f_1:X_1\to Y_1$ definované předpisem $f_1(x)=f(x)\ \forall x\in X_1$ (stejnoměrně) spojité.
+\end{vetaN}
+
+\subsection{Kompaktní prostory a jejich vlastnosti, úplné prostory}
+
+\subsubsection*{Kompaktní metrické prostory}
+
+\begin{definiceN}{Kompaktní prostor}
+Řekneme, že metrický prostor je \emph{kompaktní}, jestliže v něm lze z každé posloupnosti bodů vybrat konvergentní podposloupnost.
+\end{definiceN}
+
+\begin{priklady}
+\begin{pitemize}
+    \item Každý konečný prostor je kompaktní.
+    \item Každý omezený uzavřený interval je kompaktní.
+\end{pitemize}
+\end{priklady}
+
+\begin{vetaN}{Uzavřenost kompaktního podprostoru}
+Každý kompaktní podprostor $Y$ libovolného metrického prostoru $X$ je uzavřený. Je-li $X$ kompaktní, je každý jeho uzavřený podprostor taky kompaktní.
+
+\begin{dukaz}
+Obě tvrzení se dokážou z definice uzavřených množin -- všechny konvergentní posloupnosti v nich mají svou limitu.
+\end{dukaz}
+\end{vetaN}
+
+\begin{definiceN}{omezená podmnožina}
+Podmnožina $M$ metrického prostoru $(X,\rho)$ je \emph{omezená}, pokud existuje konečné $K$ takové, že 
+$$x,y\in M\impl \rho(x,y)<K$$
+\end{definiceN}
+
+\begin{vetaN}{Omezený euklidovský podprostor}
+\begin{penumerate}
+    \item Podprostor $X$ euklidovského prostoru dimenze $n$ ($\Euklid_n$) je kompaktní, právě když je uzavřený a omezený. 
+    \item Kompaktní podprostor $X\subseteq\Real$ ($\equiv\Euklid_1$) má největší a nejmenší prvek.
+\end{penumerate}
+\end{vetaN}
+
+\begin{vetaN}{Spojitá zobrazení a kompaktní množiny}
+Buď $f:(X,\rho)\to(Y,\sigma)$ spojité zobrazení a $X$ kompaktní metrický prostor. Potom platí:
+\begin{penumerate}
+    \item Zobrazení $f$ je stejnoměrně spojité.
+    \item $f[X]$ je kompaktní podmnožina $Y$.
+    \item Je-li $f$ navíc prosté, je $f$ stejnoměrný homeomorfismus.
+\end{penumerate}
+\end{vetaN}
+
+\begin{dusledek}
+Z bodu 2. předchozího tvrzení a 1. před-předchozího plyne, že spojitá reálná funkce nabývá na kompaktním prostoru minima i maxima.
+\end{dusledek}
+
+
+\subsubsection*{Úplné prostory}
+
+\begin{definiceN}{Cauchyovská posloupnost bodů}
+Posloupnost $(x_n)_{n\geq 0}$ bodů z metrického prostoru $(X,\rho)$ budiž \emph{cauchyovská}, jestliže
+$$\forall\varepsilon>0\ \exists n_0: m,n\geq n_0\impl \rho(x_m,x_n)<\varepsilon$$
+\end{definiceN}
+
+\begin{poznamka}
+Je-li posloupnost $\{x_n\}$ konvergentní, pak je cauchyovská. Obrácená implikace obecně neplatí.
+\end{poznamka}
+
+\begin{definiceN}{Úplný prostor}
+Prostor je \emph{úplný}, pokud v něm každá cauchyovská posloupnost konverguje.
+\end{definiceN}
+
+\begin{vetaN}{O podposloupnosti}
+Pokud má cauchyovská posloupnost nějakou konvergentní podposloupnost, pak konverguje sama.
+\end{vetaN}
+
+\begin{priklady}
+\begin{pitemize}
+    \item $\Real$ je úplný prostor (díky Bolzano-Cauchyho podmínce)
+    \item Každý kompaktní prostor je úplný (podle předchozí věty)
+    \item $\Euklid_n$ je úplný prostor (bez důkazu; vyžaduje součiny prostorů)
+\end{pitemize}
+\end{priklady}
+
+\begin{vetaN}{Zachování úplnosti}
+Stejnoměrný homeomorfismus zachovává úplnost (protože stejnoměrně spojité zobrazení zachovává cauchyovské posloupnosti).
+
+\begin{poznamka}
+Používá se zejména při nahrazování metriky metrikou s ní stejnoměrně ekvivalentní. Tvrzení pro \uv{obyčejnou} spojitost neplatí.
+\end{poznamka}
+\end{vetaN}
+
+\begin{vetaN}{O úplném podprostoru}
+Podprostor $Y$ úplného prostoru $X$ je úplný, právě když je $Y$ v $X$ uzavřená množina.
+\end{vetaN}
+
+
+\subsubsection*{Věta o pevném bodě}
+
+\begin{definiceN}{kontrahující zobrazení}
+Zobrazení $f:(X,\rho)\to(Y,\sigma)$ mezi dvěma metrickými prostory nazveme \emph{kontrahující}, pokud existuje číslo $q$, $0<q<1$ takové, že
+$$\forall x,y\in X: \sigma(f(x),f(y))\leq q\cdot\rho(x,y)$$
+
+Takové zobrazení je jistě stejnoměrně spojité.
+\end{definiceN}
+
+\begin{definiceN}{pevný bod, posloupnost iterací}
+\emph{Pevný bod zobrazení} $f:X\to X$ z nějaké množiny do sebe sama je takový bod $x\in X$, že $f(x)=x$. \emph{Posloupnost iterací} zobrazení $f:X\to X$ je taková posloupnost $(x_n)_{n\geq 0}$, pro kterou platí $x_i=f(x_{i-1})\ \forall i\geq 1$ (a $x_0$ je libovolný \emph{startovací bod} iterací).
+\end{definiceN}
+
+\begin{vetaN}{Pickardova-Banachova o pevném bodě}
+Každé kontrahující zobrazení $f$ úplného metrického prostoru $(M,d)$ do sebe má právě jeden pevný bod. Navíc každá posloupnost iterací $(x_n)_{n\geq 0}$ tohoto zobrazení konverguje k tomuto pevnému bodu.
+\end{vetaN}
+
+

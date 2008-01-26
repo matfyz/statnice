@@ -1,0 +1,189 @@
+\def\Real{\mathbb{R}}
+\def\COne{\mathcal{C}^1}
+\def\F{\mathcal{F}}
+\def\e{\mathrm{e}}
+\def\Nat{\mathbb{N}}
+\def\Complex{\mathbb{C}}
+\def\d{\mathrm{d}}
+
+\section{Diferenciální rovnice}
+
+\begin{pozadavky}
+\begin{pitemize}
+	\item Soustavy lineárních diferenciálních rovnic prvního řádu
+	\item lineární rovnice n-tého řádu s konstantními koeficienty 
+	\item Jejich řešení a speciální vlastnosti.
+\end{pitemize}
+\end{pozadavky}
+
+\begin{center}
+Vypracováno podle textu Dr. M. Klazara pro Matematickou analýzu III\\
+\texttt{http://kam.mff.cuni.cz/\~{}klazar/vseMAIII.pdf}
+\end{center}
+
+\subsection{Obyčejné diferenciální rovnice}
+
+\begin{definiceN}{Diferenciální rovnice}
+\emph{Diferenciální rovnice} je (neformálně) rovnicový popis relací mezi hodnotami derivací nějakých neznámých funkcí. Rozlišují se dva druhy diferenciálních rovnic (přičemž my se omezíme na první z nich, a ještě speciálnější):
+\begin{pitemize}
+    \item \emph{Obyčejné diferenciální rovnice} - takové rovnice, kde vystupují pouze derivace funkcí jedné proměnné
+    \item \emph{Parciální diferenciální rovnice} - v nich se objevují parciální derivace funkcí více proměnných.
+\end{pitemize}
+\end{definiceN}
+
+\begin{definiceN}{Obecný tvar obyčejné diferenciální rovnice}
+Obyčejná diferenciální rovnice v obecném tvaru pro neznámou funkci $y=y(x)$ vypadá následovně:
+$$F(x,y,y',y'',\dots,y^{(n)})=0$$
+(a $F$ je nějaká funkce $n+2$ proměnných.) Nejvyšší řád derivace, která se v rovnici vyskytuje, označujeme jako \emph{řád rovnice}.
+\end{definiceN}
+
+\begin{definiceN}{Lineární diferenciální rovnice}
+Speciálním případem obyčejných diferenciálních rovnic jsou rovnice \emph{lineární}. Jsou to všechny rovnice, které se dají zapsat ve tvaru:
+$$a_n(x)y^{(n)}+a_{n-1}(x)y^{(n-1)}+\dots+a_1(x)y'+a_0(x)y=b(x)$$
+
+\par\noindent Funkce $a_i(x)$ a $b(x)$ jsou zadané a $y=y(x)$ je neznámá. $b(x)$ se označuje jako \emph{pravá strana} rovnice. Je-li funkce $b(x)$ identicky nulová, mluvíme o takové rovnici jako o \emph{homogenní}.
+\end{definiceN}
+
+\begin{definiceN}{Algebraické diferenciální rovnice}
+Pokud je $F(x,y,y',\dots,y^{(n)})=0$ (obyčejná) diferenciální rovnice a $F$ je nějaký polynom, mluvíme o této rovnici jako o \emph{algebraické}. Lineární diferenciální rovnice jsou speciálním případem algebraických.
+\end{definiceN}
+
+\begin{definiceN}{Řešení diferenciální rovnice}
+\emph{Řešením} diferenciální rovnice $F(x,y,y',\dots,y^{(n)})=0$ rozumíme dvojici $(y,I)$, kde $I\subseteq\Real$ je otevřený interval a $y:I\to\Real$ je na $I$ $n$-krát diferencovatelná funkce, pro níž v každém bodě $a$ intervalu $I$ platí $F(a,y(a),y'(a),y^{(n)}(a))=0$.
+\end{definiceN}
+
+\subsection{Řešení některých speciálních typů obyčejných diferenciálních rovnic}
+
+TODO
+\begin{pitemize}
+\item Metoda integračního faktoru (pro 1 lin. rovnici)
+\item Variace konstant (pro 1 lin. rovnici)
+\item Separované proměnné
+\item Exaktní rovnice
+\end{pitemize}
+
+\subsection{Soustavy lineárních diferenciálních rovnic}
+
+\begin{definiceN}{Soustava lineárních diferenciálních rovnic 1. řádu}
+Diferenciální rovnice 1. řádu jsou takové, ve kterých se vyskytují maximálně první derivace. Soustavou lineárních diferenciálních rovnic prvního řádu rozumíme soustavu rovnic
+$$y_i'=a_{i,1}y_1+\dots+a_{i,n}y_n+b_i\ \ 1\leq i\leq n$$
+a $y_i$ je $n$ neznámých funkcí, $a_{i,j}=a_{i,j}(x)$ a $b_i=b_i(x)$ jsou zadané funkce (celkem je jich $n^2+n$) na otevřeném intervalu $I\subseteq\Real$.
+
+\noindent Maticově lze totéž vyjádřit jako:
+$$y'=Ay+b$$
+\end{definiceN}
+
+\begin{poznamkaN}{Převod jedné rovnice n-tého řádu na soustavu prvního řádu}
+Je zřejmé, že funkce $y=y(x)$ je na otevřeném intervalu $I$ řešením rovnice $$F(x,y,y',y'',\dots,y^{(n)})=0$$, právě když jsou funkce $y,y_1,y_2,\dots,y_n$ řešením soustavy
+\begin{align*}
+y_1 &= y'\\
+y_2 &= y_1'\\
+\vdots\\
+y_n &= y'_{n-1}\\
+F(x,y,y_1,\dots,y_n)&=0
+\end{align*}
+\par\noindent
+Lineární diferenciální rovnice $n$-tého řádu je pak ekvivalentní soustavě lin. rovnic 1. řádu:
+\begin{align*}
+y_1 &= y'\\
+\vdots\\
+y_n &= y'_{n-1}\\
+y_n+a_{n-1}y_{n-1}+\dots+a_0y+b&=0
+\end{align*}
+\end{poznamkaN}
+
+
+\begin{vetaN}{O jednoznačném řešení soustavy lineárních diferenciálních rovnic}
+Nechť $a_{i,j},b_i:I\to\Real$ jsou spojité funkce definované na $I$ pro $i\in\{1,\dots,n\}$. Potom soustava lineárních diferenciálních rovnic 1. řádu 
+$$y'(x)=Ay(x)+b$$
+s počátečními podmínkami $y(\alpha)=\beta$ (kde $\alpha\in I$, $\beta\in\Real^{n}$) má na $I$ jednoznačné řešení, tj. existuje právě jedna matice funkcí $y_1,\dots,y_n$ se spojitými derivacemi (neboli z množiny $\COne(I)$), která splňuje
+$$y_i(\alpha)=\beta_i,\ y'_i(x)=\sum_{j=1}^n a_{i,j}(x)y_j(x) + b_i(x)$$
+pro každé $i\in\{1,2,\dots,n\}$ a každé $x\in I$.
+\end{vetaN}
+
+\begin{dusledek}
+Pokud se dvě řešení soustavy lineárních diferenciálních rovnic prvního řádu shodují v jednom bodě intervalu $I$, pak se shodují na celém $I$.
+\end{dusledek}
+
+\begin{definiceN}{Množiny řešení homogenní a nehomogenní soustavy}
+Pro soustavy lineárních dif. rovnic prvního řádu definujeme:
+\begin{pitemize}
+    \item $H=\{y\in\COne(I)^n | y'=Ay\ \forall a\in I\} $ jako množinu řešení homogenní soustavy,
+    \item $M=\{y\in\COne(I)^n | y'=Ay+b\ \forall a\in I\} $ jako množinu řešení nehomogenní soustavy.
+\end{pitemize} 
+\end{definiceN}
+
+\begin{vetaN}{O množinách řešení}
+Pro nějakou lineární dif. rovnici prvního řádu je $H$ z přechozí definice vektorový podprostor prostoru $\COne(I)^n$ o dimenzi $n$. $M$ je afinní podprostor $\COne(I)^n$ dimenze $n$ a platí $\forall y\in M: M=y+H=\{y+z|z\in H\}$.
+\end{vetaN}
+
+\begin{definiceN}{Fundamentální systém řešení}
+Každou bázi prostoru $H=\{y\in\COne(I)^n| y'=Ay\ \forall a\in I\}$ nazveme \emph{fundamentálním systémem řešení}.
+\end{definiceN}
+
+\begin{definiceN}{Wronskián}
+Wronského determinant neboli \emph{wronskián} $n$-tice funkcí $f_1,\dots,f_n$ (kde $f_i:I\to\Real^n$ a $I\subset\Real^n$) je funkce $W:I\to\Real$ definovaná předpisem:
+$$W(x)=W_{f_1,\dots,f_n}=\det\left(\begin{matrix}
+f_{1,1} & f_{1,2} & \cdots & f_{1,n} \\
+f_{2,1} & f_{2,2} & \cdots & f_{2,n} \\
+\vdots & \vdots & \ddots & \vdots \\
+f_{n,1} & f_{n,2} & \cdots & f_{n,n}
+\end{matrix}\right)$$
+Tato matice funkcí se někdy označuje jako \emph{fundamentální matice}.
+\end{definiceN}
+
+\begin{vetaN}{Wronskián a fundamentání systém řešení}
+V případě, že funkce $f_1,\dots,f_n$ jsou řešením homogenní soustavy lin. diferenciálních rovnic prvního řádu $(f_i)'=Af_i\ 1\leq i\leq n$, platí:
+\begin{center}
+$f_1,\dots,f_n$ jsou lineárně závislé, právě když $W(x)=0\ \forall x\in I$.
+\end{center}
+A wronskián je nulový ve všech bodech intervalu $I$, právě když je nulový pro jedno $x\in I$. To znamená, že pokud $f_1,\dots,f_n$ má na $I$ v nějakém bodě nulový wronskián, pak není fundamentálním systémem řešení rovnice $(f_i)'=Af_i\ 1\leq i\leq n$, v opačném případě však ano.
+\end{vetaN}
+
+\begin{vetaN}{O variaci konstant pro soustavu lin. diferenciálních rovnic 1. řádu}
+Nechť $I\subseteq\Real^n$ je otevřený interval, $A:I\to\Real^{n\times n}$, $b:I\to\Real^n$ spojité maticové funkce a $y^1,\dots,y^n$ (kde $y^i:I\to\Real\ \forall i$) je fundamentální systém řešení homogenní soustavy rovnic $y'=Ay$. Nechť $x_0\in I$ a $y^0\in\Real^n$ jsou dané počáteční podmínky a $Y=Y(x)$ je matice funkcí fundamentálního systému řešení -- fundamentální matice (jejíž determinant by byl wronskián).
+
+Pak vektorová funkce $z:I\to\Real^n$ daná předpisem 
+$$z(x)=Y(x)(\int_{x_0}^x Y(t)^{-1}b(t)\d t + Y(x_0)^{-1}y_0)$$
+je řešením nehomogenní soustavy $y'=Ay+b$ a splňuje počáteční podmínku $z(x_0)=y^0$.
+\end{vetaN}
+
+\begin{poznamka}
+Variace konstant nám dovoluje získat řešení soustavy pro nějakou konkrétní pravou stranu rovnic, známe-li fundamentální systém řešení.
+\end{poznamka}
+
+
+\subsection{Lineární diferenciální rovnice s konstantními koeficienty}
+
+\begin{definiceN}{Lineární rovnice s konstantními koeficienty}
+Rovnici $R(y)$ tvaru 
+$$a_ny^{(n)}+\dots+a_1y'+a_0y=0$$
+pro $a_i\in\Real\ \forall i$ konstanty, $a_n$ nenulové a $y=y(x)$ neznámou funkci nazveme \emph{lineární diferenciální rovnicí řádu $n$ s konstantními koeficienty}. Definiční interval $I$ je zde $I=\Real$.
+\end{definiceN}
+
+\begin{definiceN}{Charakteristický polynom}
+\emph{Charakteristickým polynomem} lineární diferenciální rovnice s konstantními koeficienty rozumíme 
+$$p(x)=a_n x^n+\dots+a_1 x+a_0\text{.}$$
+Podle základní věty algebry má množinu kořenů $K(p)=\{\lambda\in\Complex | p(\lambda)=0\}$, jejichž násobnost označíme $n(\lambda)\in\Nat$.
+\end{definiceN}
+
+\begin{definiceN}{Množiny $\F(R,\Complex)$ a $\F(R,\Real)$}
+Pro lineární dif. rovnici $R(y)$ definujeme množiny
+\begin{align*}
+    \F(R,\Complex)&=\{x^k\cdot \e^{\lambda x}|\lambda\in K(p), 0\leq k\leq n(\lambda)\}\text{ a }\\
+	\F(R,\Real)&=\{x^k\cdot \e^{\lambda x}|\lambda\in K(p)\cap\Real, 0\leq k\leq n(\lambda)\}\\
+	&\cup\{x^k \e^{\lambda x}\sin(\mu x)|\lambda +\mu i\in K(p),\lambda,\mu\in\Real,\mu\geq 0,0\leq k\leq n(\lambda+\mu i)\}\\
+	&\cup\{x^k \e^{\lambda x}\cos(\mu x)|\lambda +\mu i\in K(p),\lambda,\mu\in\Real,\mu\geq 0,0\leq k\leq n(\lambda+\mu i)\}
+\end{align*}
+\noindent kde $i$ značí imaginární jednotku komplexních čísel.
+\end{definiceN}
+
+\begin{vetaN}{O řešení rovnic s konstatními koeficienty}
+Každá funkce z $\F(R,\Complex)$ i každá funkce z $\F(R,\Real)$ je řešením rovnice $R(y)=0$.
+\end{vetaN}
+
+\begin{vetaN}{O lineární nezávislosti kořenů}
+Funkce z $\F(R,\Real)$ jsou lineárně nezávislé.
+\end{vetaN}
+
+TODO: doplnit -- podle rozsahu souborkových textů???

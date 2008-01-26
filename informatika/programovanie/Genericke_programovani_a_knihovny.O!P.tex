@@ -1,0 +1,71 @@
+\subsection{Generické programování a knihovny}
+
+Základní myšlenkou, která se skrývá za pojmem generické programování, je rozdělení kódu programu na algoritmus a datové typy takovým způsobem, aby bylo možné zápis kódu algoritmu chápat jako obecný, bez ohledu na to, nad jakými datovými typy pracuje. Konkrétní kód algoritmu se z něj stává dosazením datového typu.
+
+U kompilovaných jazyků dochází k rozvinutí kódu v době překladu. Typickým příkladem jazyka, který podporuje tuto formu generického programování, je jazyk C++. Mechanismem, který zde generické programování umožňuje, 
+jsou takzvané šablony (templates).
+
+\medskip
+\begin{definiceN}{Generické programování}
+Generic programming is a style of computer programming where algorithms are written in an extended grammar and are made adaptable by specifying variable parts that are then somehow instantiated later by the compiler with respect to the base grammar. Specifically, the extended grammar raises a non-variable element or implicit construct in the base grammar to a variable or constant and allows generic code to be used, usually implementing common software patterns that are already expressible in the base language.
+\end{definiceN}
+
+\begin{poznamkaN}{Metaprogramování}
+It differs from normal programming in that it somehow invokes within the language a metaprogramming facility. Because it happens as an extension of the language, new semantics are introduced and the language is enriched in this process. It is closely related to metaprogramming, but does not involve the generation of source code (none, at least, that is visible to the user of the language). It is different from programming with macros as well, as the latter refers to textual search-and-replace and is not part of the grammar of the language but implemented by a pre-processor. One exception to this is the macro facility in Common Lisp, in which macros operate on parse trees rather than text.
+\end{poznamkaN}
+
+\begin{priklad}
+\emph{Třída parametrizovaná typem (kontejner)} ---
+As an example of the benefits of generic programming, when creating containers of objects it is common to write specific implementations for each datatype contained, even if the code is virtually identical except for different datatypes. Instead, a possible declaration using generic programming could be to define a template class (using the C++ idiom):
+\begin{verbatim}
+template<typename T> 
+class List 
+{ 
+   /* class contents */ 
+};
+
+List<Animal> list_of_animals;
+List<Car> list_of_cars;
+\end{verbatim}
+Above T represents the type to be instantiated. The list generated is then treated as a list of whichever type is specified. These "containers-of-type-T", commonly called generics, are a generic programming technique that allows the defining of a class that takes and contains different datatypes (not to be confused with polymorphism, which is the algorithmic usage of exchangeable sub-classes) as long as certain contracts such as subtypes and signature are kept. Although the example above is the most common use of generic programming, and some languages implement only this aspect of it, generic programming as a concept is not limited to generics. 
+\end{priklad}
+
+\begin{priklad}
+\emph{Typově nezávislá funkce} ---
+Another applicaton is type-independent functions as in the Swap example below:
+\begin{verbatim}
+template<typename T>
+void Swap(T & a, T & b) //"&" passes parameters by reference
+{
+   T temp = b;
+   b = a;
+   a = temp;
+}
+
+string hello = "world!", world = "Hello, ";
+Swap( world, hello );
+cout << hello << world << endl; //Output is "Hello, world!"
+\end{verbatim}
+\end{priklad}
+
+\begin{obecne}{Použití v porgramovacích jazycích}
+The template construct of C++ used in the examples above is widely cited as the generic programming construct that popularized the notion among programmers and language designers and provides full support for all generic programming idioms. D also offers fully generic-capable templates based on the C++ precedent but with a simplified syntax. Java has provided generic programming facilities syntactically based on C++'s since the introduction of J2SE 5.0 and implements the generics, or "containers-of-type-T", subset of generic programming.
+\end{obecne}
+
+
+\subsubsection*{Knihovna}
+Knihovna (angl. library) je v programování funkční logický celek, který poskytuje služby pro programy. Většinou se jedná o sbírku procedur, funkcí a datových typů, či při objektově orientovaném přístupu o sadu tříd, uložených v jednom diskovém souboru.
+
+Knihovna poskytuje aplikační programátorské rozhraní (zvané API), které poskytuje funkce této knihovny. Existuje mnoho knihoven pro různé účely, např. pro využívání služeb operačního systému, grafické funkce, řízení periférií, vědeckotechnické výpočty atp.
+
+\textbf{Typy knihoven}: Z technického hlediska je možné rozdělit knihovny dle způsobu propojení s programem, který je bude využívat:
+\begin{pitemize}
+	\item statická knihovna (static linking library) - spojuje se s programem ve při překladu, většinou přípona souboru .lib
+	\item dynamická knihovna (dynamic linking library) - spojuje se s programem až při spuštění programu, většinou spojení knihovny s programem zajišťuje operační systém
+\end{pitemize}
+
+Každý typ knihovny má své výhody a nevýhody. Program spojený se statickou knihovnou je přenositelnější, není třeba zajišťovat dostupnost požadovaných dynamických knihoven. Programy spojené s dynamickou knihovnou jsou menší (ve spustitelném souboru se nachází jen výkonný kód programu), výhodou je možnost jednoduše zaměnit požadovanou dynamickou knihovnu za její novější verzi. Kód v dynamicky linkované knihovně je také za běhu sdílen mezi všemi aplikacemi které jej používají, což šetří operační pamět.
+
+Typickou příponou souboru obsahujících dynamickou knihovnu je .dll v operačním systému Microsoft Windows a .so v různých Unixech a v Linuxu.
+
+Příklady různých knihoven: standardní knihovna jazyka C, standardní knihovna šablon (Standard Template Library=STL) v jazyce C++, grafické knihovny jako DirectX, OpenGL, SDL apod., matematická knihovna LINPACK pro řešení soustav lineárních rovnic...

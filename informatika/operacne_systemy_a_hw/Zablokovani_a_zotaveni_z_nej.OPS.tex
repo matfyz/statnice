@@ -1,0 +1,39 @@
+\subsection{Zablokování a zotavení z něj}
+
+Prostředek je cokoliv, k čemu je potřeba hlídat přístup (HW zařízení~-- tiskárny, cpu; informace~-- záznamy v DB). Je možné je rozdělit na \emph{odnímatelné} (lze odejmout procesu bez následků~-- CPU, paměť) a \emph{neodnímatelné} (nelze odejmnout bez nebezpečí selhání výpočtu~-- CD-ROM, tiskárna... tento druh způsobuje problémy).
+
+Práce s prostředky probíhá v několika krocích: \emph{žádost o prostředek} (blokující, právě tady dochází k zablokování), \emph{používání} (např. tisk), \emph{odevzdání} (dobrovolné/při skončení procesu).
+
+Množina procesů je \emph{zablokována}, jestliže každý proces z této množiny čeká na událost, kterou může způsobit pouze jiný proces z této množiny.
+
+\subsubsection*{Coffmanovy podmínky}
+Splnenie týchto podmienok je nutné pre zablokovanie:
+\begin{penumerate}
+	\item \textbf{Vzájemné vyloučení} – každý prostředek je buď vlastněn právě jedním procesem nebo je volný.
+	\item \textbf{Drž a čekej} – procesy aktuálně vlastnící nějaké prostředky mohou žádat o další.
+	\item \textbf{Neodnímatelnost} – přidělené prostředky nemohou být procesům odebrány.
+	\item \textbf{Čekání do kruhu} – existuje kruhový řetěz procesů, kde každý z nich čeká na prostředek vlastněný dalším článkem řetězu.
+\end{penumerate}
+
+\subsubsection*{Řešení zablokování}
+\begin{pitemize}
+	\item \textbf{Pštrosí algoritmus}~-- Zablokování se ani nedetekuje, ani se mu nezabraňuje, ani se neodstraňuje, Uživatel sám rozhodne o řešení (kill). Nespotřebovává prostředky OS~-- nemá režii ani neomezuje podmínky provozu. (Nejčastější řešení~-- Unix, Windows) 
+	\item \textbf{Detekce a zotavení}~-- Hledá kružnici v orientovaném grafu (hrany vedou od procesu, který čeká, k procesu, který prostředek vlastní), pokud tam je kružnice, nastalo zablokování a je třeba ho řešit:
+		\begin{pitemize}
+			\item \emph{Odebrání prostředku}~-- dohled operátora, pouze na přechodnou dobu
+			\item \emph{Zabíjení procesů z cyklu} (resp. mimo cyklus vlastnící identický prostředek)
+			\item \emph{Rollback} (OS ukládá stav procesů, při zablokování se některé procesy vrátí do předchozího stavu $\Rightarrow$ ztracena práce... obdoba u DB)
+		\end{pitemize}
+	\item \textbf{Vyhýbání se}~-- Bezpečný stav (procesy/prostředky nejsou zablokovány, existuje cesta, jak uspokojit všechny požadavky na prostředky spouštěním procesů v jistém pořadí); Viď. bankéřův algoritmus. Nutné je předem znát všechny prostředky, které budou programy potřebovat; OS pak dává prostředky tomu, který je nejblíž svému maximu potřeby a navíc pro který je prostředků dost na dokončení. Dnes se moc nepoužívá.
+	\item \textbf{Předcházení (prevence)}~-- napadení jedné z Coffmanovy podmínek
+		\begin{penumerate}
+			\item \emph{Vzájemné vyloučení}~-- \emph{spooling} (prostriedky spravuje jeden systemový proces, ktory dohliada na to, aby jeho stav bol konzistentny (tiskarna)~-- pozor na místo na disku)
+			\item \emph{Drž a čekej}~-- žádat o všechny prostředky před startem procesu. Nejprve všechno uvolnit a pak znovu žádat o všechny najednou
+			\item \emph{Neodnímatelnost}~-- vede k chaosu
+			\item \emph{Čekání do kruhu}~-- nejvýše jeden prostředek~-- všechny prostředky jednoznačně očíslovány, procesy mohou žádat o prostředky jen ve vzestupném pořadí
+
+		\end{penumerate}
+			\item \emph{Dvojfázové zamykání}~-- nejprve postupně všechno zamykám (první fáze). Potom se může pracovat se zamčenými prostředky~-- a na závěr se už jen odemyká (druhá fáze)~-- viď transakční spracování u databází ((striktní/konzervativní) dvoufázové zpracování)
+\end{pitemize}
+
+\textbf{Bankéřův algoritmus}: Bankéř má klienty a těm slíbil jistou výšku úvěru. Bankéř ví, že ne všichni klienti potřebují plnou výši úvěru najednou. Klienti občas navštíví banku a žádají postupně o prostředky do maximální výšky úvěru. Až klient skončí s obchodem, vrátí bance vypůjčené peníze. Bankéř peníze půjčí pouze tehdy, zůstane-li banka v bezpečném stavu.

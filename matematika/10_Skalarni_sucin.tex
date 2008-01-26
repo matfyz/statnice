@@ -1,0 +1,258 @@
+\section{Skalární součin}
+
+\begin{pozadavky}
+\begin{pitemize}
+	\item Vlastnosti v reálném i komplexním případě
+	\item Norma
+	\item Cauchy-Schwarzova nerovnost
+	\item Kolmost
+	\item Ortogonální doplněk a jeho vlastnosti
+\end{pitemize}
+\end{pozadavky}
+
+\subsection{Vlastnosti v reálném i komplexním případě}
+\begin{definice}
+Nechť $V$ je vektorový prostor nad $\mathbb{C}$. Potom zobrazení (funkce) z kartézského součinu $V \times V \rightarrow \mathbb{C}$, které dvojici vektorů $x$ a $y$ přiradí číslo $\left<x,y\right>$ se nazývá \emph{skalární součin}, pokud splňuje následující axiomy (pro všechny $x, x', y \in V$ a $\alpha, \beta \in \mathbb{C}$):
+\begin{penumerate}
+	\item $\left<x,x\right> \ge 0, \,\, \left<x,x\right> =0 \Leftrightarrow x = 0 \hfill \textit{(positivní definitnost)}$
+	\item $\left<\alpha x+\beta x', y\right> = \alpha \left<x,y\right> + \beta \left<x',y\right> \hfill \textit{(bilinearita)}$
+		\begin{penumerate}
+			\item $\left<\alpha x,y\right> = \alpha \left<x,y\right>$
+			\item $\left<x+x',y\right> = \left<x,y\right> + \left<x',y\right>$
+		\end{penumerate}
+	\item $\left<x,y\right> = \overline{\left<y,x\right>} \hfill \textit{(symetrie - komplexně sdružené)}$ \\
+		\begin{poznamka}
+			Pro $V'$ nad $\mathbb{R}$ a vektory $\forall x,y \in V'$: $\left<x,y\right>=\left<y,x\right>$
+		\end{poznamka}
+\end{penumerate}
+
+Skalární součin značíme: $\left<x,y\right>$, $\left<x|y\right>$, $x.y$ \dots
+\end{definice}
+
+\begin{pozorovani}
+\begin{pitemize}
+	\item $\left<x,x\right>=\overline{\left<x,x\right>}$, tedy je nutně reálné ($\in\mathbb{R}$) i pro skalární součiny nad $\mathbb{C}$
+	\item $\left<x,\alpha y\right> = \overline{\left<\alpha y,x\right>} = \overline{\alpha}.\overline{\left<y,x\right>} = \overline{\alpha}.\left<x,y\right>$
+	\item Skalární součin může nabývat záporných hodnot
+\end{pitemize}
+\end{pozorovani}
+
+\begin{definice}
+Ekvivalentní definice: \emph{Skalární součin} je pozitivně definitní (1) bilineární forma (2). V $\mathbb{R}$ navíc symetrická (3). V $\mathbb{C}$ navíc forma, jejíž matice je hermitovská (3).
+\end{definice}
+
+\begin{priklady}
+\begin{pitemize}
+	\item \uv{Standardní} skalární součin pro $\mathbb{C}^n, \mathbb{R}^n$: $$\left<x,y\right> = \sum_{i=1}^{n} x_i \overline{y_i}$$
+	\item Jiný součin v $\mathbb{R}^n$ definovaný pomocí regulární matice $A$ řádu $n$
+		$$\left<x,y\right>=x^T A^T A y \;\;\;\;\;\; (\textit{pozorování: } \left<x,x\right> = x^T A^T A x = \sum_{i=1}^n (Ax)_i^2)$$
+	\item Skalární součin ve vektorovém prostoru $C[a,b]$ (integrovatelných funkcí na intervalu $[a,b]$):
+		$$\left<f,g\right> = \int_a^b f(x) g(x) dx$$
+\end{pitemize}
+\end{priklady}
+
+\subsection{Norma}
+
+\begin{definiceN}{Norma}
+\emph{Norma} na vektorovém prostoru V (nad $\mathbb{R}$ nebo nad $\mathbb{C}$) je zobrazení $V \rightarrow \mathbb{R}$, které přiradí vektoru $x \in V$ číslo $\|x\|$ a splňuje axiomy:
+\begin{penumerate}
+	\item $\forall x \in V: \|x\| \ge 0, \|x\|=0 \Leftrightarrow x = 0$
+	\item $\forall x \in V, \forall \alpha \in \mathbb{C} (\mathbb{R}): \|\alpha x\| = |\alpha|.\|x\|$
+	\item $\forall x,y \in V: \|x\| \ge 0, \|x+y\| \le \|x\| + \|y\| \hfill \textit{(trojúhelníková nerovnost)}$
+\end{penumerate}
+Norma $\|x\|$ má význam \uv{délky} vektoru $x$.
+\end{definiceN}
+
+\begin{definiceN}{Normovaný vekt. prostor}
+Vektorový prostor s nějakou normou nazýváme \emph{normovaný}.
+\end{definiceN}
+
+\begin{priklady}
+\begin{pitemize}
+\item Norma určená skalárním součinem
+	$$\|x\| = \sqrt{\left<x,x\right>}$$
+	\begin{dukaz}
+		(1), (2) plyne z axiomů skalárního součinu, (3):
+		\begin{align*}
+			\left<x,y\right>^2 \le \left<x,x\right>\left<y,y\right> & \Rightarrow & \left<x,y\right> & \le & \sqrt{\left<x,x\right> \left<y,y\right>} \\
+			& \Leftrightarrow & \left<x,x\right>+\left<y,y\right>+2\left<x,y\right> & \le & (\sqrt{\left<x,x\right>} + \sqrt{\left<y,y\right>})^2 \\
+			& \Leftrightarrow & \left<x+y,x+y\right> & \le & (\sqrt{\left<x,x\right>} + \sqrt{\left<y,y\right>})^2 \\
+			& \Leftrightarrow & \|x+y\| & \le & \|x\| + \|y\|
+		\end{align*}
+		Kde první nerovnost je důsledek Cauchy-Swarzovy nerovnosti...
+
+		Ze standardního skalárního součinu na $\mathbb{R}^n$ dostaneme euklidovskou normu (tj. \uv{délku} vektoru podle Pythagorovy věty) a euklidovskou vzdálenost (vzdálenost bodů $u$ a $v$ je $\|u-v\|$). Každý vektorový prostor se skalárním součinem $\left<.,.\right>$ je normovaným vektorovým prostorem ($\|x\|=\sqrt{\left<x,x\right>}$), tedy i metrickým prostorem ($d(x,y)=\|x-y\|$) a tedy i topologickým prostorem.
+	\end{dukaz}
+\item $L_1$ norma na $\mathbb{R}^n$:
+	$$\|x\| = \sum_{i=1}^{n} |x_i|$$
+\item $L_2$ norma na $\mathbb{C}^n$ - Euklidovská norma:
+	$$\|x\| = \sqrt{\sum_{i=1}^{n} x_i \overline{x_i}}$$
+\item $L_p$ norma na $\mathbb{R}^n$:
+	$$\|x\| = \sqrt[p]{\sum_{i=1}^{n} |x_i|^p}$$
+\item $L_{\infty}$ norma (stejně jako $L_1$ norma neodpovídá žádnému skalárnímu součinu):
+	$$\|x\| = \max_{i=1,\dots,n} \left( |x_i| \right)$$
+\item Norma v prostoru integrovatelných funkcí na intervalu $[a,b]$ - $C[a,b]$
+	$$\|f(x)\| = \int_a^b f^2(x) dx$$
+\end{pitemize}
+\end{priklady}
+
+
+\subsection{Cauchy-Schwarzova nerovnost}
+
+
+\begin{vetaN}{Cauchyho-Schwarzova nerovnost}
+Nechť $V$ je prostor se skalárním součinem nad $\mathbb{C}$ a $\|x\|$ je norma odvozená ze skalárního součinu. Potom platí:
+$$\left|\left<x,y\right>\right| \le \|x\|\cdot\|y\| \;\;\;\;\;\; (\forall x,y \in V)$$
+
+\begin{dukaz}
+Pro $x=0$ nebo $y=0$ máme $0 \le 0$.
+
+Pro libovolné $\alpha \in \mathbb{C}$ platí $\|x+\alpha y\|^2 \ge 0$ (platí i bez $( )^2$)
+\begin{align*}
+\|x+\alpha y\|^2 = \left<x+\alpha y, x+\alpha y\right> = \left<x, x+\alpha y\right> + \alpha \left<y, x+\alpha y\right> = \\
+= \left<x,x\right> + \overline{\alpha}\left<x,y\right> + \alpha\left<y,x\right> + \alpha \overline{\alpha}\left<y,y\right>
+\end{align*}
+Zvolíme $\alpha = \frac{-\left<x,y\right>}{\left<y,y\right>}$ (\emph{tím se eliminují $\overline{\alpha}\left<x,y\right>$ a $\alpha \overline{\alpha}\left<y,y\right>$})
+
+Po dosazení:
+\begin{align*}
+0 &\le& \left<x,x\right> + \alpha \left<y,x\right> \\
+0 &\le& \left<x,x\right> - \frac{\left<x,y\right>}{\left<y,y\right>}\left<y,x\right> \\
+\left<x,y\right>.\left<y,x\right> &\le& \left<x,x\right>.\left<y,y\right> \\
+|\left<x,y\right>|^2 & \le & \|x\|^2 . \|y\|^2 \\
+\textit{...a po odmocnění} \\
+|\left<x,y\right>| & \le & \|x\|.\|y\|
+\end{align*}
+
+\end{dukaz}
+
+\begin{obecne}{Druhý možný důkaz}
+\noindent Nadefinujeme proměnnou $t\in\mathbb{R}$ a zavedeme funkci
+$$p(t):=\left<u+t\cdot v,u+t\cdot v\right>=||u+tv||^2$$
+
+\noindent
+Víme: $p(t)\geq 0\ \forall t\in\mathbb{R}$ (z axiomu 1 skal. součinu). Z linearity plyne, že $\left<u+tv,u+tv\right>=\left<u,u+tv\right>+t\left<v,u+tv\right>=\left<u,u\right>+t\left<u,v\right>+t\left<v,u\right>+t^2\left<v,v\right>=||u||^2+2t\left<u,v\right>+t^2||v||^2$. Tj. dostáváme $p(t)$ jako kvadratickou funkci proměnné $t$:
+$$p(t)=t^2||v||^2+2t\left<u,v\right>+||u||^2$$
+
+\noindent
+Protože $p(t)$ má nezáporné hodnoty na celém $\mathbb{R}$, musí mít tato rovnice max. jedno řešení, tj. diskriminant při počítání kořenů nesmí být kladný:
+$$D=b^2-4ac=4\left<u,v\right>^2-4||u||^2||v||^2\leq 0$$
+
+\noindent
+Po vydělení čtyřmi a odmocnění dostáváme:
+$$|\left<u,v\right>|\leq ||u||\cdot||v||$$
+\end{obecne}
+
+\begin{dusledek}
+Platnost trojúhelníkové nerovnosti pro normy odvozené od skalárního součinu -- tj. normy odvozené od skalárního součinu splňují všechny axiomy normy.
+\end{dusledek}
+
+\begin{dusledek}
+Nechť $x=(x_1,x_2,\dots,x_n)^T$, $y=(1,1,\dots,1)^T$ jsou dva vektory, pak pro standardní skalární součin platí
+\begin{align*}
+|\left<x,y\right>| &= \sum_{i=1}^n x_i\cdot 1\\
+\|x\| &= \sqrt{\sum_{i=1}^n x_i^2}\\
+\|y\| &= \sqrt{n}
+\end{align*}
+po dosazení do Cauchy-Schwarzovy nerovnosti okamžitě dostaneme nerovnost mezi aritmetickým a kvadratickým průměrem
+$$\frac{1}{n}\sum_{i=1}^{n} x_i \le \sqrt{\frac{1}{n}\sum_{i=1}^{n} x_i^2}$$
+\end{dusledek}
+
+
+
+\begin{dusledek}
+Ve vektorových prostorech nad $\mathbb{R}$ a $\mathbb{C}$ lze definovat \emph{úhel}, svíraný dvěma vektory: 
+$$\cos\varphi = \frac{\left<u,v\right>}{\|u\|\ \|v\|}$$
+a Cauchyho-Schwarzova nerovnost zaručuje, že $|\cos\varphi|\leq 1$.
+\end{dusledek}
+
+\begin{dusledek}
+Z takto definovaného úhlu mezi dvěma vektory plyne i \emph{kosinová věta}: 
+$$\|u-v\|^2=\|u\|^2+\|v\|^2-2\|u\|\ \|v\|\cos\varphi$$
+\end{dusledek}
+\end{vetaN}
+
+
+\subsection{Kolmost}
+\begin{definiceN}{kolmé vektory}
+Vektory $x$ a $y$ z prostoru se skalárním součinem jsou vzájemně \emph{kolmé} (\emph{ortogonální}), pokud $\left<x,y\right>=0$, značíme $x \bot y$.
+\end{definiceN}
+
+\begin{definiceN}{ortogonální a ortonormální systém}
+Soustava (systém) vektorů $v_1, \dots, v_n$ se nazývá \emph{ortogonální}, jestliže $\left<v_i,v_j\right> = 0$ ($v_i \bot v_j$) pro $\forall i \neq j$ (tj. všechny její vektory jsou navzájem kolmé). 
+
+\noindent
+Platí-li ještě navíc $\|v_i\|=1$ pro $\forall i=1,\dots,n$, jedná se o soustavu \emph{ortonormální} (vektory jsou kolmé a navíc mají jednotkovou normu).
+\end{definiceN}
+
+\begin{pozorovani}
+Každý systém nenulových vzájemně kolmých vektorů (tj. i ortonormální nebo ortogonální) je lineárně nezávislý.
+\end{pozorovani}
+
+\begin{dusledek}
+Jestliže ortogonální systém generuje celý vektorový prostor, je jeho bází.
+\end{dusledek}
+
+\begin{algoritmusN}{Gram-Schmidtova ortogonalizace}
+Tento algoritmus zajišťuje převedení libovolné báze $(v_1,\dots,v_n)$ vektorového prostoru $V$ na ekvivalentní ortogonální bázi $(w_1,\dots,w_n)$. Ortonormalizace báze už po jeho proběhnutí znamená jen vynásobení každého $w_i$ číslem $\frac{1}{\|w_i\|}$. Jeho průběh:
+\begin{penumerate}
+    \item Zvolme $w_1 := v_1$.
+    \item Pro $i$ postupně od $1$ do $n$ opakujme:
+\par\noindent
+    Najdi $w_i=v_i-a_{i,1}w_1 - a_{i,2}w_2 - \dots - a_{i,i-1}w_{i-1}$ tak, aby pro $\forall j\in\{1,\dots,i\}$ platilo:
+    $$w_i\bot w_j$$
+    Dá se ukázat že koeficienty $a_{i,j}$ jsou tvaru
+    $$a_{i,j}=\frac{\left<v_i,w_j\right>}{\|w_j\|^2}$$
+    \item Po $n$ iteracích dostaneme $w_1,\dots,w_n$ jako ortogonální bázi prostoru $V$.
+\end{penumerate}
+
+\textbf{Alternativní postup - Gram-Schmidtova normalizace}:
+\begin{penumerate}
+	\item Dány: $x_1,\dots,x_m \in V$ lineárně nezávislé.
+	\item Pro $k=1,\dots,m$ proveď:
+		$$y_k := x_k - \sum_{j=1}^{k-1} \left<x_k,z_j\right>z_j$$
+		$$z_k := \frac{1}{\|y_k\|}y_k$$
+	\item Ukonči: $z_1,\dots,z_m$ je ortonormální systém ve $V$ a\\$\mathcal{L}(z_1,\dots,z_m) = \mathcal{L}(x_1,\dots,x_m)$
+\end{penumerate}
+\end{algoritmusN}
+
+\begin{dusledek}
+Buď $(v_1,\dots,v_n)$ báze vekt. prostoru se skal. součinem. Potom existuje ortonormální báze $(w_1,\dots,w_n)$, kdy pro každé $k\in\{1,\dots,n\}$ je $\mathcal{L}(v_1,\dots,v_k)=\mathcal{L}(w_1,\dots,w_k)$. Díky tomu se každý ortogonální systém vektorů v konečnědimensionálním vekt. prostoru se skalárním součinem dá rozšířit na ortogonální bázi (to můžeme díky Gram-Schmidtově ortogonalizaci a Steinitzově větě o výměně).
+\end{dusledek}
+
+\begin{vetaN}{Fourierovy koeficienty}
+Máme-li danou nějakou ortonormální bázi $B=b_1,\dots,b_n$ vektorového prostoru $V$, pak pro každé $x\in V$ platí:
+$$x=\sum_{i=1}^n\left<x,b_i\right>b_i$$
+a souřadnice $\left<x,b_i\right>$ nazveme \emph{Fourierovy koeficienty} vektoru $x$.
+\end{vetaN}
+
+\begin{poznamka}
+Fourierovy řady jsou souřadnice funkcí ve vektorovém prostoru spojitých funkcí na $[-\pi,\pi]$ se skalárním součinem $\left<f,g\right>=\int_{-\pi}^{\pi}f(x)g(x)\mathrm{d}x$
+\end{poznamka}
+
+
+\subsection{Ortogonální doplněk a jeho vlastnosti}
+\begin{definice}
+Nechť $V$ je množina vektorů ve vektorovém prostoru $W$ se skalárním součinem. \emph{Ortogonálním doplňkem} $V$ (značíme $V^{\bot}$) rozumíme množinu
+$$V^{\bot}=\left\{v \in W; \forall x \in V: \left<v,x\right> = 0 \right\}$$
+\end{definice}
+
+\begin{lemmaN}{Vlastnosti}
+Nechť $V$ je podprostor prostoru $W$ konečné dimenze. Potom platí:
+\begin{penumerate}
+	\item $V^{\bot}$ je podprostor $W$
+	\item $\dim(V^{\bot})=\dim(W)-\dim(V)$
+	\item $(V^{\bot})^{\bot} = V \hfill \textit{(z rozšiřitelnosti ortogonální báze)}$ 
+	\item $V \cap V^{\bot} = \{0\}, \;\;\; V \oplus V^{\bot} = W \\ \textit{(operace} \oplus \textit{je spojení dvou podprostorů...} \mathcal{L}(V \cup V^{\bot})\textit{)}$
+	\item $U,V$ podprostory $W$. Je-li $U \subseteq V$, pak $U^{\bot} \supseteq V^{\bot}$\\
+		$(x \in V^{\bot} \Leftrightarrow x \bot y \in V \Rightarrow x \bot u \in U \Leftrightarrow x \in U^{\bot})$
+	\item $(U \cap V)^{\bot} = U^{\bot} \oplus V^{\bot}$
+	\item $(U \oplus V)^{\bot} = U^{\bot} \cap V^{\bot}$
+\end{penumerate}
+\end{lemmaN}
+
+\begin{definiceN}{Ortogonální projekce}
+\emph{Ortogonální projekce} vekt. prostoru $V$ na podprostor $U\subset V$ je zobrazení, které každému vektoru $v\in V$ přiřadí vektor $u\in U$ tak, že 
+$$\|v-u\|=\min\{\|v-w\|, w \in U\}$$
+tedy vektor $u \in U$, který má ze všech vektorů z $U$ nejmenší vzdálenost od $v$. Ten se pak nazývá \emph{ortogonální projekcí} vektoru $v$.
+\end{definiceN}

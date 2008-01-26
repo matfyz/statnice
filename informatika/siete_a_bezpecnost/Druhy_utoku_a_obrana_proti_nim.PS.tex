@@ -1,0 +1,39 @@
+\subsection{Druhy útoků a obrana proti nim}
+
+\subsubsection*{Vnitřní útoky}
+\begin{pitemize}
+  \item \textbf{Trojský kůň}~-- zdánlivě neškodný program obsahuje \uv{zlý} kód
+  \item \textbf{Login spoofing}~-- falešná \uv{logovací} obrazovka
+  \item \textbf{Logická bomba}~-- zaměstnanec vpraví kus kódu do systému, který
+  musí být pravidelně informován o tom, že zaměstnanec je stále zaměstnancem
+  \item \textbf{Zadní dvířka (trap door, back door)}~-- kód při nějaké podmínce
+  přeskočí normální kontroly
+  \item \textbf{Přetečení vyrovnávací paměti (buffer overflow)}
+  \begin{pitemize}
+    \item ve velkém množství kódu nejsou dělány kontroly na přetečení polí pevné velikosti
+    \item při přetečení se typicky přepíše část zásobníku a lze tam umístit adresu kódu i samotný kód, který se vykoná při návratu z funkce
+  \end{pitemize}
+\end{pitemize}
+
+\subsubsection*{Vnější útoky}
+\begin{pitemize}
+  \item \textbf{Virus}~-- vytvoří se nakažený \uv{žádaný} soubor
+  \item \textbf{Internetový červ (worm)}~-- samoreplikující se program (červ),
+  využívá nějaké chyby systému 
+  \item \textbf{Mobilní kód}~-- applety, agenti\dots
+\end{pitemize}
+
+\subsubsection*{Útočníci}
+Útočníkem může být buď náhodný uživatel, vnitřní pracovník, zločinec (zvenčí) nebo špion (vojenský, komerční). Cíle útoků jsou na důvěrnost -- zjištění obsahu, nebo celistvost -- změna obsahu, případně dostupnost služby -- Denial of service. Ke ztrátě dat může dojít i v důsledku chyby hardware, software, lidské chyby nebo Božího zásahu.
+
+\subsubsection*{Obrana}
+jsou to spíš banality, ale nic víc po nás nechtějí???
+\begin{pitemize}
+    \item proti trojanům, backdoorům, logical bomb -- omezení přístupových práv, metoda \uv{least privilege}
+    \item proti login-spoofu -- \uv{secure attention key}, tj. takové to \uv{Začněte stisknutím Ctrl-Alt-Del}
+    \item proti buffer overflow -- jedině patche
+    \item proti virům -- antivirus ;-), anti-spyware 
+    \item proti červům -- firewall, patche (útoky jsou většinou proti známým a opraveným chybám aplikací, proti druhému typu, tzv. \uv{zero-day attack} je jedinou obranou firewall)
+    \item proti problémům s aplety a skripty -- sandboxing (běh v omezeném prostředí bez možnosti přístupu k počítači)
+    \item proti všemu -- backupy ;-)
+\end{pitemize}

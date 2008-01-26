@@ -1,0 +1,39 @@
+\subsection{Instalace systému, plánování síťové topologie, rozklad zátěže}
+
+TODO: tohle je jenom copy\&paste z Wiki
+
+\subsubsection*{Instalace systému}
+
+\begin{pitemize}
+    \item existuje mnoho variant Unixu a množství distribucí
+    \item distribuce = jádro + balík dalších programů, nástrojů, rozšíření, ...
+    \item FreeBSD, OpenBSD, Solaris, Linux (Debian, Fedora, Gentoo), ...
+    \item software rozdělen do balíčků - volba balíčků k instalaci
+    \item balíčkovací a instalační nástroje - RPM, apt, yum, emerge, ...
+    \item rozdělení disku - /boot, /, /var/log apod.
+    \item volba filesystému
+    \item konfigurace sítě
+    \item nastavení hesla roota
+    \item po instalaci - kontrola běžících procesů 
+\end{pitemize}
+
+\subsubsection*{Plánování síťové topologie}
+
+\begin{pitemize}
+    \item volba technologií - drátové, bezdrátové
+    \item volba protokolů - dnes zřejmě TCP/IP
+    \item rozvržení lokální sítě, IP adresy (lokální, veřejné), DHCP, klientské stanice
+    \item servery - poštovní, souborové, DNS, zálohovací, webové, aplikační, proxy, ...
+    \item routery, směrování, propojení do Internetu
+    \item sdílení informací o uživatelských účtech (NIS, YP)
+    \item sdílení dat (NFS)
+    \item redundance klíčových serverů a routerů (CARP, master/slave)
+    \item zabezpečení (firewall), šifrování, DMZ (demilitarizovaná zóna), VPN 
+\end{pitemize}
+
+\subsubsection*{Rozklad zátěže}
+
+\begin{pitemize}
+    \item protokol CARP, nástroje CARP a UCARP
+    \item překlad IP adres Round-Robin (NAT)
+\end{pitemize}

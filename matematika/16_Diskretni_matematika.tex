@@ -1,0 +1,359 @@
+\def\Nat{\mathbb{N}}
+\def\Real{\mathbb{R}}
+\def\Pot{\mathcal{P}}
+
+\section{Diskrétní matematika}
+
+\begin{pozadavky}
+\begin{pitemize}
+\item Uspořádané množiny
+\item Množinové systémy, párování, párování v bipartitních grafech (systémy různých reprezentantů)
+\item Kombinatorické počítání
+\item Princip inkluze a exkluze
+\item Latinské čtverce a projektivní roviny.
+\end{pitemize}
+\end{pozadavky}
+
+\subsection{Uspořádané množiny}
+
+\begin{definiceN}{Kartézský součin}
+Nechť $X$ a $Y$ jsou množiny. Symbolem $X \times Y$ označíme množinu všech uspořádaných dvojic tvaru $(x,y)$, kde $x \in X$ a $y \in Y$. Formálně zapsáno:
+$X \times Y = \{ (x,~y); x \in X, y \in Y \}$ se nazývá \emph{kartézský součin} množin $X$ a $Y$.
+
+Kartézský součin $X \times X$ někdy značíme jako $X^2$. 
+\end{definiceN}
+
+\begin{definiceN}{relace}
+Relace R je množina uspořádaných dvojic. Jsou-li $X$ a $Y$ množiny, nazývá se libovolná podmnožina kartézského součinu $X \times Y$ \emph{relací} mezi $X$ a $Y$. Zdaleka nejdůležitější případ je $X=Y$. V takovém případě mluvíme o relaci na $X$, což je tedy libovolná podmnožina $X^2$.
+
+Náleží-li $(x,y)$ relaci $R$, tedy $(x,y) \in R$, říkáme, že $x$ a $y$ jsou v relaci $R$. Značíme $xRy$.
+\end{definiceN}
+
+\begin{definiceN}{druhy relací}
+Relace $X$ může být:
+\begin{pitemize}
+	\item \emph{reflexivní}, jestliže pro každné $x \in X$ platí $xRx$
+	\item \emph{ireflexivní}, jestliže platí $xRy\ \Rightarrow\ x\neq y$
+	\item \emph{symetrická}, jestliže $xRy \Rightarrow yRx$
+	\item \emph{tranzitivní}, jestliže $xRy \wedge yRz \Rightarrow xRz$
+	\item \emph{antisymetrická}, jestliže $xRy \wedge yRx \Rightarrow x=y$
+\end{pitemize}
+\end{definiceN}
+
+\begin{definiceN}{ekvivalence}
+Řekneme, že relace $R$ na $X$ je \emph{ekvivalence} na $X$, jestliže je symetrická, reflexivní a tranzitivní.
+\end{definiceN}
+
+\begin{definiceN}{uspořádání, uspořádaná množina}
+\emph{Uspořádání} na nějaké množině $X$ je každá relace na $X$, která je reflexivní, tranzitivní a antisymetrická. \emph{Uspořádaná množina} je dvojice $(X,R)$, kde $X$ je množina a $R$ je uspořádání na $X$.
+
+Pro uspořádání se používá značení $\le$ nebo $\preceq$. Pro každé uspořádání lze odvodit \uv{ostrou nerovnost} $<$ nebo $\prec$, kde platí, že $x<y \Leftrightarrow x \le y \wedge x \neq y$.
+\end{definiceN}
+
+\begin{priklady}
+Uspořádané množiny:
+\begin{pitemize}
+    \item $(\Nat,\leq)$
+    \item $(\Nat,|)$, kde \uv{$|$} je relace \uv{dělí}
+    \item $(\Pot(X),\subseteq)$, kde $\Pot(X)$ označuje množinu všech podmnožin a $\subseteq$ normální množinovou inkluzi
+    \item orientovaný acyklický graf $(V,E)$ s relací $\rho:(a,b)\in\rho \equiv^{def} \textit{ existuje cesta z }a\textit{ do }b $
+\end{pitemize}
+\end{priklady}
+
+\begin{definiceN}{lineární uspořádání}
+\emph{Lineární uspořádání} je takové uspořádání, kde pro každé dva prvky $x$ a $y$ platí buď $x \leq y$ nebo $y \leq x$. Někdy se také nazývá \emph{úplné uspořádání}.
+
+Uspořádání, které není úplné, nazýváme \emph{částečným uspořádáním}.
+\end{definiceN}
+
+\begin{definiceN}{bezprostřední přechůdce}
+\emph{Bezprostřední předchůdce} prvku $y$ je takový prvek $x$, pro který platí $x < y$, a neexistuje žádné takové $t$, že $x < t < y$.
+\end{definiceN}
+
+\begin{poznamkaN}{Hasseův diagram}
+Při znázorňovaní se uspořádaná množina zakresluje pomocí bodů a šipek, jako kterákoliv jiná relace. Protože těchto šipek by bylo mnoho, vychází se z tranzitivity a znázorňují se šipky pouze mezi prvky a jejich bezprostředními předchůdci. Přijmeme-li navíc konvenci, že v obrázku povedou všechny šipky nahoru, není třeba zakreslovat směr šipek, pouze spojnice bodů. Takovéto znázornění se pak nazývá \emph{Hasseův diagram}.
+\end{poznamkaN}
+
+\begin{poznamkaN}{uspořádání na kartézském součinu}
+Mám-li dvě množiny $A$ a $B$ a na nich uspořádání $\leq_A$ a $\leq_B$ můžu definovat \uv{složené uspořádání}
+\begin{pitemize}
+    \item \uv{po složkách} -- $(a_1,b_1)\leq(a_2,b_2)\equiv^{\textrm{def}} a_1\leq_A a_2 \wedge b_1 \leq_B b_2$
+    \item \uv{lexikograficky} -- $(a_1,b_1)\leq(a_2,b_2)\equiv^{\textrm{def}} a_1\leq_A a_2 \vee ( a_1=a_2 \wedge b_1\leq_B b_2)$
+\end{pitemize}
+\end{poznamkaN}
+
+\begin{definice}
+Říkáme, že $(X,R)$ a $(Y,P)$ jsou \emph{isomorfní uspořádané množiny}, pokud existuje nějaké vzájemně jednoznačné zobrazení $f:X \rightarrow Y$ takové, že pro každé $x,y \in X$ platí $xRy$ právě když $f(x) P f(y)$.
+\end{definice}
+
+\begin{definiceN}{Předuspořádání}
+\emph{Předuspořádání} nazveme každou relaci, která je reflexivní a transitivní (nebudeme tedy požadovat antisymetrii -- mohou vznikat \uv{cykly}).
+\end{definiceN}
+
+\begin{poznamka}
+Mám-li množinu $X$ s relací $\sim$, která je předuspořádání, potom relace $\sim$ je uspořádání na množině $X/\rho$ (rozklad podle tříd ekvivalence $\rho$), kde $a\rho b\equiv (a\sim b \wedge b\sim a)$.
+\end{poznamka}
+
+\begin{definice}
+\emph{Nezávislý systém $M$ podmnožin množiny $X$} je podmnožina $P(X)$ taková, že každé dvě množiny $A, B \in M$ jsou neporovnatelné relací náležení.
+\end{definice}
+
+\begin{vetaN}{Spernerova}
+Libovolný nezávislý systém podmnožin $n$-prvkové množiny má nejvýš $\binom{n}{\lfloor\frac{n}{2}\rfloor}$ množin.
+\end{vetaN}
+
+TODO: Patří sem dobré uspořádání a Zernelova věta??? (to by znamenalo přidat sem i supremum, infimum, řetězec, nejmenší a největší prvek)
+
+\subsection{Množinové systémy, párování, párování v bipartitních grafech (systémy různých reprezentantů)}
+
+\begin{definice}
+Nechť $X$ a $I$ jsou množiny. \emph{Množinovým systémem nad $X$} nazveme $|I|$-tici $M=\{M_i; i \in I\}$, kde $M_i \subseteq X$
+
+Je tedy možné, aby se tam táž množina objevila víckrát.
+\end{definice}
+
+\begin{definiceN}{systém různých reprezentantů}
+\emph{Systém různých reprezentantů} (SRR) je funkce $f: I \rightarrow X$ taková, že $\forall i \in I: f(i) \in M_i$ a $f$ je prostá.
+
+Jinými slovy, SRR je výběr jednoho prvku z každé množiny $M_i$ tak, že všechny vybrané prvky jsou navzájem různé. Obecně se tedy neuvažují nekonečné systémy.
+\end{definiceN}
+
+\begin{definiceN}{párování}
+\emph{Párování v grafu} $G$ je množina hran $F \subseteq E(G)$ taková, že každý vrchol grafu $G$ patří nejvýše do jedné hrany z $F$.
+
+Ekvivalentní definice jsou přes stupeň vrcholu (každý vrchol má stupeň nejvýše 1) nebo přes disjunktnost hran (každé dvě jsou disjunktní - žádné dvě nemají společný vrchol).
+\end{definiceN}
+
+\begin{definiceN}{bipartitní graf}
+\emph{Bipartitní graf} je takový graf $G$, kde množinu vrcholů $V(G)$ můžeme rozdělit na dvě disjunktní podmnožiny $V_1$ a $V_2$ takové, že každá hrana z $E(G)$ spojuje vždy vrchol z $V_1$ s vrcholem z $V_2$.
+\end{definiceN}
+
+\begin{definice}
+\emph{Incidenčním grafem} množinového systému $M$ nad množinou $X$ nazveme bipartitní graf
+$$
+B_M = \left( I \cup X, \left\{ \{i,x\}, x \in M_i \right\} \right)
+$$
+\noindent
+V podstatě si každý prvek z $X$ i každý index $I$ označíme vrcholem a spojíme každý index $i$ s prvky $x$, které náleží do $M_i$. Z incidenčního grafu pak lze nahlédnout existenci SRR - ten existuje, právě když v incidenčním grafu existuje párování velikosti $|I|$.
+\end{definice}
+
+\begin{vetaN}{Hallova}
+Systém různých reprezentantů v $M$ existuje, právě když pro každou $J \subseteq I$ je $$\left| \bigcup_{j \in J} M_j\right| \ge |J|$$
+\end{vetaN}
+
+\begin{definiceN}{perfektní párování}
+\emph{Perfektním párováním} nazveme párování $M$ v grafu $G$, pro které platí $$|M| = \frac{|V(G)|}{2}$$
+
+\noindent
+Tedy perfektní párování je takové, kde je každý vrchol spárovaný s nějakým jiným vrcholem. Dalším důležitým pojmem je \emph{maximální párování}, což je v podstatě nejlepší možné párování (pokrývá největší možný počet vrcholů), jakého jsme v daném grafu schopni dosáhnout.
+\end{definiceN}
+
+
+\begin{vetaN}{O párování v bipartitním grafu}
+Buď $G=(A\cup B,E)$ graf se dvěma partitami $A$ a $B$ a $E$ neprázdná množina hran. Jestliže platí $\deg u \geq \deg v\ \forall u\in A,\forall v\in B$, potom existuje párování velikosti $|A|$. Díky tomu pokud má bipartitní graf všechny vrcholy stejného stupně, pak má perfektní párování.
+
+\begin{dukaz}
+Převede se na Hallovu větu s použitím \uv{okolí} vrcholů (tj. bodů přímo spojených s vrcholem hranou).
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Tutteova}
+Graf $(V,E)$ má perfektní párování, právě když pro každou množinu vrcholů $A\subseteq V$ platí:
+$$c_l(G\setminus A)\leq |A|$$
+(tj. počet komponent souvislosti s lichých počtem vrcholů v indukovaném podgrafu je menší než velikost množiny vrcholů). Této vlastnosti se také někdy říká \emph{Tutteova podmínka}.
+\end{vetaN}
+
+\begin{algoritmusN}{Edmondsův algoritmus na perfektní párování}
+Vstupem algoritmu je graf $G=(V,E)$ a libovolné párování $M$ (i prázdné). Výstupem je párování $M'$, které alespoň o 1 větší než $M$, pokud je něčeho takového možné dosáhnout. Postup výpočtu:
+\begin{penumerate}
+    \item Vybudujeme maximální možný \uv{Edmondsův les} párování $M$ -- do nulté hladiny umístíme volné vrcholy a prohledáváním do šířky sestrojíme max. strom takový, že se střídají párovací a nepárovací hrany (mezi sudou a lichou hladinou jen nepárovací, mezi lichou a sudou jen párovací).
+
+Některé vrcholy se v lese vůbec neobjeví -- nazveme je \uv{kompost}. Ty jsou už nějak spárovány mezi sebou a nebudeme je potřebovat.
+    \item Pokud existuje hrana mezi sudými hladinami různých stromů, máme \uv{volnou střídavou cestu} (tj. cestu liché délky mezi 2 volnými vrcholy, na které se střídají nepárovací a párovací hrany), na níž můžeme zalternovat hrany párování a to tak zvětšit o 1 a skončit.
+    \item Pokud existuje hrana mezi sudými hladinami téhož stromu, máme \uv{květ} (tj. kružnici liché délky, na které se střídají párovací a nepárovací hrany). Květ můžeme zkontrahovat a algoritmus rekurzivně pustit na takto získaný graf. Pokud dostaneme
+    \begin{penumerate}
+	\item staré párování beze změny, vrátíme $M'=M$
+	\item jiné (větší) párování $\hat M$, prohodíme párování na cestě v $\hat M$ od vrcholu květu v nejvyšší hladině (kam jsme květ zkontrahovali) k volnému vrcholu a přidáme květ zpátky (a párování sedí a je větší než $M$)
+    \end{penumerate}
+    \item Není-li žádná hrana mezi sudými hladinami, vydej $M'=M$.
+\end{penumerate}
+\par\medskip\noindent
+Hlavní algoritmus jen opakuje výše popsaný krok, dokud vrací větší párování než bylo předchozí. Celková složitost jednoho kroku je $O((m+n)n)$ a pro celý algoritmus $O((m+n)n^2)$.
+\end{algoritmusN}
+
+
+\subsection{Kombinatorické počítání}
+
+\begin{veta}
+Nechť $N$ je nějaká $n$-prvková množina a $M$ je $m$-prvková množina ($m > 0$). Potom počet všech zobrazení $f: N \rightarrow M$ je $m^n$.
+\end{veta}
+
+\begin{veta}
+Libovolná $n$-prvková množina $X$ má právě $2^n$ podmnožin.
+\end{veta}
+
+\begin{veta}
+Nechť $n>0$. Každá $n$-prvková množina má právě $2^{n-1}$ podmnožin sudé velikosti a právě $2^{n-1}$ podmnožin liché velikosti.
+\end{veta}
+
+\begin{veta}
+Pro $m,n \ge 0$ existuje právě $m(m-1)(m-2) \dots (m-n+1)$ prostých zobrazení $n$-prvkové množiny do $m$-prvkové množiny.
+\end{veta}
+
+\begin{definice}
+Prostá zobrazení množiny $X$ do sebe se nazývá \emph{permutace množiny} $X$. Tato zobrazení jsou zároveň na.
+
+Permutace si můžeme představit jako přerovnání množiny - např. $\{4 2 1 3\}$ je permutací množiny $\{1 2 3 4\}$. Jiný zápis permutací je pomocí jejich cyklů (\emph{cyklus} v permutaci je pořadí prvků, kde začnu u nějakého prvku, pokračuji jeho obrazem v permutaci a toto opakuji, dokud nenarazím na první prvek). U cyklů znázorníme každý prvek množiny jako bod. Z každého bodu vychází a do každého vchází právě po jedné šipce. Šipka vycházející z prvního prvku množiny ukazuje na první prvek permutace, šipka z druhého prvku množiny na druhý prvek permutace atd. Zápis se pak provádí tak, že každou kružnici zapíšeme po řadě zvlášť (např. $p=((1,4,5,2,8)(3)(6,9,7))$ je zápis permutace $(4 8 3 5 2 9 6 1 7)$.
+\end{definice}
+
+\begin{vetaN}{Faktoriál}
+Počet permutací na $n$-prvkové množině je $n\cdot(n-1)\cdot\dots\cdot 1$. Toto číslo pojmenujeme \emph{faktoriál} $n$ a značíme $n!$.
+\end{vetaN}
+
+\begin{definiceN}{Binomické koeficienty}
+Nechť $n \ge k$ jsou nezáporná celá čísla. \emph{Binomický koeficient} neboli kombinační číslo $\binom{n}{k}$ (čteme $n$ nad $k$) je funkce proměnných $n$, $k$, daná jako $$\binom{n}{k}=\frac{n(n-1)(n-2)\dots(n-k+1)}{1 \cdot 2 \cdot \dots \cdot k}=\frac{\prod^{k-1}_{i=0} (n-i)}{k!}$$ nebo $$\binom{n}{k}=\frac{n!}{k!(n-k)!}$$
+\end{definiceN}
+
+\begin{definice}
+Nechť $X$ je množina a $k$ je nezáporné celé číslo. Pak $\binom{X}{k}$ budeme značit \emph{ množinu všech $k$-prvkových podmnožin} množiny $X$.
+\end{definice}
+
+\begin{veta}
+Pro každou konečnou množinu $X$ je počet všech jejích $k$-prvkových podmnožin roven $\binom{|X|}{k}$.
+\end{veta}
+
+\begin{vetaN}{Vlastnosti kombinačních čísel}
+Platí:
+$$
+\binom{n}{k} = \binom{n}{n-k}
+$$
+
+$$
+\binom{n-1}{k-1} + \binom{n-1}{k} = \binom{n}{k}
+$$
+
+\begin{dukaz}
+První je zřejmé ze vzorce pro kombinační čísla, druhé se ukaže jednoduše pro použití komb. čísel -- mějme množinu $X$ a v ní prvek $a$. Kolik je podmnožin $X$ obsahujících, resp. neobsahujících $a$?
+\end{dukaz}
+\end{vetaN}
+
+\begin{dusledek}
+Z druhé vlastnosti plyne vzhled \emph{Pascalova trojúhelníku}, tedy že v $n+1$. řádku jsou vždy právě binomické koeficienty $\binom{n}{0},\binom{n}{1},\dots,\binom{n}{n}$.
+\end{dusledek}
+
+\begin{vetaN}{O počtu způsobů zápisu}
+Nezáporné celé číslo $m$ lze zapsat jako součet $r$ nezáporných sčítanců právě $\binom{m+r-1}{r-1}$ způsoby.
+
+\begin{dukaz}
+Důkazem je onen pokus s rozdělováním $m$ kuliček mezi $r$ přihrádek (nebo spíš vkládání přihrádek mezi kuličky v řadě).
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Binomická věta}
+Pro nezáporné celé číslo $n$ a libovolná $x,y\in\Real$ platí: $$(x+y)^n=\sum_{k=0}^{n} \binom{n}{k} x^k y^{n-k}$$
+\end{vetaN}
+
+\begin{vetaN}{Multinomická věta}
+Pro libovolná čísla $x_1,\dots,x_m\in\Real$ a $n\in\Nat_0$ platí: 
+$$(x_1+\dots+x_m)^n=\sum_{\genfrac{}{}{0pt}{}{k_1+\dots+k_m=n}{k_1,\dots,k_m\geq 0}}\binom{n}{k_1,\dots,k_n}x_1^{k_1}x_2^{k_2}\cdot\dots\cdot x_m^{k_m}$$
+kde ta věc uprostřed v tom vzorci je \emph{multinomický koeficient}, definovaný:
+$$\binom{n}{k_1,\dots,k_n}=\frac{n!}{k_1!k_2!\dots k_n!}$$
+\end{vetaN}
+
+\subsection{Princip inkluze a exkluze}
+
+\begin{vetaN}{Princip inkluze a exkluze}
+Pro každý soubor $A_1, A_2, \dots, A_n$ konečných množin platí
+
+$$
+\left| \bigcup_{i=1}^{m}A_i \right| = \sum_{k=1}^{n} (-1)^{k-1} {\sum_{I \in \binom{\{1,2,\dots,n\}}{k}} {\left| \bigcap_{i \in I} A_i \right|} }
+$$
+\end{vetaN}
+
+\begin{dukaz}
+Nechť x je libovolný prvek $A_1 \cup A_2 \cup \dots \cup A_n$. Kolikrát přispívá x vlevo a kolikrát vpravo?
+
+\emph{Vlevo}: jednou - triviální
+\emph{Vpravo}: Nechť j ($1 \le j \le n$) označuje počet množin $A_i$, do kterých patří $x$. Můžeme množiny přejmenovat aby platilo $x~\in~A_1,~A_2,~\dots,~A_j$ a $x~\notin~A_{j+1},~\dots,~A_n$. Prvek se tedy objevuje v průniku každé $k$-tice množin $A_1,~A_2,~\dots,~A_j$ (a v žádných jiných). Protože existuje právě $\binom{j}{k}$ $k$-prvkových podmnožin $j$-prvkové množiny, bude se $x$ objevovat v $\binom{j}{k}$ průnicích $k$-tic vybraných ze všech $n$ prvků. Velikosti $k$-tic jsou přitom započteny se znaménkem $(-1)^{k-1}$, tudíž $x$ na pravé straně přispívá veličinou
+
+\begin{align*}
+j - \binom{j}{2} & + \binom{j}{3} - \dots + (-1)^{j-1}\binom{j}{j} =\\
+& = 1 - \binom{j}{0} + \binom{j}{1} - \binom{j}{2} \dots + (-1)^{j-1}\binom{j}{j} =\\
+& = 1 - \sum_{i=0}^{j} \binom{j}{i} (-1)^{i}  = 1 - (1-1)^{j} = 1
+\end{align*}
+\begin{flushright}
+$\square$
+\end{flushright}
+\end{dukaz}
+
+
+\subsection{Latinské čtverce a projektivní roviny}
+
+\begin{definiceN}{Projektivní rovina}
+\emph{Konečná projektivní rovina} je množinový systém $(B,P)$, kde $B$ je konečná množina a $P$ je systém podmnožin množiny $B$, splňující:
+\begin{penumerate}
+	\item $\forall p \neq p' \in P: |p \cap p'| = 1$
+	\item $\forall x \neq y \in B~\exists p \in P: x,y \in p$
+	\item $\exists \textit{ 4 body } a,b,c,d \in B: \forall p \in P: |\{a,b,c,d\} \cap p| \leq 2$
+\end{penumerate}
+
+Projektivní rovinu si lze představit jako množinu bodů $B$ a množinu \emph{přímek} $P$ (jak se ostatně prvky těchto množin nazývají). Pak si lze podmínky představit takto:
+\begin{penumerate} 
+    \item Každé dvě přímky se protínají právě v jednom bodě. 
+    \item Pro každé dva různé body $x$ a $y$ existuje přímka, která jimi prochází. 
+    \item Existují čtyři body tak, že žádné 3 z nich neleží na jedné přímce (body v obecné poloze).
+\end{penumerate}
+\end{definiceN}
+
+\begin{veta}
+Buď $(B,P)$ projektivní rovina. Potom všechny její přímky mají stejný počet bodů, tedy $\forall p,q \in P: |p| = |q|$
+\end{veta}
+
+\begin{definice}
+\emph{Řád projektivní roviny} $(B, P)$ je číslo $|p|-1$, kde $p$ je libovolná přímka z $P$ ($p \in P$).
+\end{definice}
+
+\begin{veta}
+Nechť $(B,P)$ je projektivní rovina řádu $n$. Potom platí, že každým bodem prochází právě $n+1$ přímek a $|B|=|P|=n^2+n+1$
+\end{veta}
+
+\begin{veta}
+Jestliže $n=p^2$, kde $p$ je prvočíslo, pak existuje konečná projektivní rovina řádu $n$.
+\end{veta}
+
+\begin{definiceN}{Latinský čtverec}
+\emph{Latinský čtverec} řádu $n$ je matice $A \in \{1, \dots, n\}^{n \times n}, \;\forall i, j \neq j': A_{ij}~\neq~A_{ij'}$ a $A_{ji}~\neq~A_{j'i}.$
+
+V podstatě se jedná o čtverec $n$ krát $n$, kde v každém řádku i sloupci jsou vepsaná všechna čísla od $1$ do $n$.
+\end{definiceN}
+
+\begin{definice}
+Mějme dva latinské čtverce $A, B$ stejných rozměrů $n \times n$. Pak řekneme, že je \emph{ortogonální} (značíme $A \bot B$), jestliže platí:
+$$\forall a,b \in \{1,\dots,n\} \;\exists i,j: A_{ij}=a, B_{ij}=b$$
+
+Pokud tedy ty dva latinské čtverce \uv{položíme přes sebe}, vznikne nám na každé pozici dvojice čísel od $1$ do $n$ s tím, že každá dvojice je unikátní.
+\end{definice}
+
+\begin{veta}
+Nechť $M$ je množina latinských čtverců řádu $n$, z nichž každé dva jsou navzájem ortogonální. Potom $|M| \le n-1$
+\end{veta}
+
+\begin{veta}
+Pro $n \ge 2$, projektivní rovina řádu $n$ existuje právě tehdy, když existuje soubor $n-1$ vzájemně ortogonálních latinských čtverců řádu $n$.
+\par\medskip
+\begin{dukaz}
+\begin{enumerate}
+    \item \emph{Implikace $\Leftarrow$:} Vezmu jednu -- \uv{vnější} -- přímku projektivní roviny. Na ní leží $n+1$ bodů, které nazvu $A_0,\dots,A_n$. Přímky jdoucí z krajních bodů $A_0$ a $A_n$ tvoří mřížku (nazvu ji $T$) -- protínají se v $n^2$ bodech. 
+
+Potom každý z vnitřních bodů $A_i\ (1 ? i ? n-1)$ definuje lat. čtverec: každá přímka jdoucí z nějakého z vnitřních bodů $A_i$ se s přímkami z $A_0$ a z $A_n$ protne právě jednou a každé 2 přímky z $A_i$ prochází mimo vnější přímku různými body. Každá přímka proch. každým řádkem i sloupcem mřížky $T$ právě jednou $\Rightarrow$ dostávám latinský čtverec: 
+$$(L^k)_{ij} = l \Leftrightarrow T_{ij} \in p^k_l$$
+kde $L^k$ značí $k$-tý lat. čtverec, $T_{ij}$ bod mřížky $T$ na souřadnicích $(i,j)$ a $p^k_l$ $l$-tou přímku jdoucí z bodu $A_k$. 
+
+Čtverce jsou ortogonální - sporem nechť pro mají dva čtverce ($k$-tý a $k'$-tý) na souřadnicích stejnou uspořádanou dvojici hodnot $(a,b)$ na dvou různých místech. Pak by se přímky $p^k_a$ a $p^{k'}_b$ protínaly ve 2 bodech.
+
+    \item \emph{Implikace $\Rightarrow$:} Vytvořím přímku $q$ s body $A_0,\dots,A_n$ a mřížku $T$ o $n\times n$ bodech. Do ní přidám přímky $p_{1,1},\dots,p_{n-1,n}$: 
+$$p_l^k = \{A_k\} \cup \{T_{ij} | L^k_{ij} = l \}$$ 
+Pak je třeba ověřit axiomy projektivní roviny. 
+\end{enumerate}
+\end{dukaz}
+\end{veta}

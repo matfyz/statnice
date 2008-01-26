@@ -1,0 +1,97 @@
+\subsection{Systémy souborů, adresářové struktury}
+
+\begin{definiceN}{soubor}
+  \emph{Soubor} je pojmenovaná množina souvisejících informací, která leží v
+  pomocné paměti (na disku).\\
+  \emph{Soubor} je abstrakce, která umožňuje uložit informaci na disk a později ji
+  přečíst. Abstrakce odstiňuje uživatele od podrobností práce s disky.
+\end{definiceN}
+
+\begin{obecne}{Soubory}
+  \begin{pitemize}
+    \item pojmenování souboru (umožňuje uživateli přístup k jeho datům;
+    přesná pravidla pojmenování určuje OS - malá vs. velká písmenka,
+    speciální znaky, délka jména, přípony a jejich význam)
+    \item atributy souborů (opět určuje OS) - jméno, typ, umístění, velikost, ochrana, časy, vlastník, \dots
+    \item struktura souborů - sekvence bajtů / sekvence záznamů / strom
+    \item typy souborů - běžné soubory, adresáře (systémové soubory vytvářející strukturu souborového systému), speciální soubory (znakové/blokové, soft linky)
+    \item přístup 
+    \begin{pitemize}
+      \item \textbf{sekvenční}~-- pohyb pouze vpřed, OS může přednačítat
+      \item \textbf{náhodný}~-- možno měnit aktuální pozici
+      \item \textbf{paměťově mapované soubory}~-- pojmenovaná virtuální paměť,
+      práce se souborem instrukcemi pro práci s pamětí, ušetří se kopírování
+      pamětí; mají i problémy (přesná velikost souboru, zvětšování souboru,
+      velikost souborů)
+    \end{pitemize}
+    \item volné místo na disku - bitmapa / spojový seznam volných bloků 
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Uložení souborů}
+  Soubory se ukládají na disk po blocích
+  \begin{pitemize}
+    \item souvislá alokace - souvislý sled bloků
+    \item spojovaná alokace - blok odkazuje na další
+    \item indexová alokace - inode (UNIX) 
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Adresáře}
+  \begin{pitemize}
+    \item zvláštní typ souboru
+    \item operace nad adresáři - hledání souboru / vypsání adresáře /
+    přejmenování, vytvoření, smazání souboru 
+    \item kořen, aktuální adresář, absolutní/relativní cesta
+    \item hierarchická struktura 
+    \begin{pitemize}
+      \item \emph{strom}~-- jednoznačné pojmenování (cesta)
+      \item \emph{DAG}~-- víceznačné pojmenování, ale nejsou cykly
+      \item \emph{obecný graf}~-- cykly vytváří problém při prohledávání
+    \end{pitemize}
+    \item implementace adresářů - záznamy pevné velikosti, spojový seznam, B-stromy 
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Co musí filesystém umět?}
+musí splňovat 3 věci: \emph{správu souborů} (kde jsou, jak velké), \emph{správu adresářů} (převod jméno $\leftrightarrow$ id) (někdy to dělá jiný prostředek, dnes větš. umí FS sám), \emph{správu volného místa}. někdy mohou být i další (odolnost proti výpadkům) 
+
+Velikost bloků -- blok = nejmenší jednotka pro práci s diskem; disk pracuje s min. 1 sektorem (typicky 512 B) - někdy by pak bylo moc bloků $\rightarrow$ OS sdruží několik sektorů lineáně vedle sebe = 1 blok. velikost: velké = rychlejší práce, ale vnitřní fragmentace (průměrný soubor má cca pár KB), malé = malá vnitřní fragmentace, větší režie na info o volném místě/ umístění souboru (zabírá víc bloků!), navíc fragmentace souborů $\rightarrow$ zpomalení. dnes má blok cca 2-4KB.
+\end{obecne}
+
+\begin{obecne}{Linky}
+  \begin{pitemize}
+    \item \textbf{Hard link}~-- Na jedna data souboru se odkazuje z různých položek v adresářích
+    \item \textbf{Soft link}~-- Speciální soubor, který obsahuje jméno souboru
+  \end{pitemize}
+\end{obecne}
+
+\begin{priklady}
+  \begin{pitemize}
+    \item FAT -- \url{http://en.wikipedia.org/wiki/File\_Allocation\_Table}
+    \item NTFS~-- charakteristika, MFT (Master File Table), run list\\\url{http://www.digit-life.com/articles/ntfs/}\\\url{http://www.pcguide.com/ref/hdd/file/ntfs/archSector-c.html}
+    \item ext2/ext3~-- struktura, inode, žurnál\\\url{http://www.science.unitn.it/~fiorella/guidelinux/tlk/node95.html}\\\url{http://www.linux-security.cn/ebooks/ulk3-html/0596005652/understandlk-CHP-18.html}
+  \end{pitemize}
+\end{priklady}
+
+\begin{obecne}{Plánování pohybu hlav disků}
+  \begin{pitemize}
+    \item FCFS (First-Come, First-Served) - žádné plánování, fronta požadavků, jeden za druhým
+    \item SSTF (Shortest Seek Time First) - krajní žádosti mohou "hladovět"
+    \item LOOK (výtah), C-LOOK (circular LOOK) - pohyb jen jedním směrem, na konci otočka 
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{RAID (Redundant Array of Inexpensive Disks)}
+  \begin{pitemize}
+    \item JBOD (Just a Bunch of Disks)
+    \item RAID 0~-- striping, žádná redundance
+    \item RAID 1~-- mirroring, redundance
+    \item RAID 0+1~-- mirroring a striping
+    \item RAID 2~-- 7-bitový paritní Hammingův kód
+    \item RAID 3~-- 1 paritní disk, po bitech na disky
+    \item RAID 4~-- 1 paritní disk a striping
+    \item RAID 5~-- distribuovaná parita a striping
+    \item RAID 6~-- distribuovaná parita -- dvojitá P+Q, striping 
+  \end{pitemize}
+\end{obecne}

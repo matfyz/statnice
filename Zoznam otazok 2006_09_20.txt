@@ -1,0 +1,121 @@
+Poadavky znalostí ke státní závìreèné zkoušce
+Platné od 20.9.2006 (ak sa zmenia otazky vytvorte novy subor, tento ponechajte)
+
+Základy matematiky
+
+1. Èísla
+Vlastnosti pøirozenıch, celıch, racionálních, reálnıch a komplexních èísel. Posloupnosti a limity. Cauchyovské posloupnosti.
+
+2. Základy diferenciálního poètu
+Reálné funkce jedné reálné promìnné. Spojitost, limita funkce v bodì (vlastní i nevlastní). Nìkteré konkrétní funkce (polynomy, racionální lomené funkce, goniometrické a cyklometrické funkce, logaritmy a exponenciální funkce). Derivace: definice a základní pravidla, vìty o støední hodnotì, derivace vyšších øádù. Nìkteré aplikace (prùbìhy funkcí, Newtonova metoda hledání nulového bodu, Taylorùv polynom se zbytkem).
+
+3. Posloupnosti a øady funkcí
+Spojitost za pøedpokladu stejnomìrné konvergence. Mocninné øady. Taylorovy øady. Fourierovy øady.
+
+4. Integrál
+Primitivní funkce, metody vıpoètu. Urèitı (Riemannùv) integrál, uití urèitého integrálu. Vícerozmìrnı integrál a Fubiniho vìta.
+
+5. Základy teorie funkcí více promìnnıch
+Parciální derivace a totální diferenciál, vìty o støední hodnotì, extrémy funkcí více promìnnıch, vìta o implicitních funkcích.
+
+6. Metrické prostory
+Definice metrického prostoru, pøíklady. Spojitost a stejnomìrná spojitost. Kompaktní prostory a jejich vlastnosti, úplné prostory.
+
+7. Diferenciální rovnice
+Soustavy lineárních diferenciálních rovnic prvního øádu resp. lineární rovnice n-tého øádu s konstantními koeficienty. Jejich øešení a speciální vlastnosti.
+
+8. Algebra
+Grupa, okruh, tìleso - definice a pøíklady. Podgrupa, normální podgrupa, faktorgrupa, ideál. Homomorfismy grup. Dìlitelnost a ireducibilní rozklady polynomù. Rozklady polynomù na koøenové èinitele pro polynom s reálnımi, racionálními, komplexními koeficienty. Násobnost koøenù a jejich souvislost s derivacemi mnohoèlenu.
+
+9. Vektorové prostory
+Základní vlastnosti vektorovıch prostorù, podprostory, generování, lineární závislost a nezávislost. Vìta o vımìnì. Koneènì generované vektorové prostory, base. Lineární zobrazení.
+
+10. Skalární souèin
+Vlastnosti v reálném i komplexním pøípadì. Norma. Cauchy-Schwarzova nerovnost. Kolmost. Ortogonální doplnìk a jeho vlastnosti.
+
+11. Øešení soustav lineárních rovnic
+Lineární mnoiny ve vektorovém prostoru, jejich geometrická interpretace. Øešení soustavy rovnic je lineární mnoina. Frobeniova vìta. Øešení soustavy úpravou matice. Souvislost soustavy øešení s ortogonálním doplòkem.
+
+12. Matice
+Matice a jejich hodnost. Operace s maticemi a jejich vlastnosti. Inversní matice. Regulární matice, rùzné charakteristiky. Matice a lineární zobrazení, resp. zmìny souøadnıch soustav.
+
+13. Determinanty
+Definice a základní vlastnosti determinantu. Úpravy determinantù, vıpoèet. Geometrickı smysl determinantu. Minory a inversní matice. Cramerovo pravidlo.
+
+14. Vlastní èísla a vlastní hodnoty
+Vlastní èísla a vlastní hodnoty lineárního operátoru resp. ètvercové matice. Jejich vıpoèet, základní vlastnosti. Uvedení matice na diagonální tvar v pøípadì rùznıch vlastních èísel. Informace o Jordanovì tvaru v obecném pøípadì.
+
+15. Základy lineárního programování
+Simplexová metoda. Vìty o dualitì (bez dùkazu).
+
+16. Diskrétní matematika
+Uspoøádané mnoiny. Mnoinové systémy, párování, párování v bipartitních grafech (systémy rùznıch reprezentantù). Kombinatorické poèítání. Princip inkluze a exkluze. Latinské ètverce a projektivní roviny.
+
+17. Teorie grafù
+Základní pojmy teorie grafù, reprezentace grafu. Stromy a jejich základní vlastnosti, kostra grafu. Eulerovské a hamiltonovské grafy. Rovinné grafy, barvení grafù.
+
+--------------------------------------------------------------------------------
+
+Základy informatiky - obor Obecná informatika
+
+1. Logika
+Jazyk, formule, sémantika, tautologie. Rozhodnutelnost, splnitelnost, pravdivost, dokazatelnost.Vìty o kompaktnosti a úplnosti vırokové a predikátové logiky. Normální tvary vırokovıch formulí, prenexní tvary formulí predikátové logiky.
+
+2. Automaty a jazyky
+Chomského hierarchie, tøídy automatù a gramatik, determinismus a nedeterminismus. Uzávìrové vlastnosti tøíd jazykù.
+
+3. Algoritmy a datové struktury
+Èasová sloitost algoritmù, sloitost v nejhorším a prùmìrném pøípadì. Tøídy sloitosti P a NP, pøevoditelnost, NP-úplnost. Metoda ,,rozdìl a panuj'' - aplikace a analıza sloitosti. Binární vyhledávací stromy, vyvaování, haldy. Hašování. Sekvenèní tøídìní, porovnávací algoritmy, pøihrádkové tøídìní, tøídící sítì. Grafové algoritmy - prohledávání do hloubky a do šíøky, souvislost, topologické tøídìní, nejkratší cesta, kostra grafu, toky v sítích. Tranzitivní uzávìr. Algoritmy vyhledávání v textu. Algebraické algoritmy - DFT, Euklidùv algoritmus. Základy kryptografie, RSA, DES. Pravdìpodobnostní algoritmy - testování prvoèíselnosti. Aproximaèní algoritmy.
+
+4. Databáze
+Podstata a architektury DB systémù. Konceptuální, logická a fyzická úroveò pohledù na data. Relaèní datovı model, relaèní algebra. Algoritmy návrhu schémat relací, normální formy, referenèní integrita. Základy SQL. Transakèní zpracování, vlastnosti transakcí. Organizace dat na vnìjší pamìti, B-stromy a jejich varianty.
+
+5. Architektury poèítaèù a sítí
+Architektury poèítaèe. Procesory, multiprocesory. Vstupní a vıstupní zaøízení, ukládání a pøenos dat. Architektury OS. Procesy, vlákna, plánování. Synchronizaèní primitiva, vzájemné vylouèení. Zablokování a zotavení z nìj. Organizace pamìti, alokaèní algoritmy. Principy virtuální pamìti, stránkování. Systémy souborù, adresáøové struktury. Bezpeènost, autentifikace, autorizace, pøístupová práva. ISO/OSI vrstevnatá architektura sítí. TCP/IP. Spojované a nespojované sluby, spolehlivost, zabezpeèení protokolù.
+
+6. Programovací jazyky
+Principy implementace procedurálních programovacích jazykù, oddìlenı pøeklad, sestavení. Objektovì orientované programování. Neprocedurální programování, logické programování. Generické programování.
+
+--------------------------------------------------------------------------------
+
+Základy informatiky - obor Programování
+
+1. Základy teoretické informatiky
+Logika – jazyk, formule, sémantika, tautologie. Rozhodnutelnost, splnitelnost, pravdivost, dokazatelnost. Normální tvary vırokovıch formulí, prenexní tvary formulí predikátové logiky. Automaty – Chomského hierarchie, tøídy automatù a gramatik, determinismus a nedeterminismus.
+
+2. Algoritmy a datové struktury
+Èasová sloitost algoritmù, sloitost v nejhorším a prùmìrném pøípadì. Tøídy sloitosti P a NP, pøevoditelnost, NP-úplnost. Binární vyhledávací stromy, vyvaování, haldy. Hašování. Sekvenèní tøídìní, porovnávací algoritmy, pøihrádkové tøídìní, tøídící sítì. Grafové algoritmy - prohledávání do hloubky a do šíøky, souvislost, topologické tøídìní, nejkratší cesta, kostra grafu. Tranzitivní uzávìr. Algoritmy vyhledávání v textu. Algebraické algoritmy - DFT, Euklidùv algoritmus. Základy kryptografie, RSA, DES.
+
+3. Databáze
+Podstata a architektury DB systémù. Konceptuální, logická a fyzická úroveò pohledù na data. Algoritmy návrhu schémat relací, normální formy, referenèní integrita. Transakèní zpracování, vlastnosti transakcí, uzamykací protokoly, zablokování. ER-diagramy, metody návrhù IS. SQL. Indexy, triggery, uloené procedury, uivatelé, uivatelská práva. Vícevrstevné architektury. Vazba databází na internetové technologie. Organizace dat na vnìjší pamìti, B-stromy a jejich varianty.
+
+4. Programovací jazyky a pøekladaèe
+Principy a základy implementace objektovì orientovanıch jazykù a jazykù s blokovou strukturou, bìhová podpora vyšších programovacích jazykù. Oddìlenı pøeklad, sestavení, øízení pøekladu. Neprocedurální programování. Struktura pøekladaèe, lexikální, syntaktická analıza. Interpretované jazyky, virtuální stroje. Pojmy a principy objektového návrhu. Generické programování a knihovny. Návrhové vzory.
+
+5. Architektura poèítaèù a operaèních systémù
+Architektury poèítaèe. Procesory, multiprocesory. Sbìrnice, protokoly. Vstupní a vıstupní zaøízení. Architektury OS. Vztah OS a HW, obsluha pøerušení. Procesy, vlákna, plánování. Synchronizaèní primitiva, vzájemné vylouèení. Zablokování a zotavení z nìj. Organizace pamìti, alokaèní algoritmy. Principy virtuální pamìti, stránkování, algoritmy pro vımìnu stránek, vıpadek stránky, stránkovací tabulky, segmentace. Systémy souborù, adresáøové struktury. Bezpeènost, autentifikace, autorizace, pøístupová práva. Druhy útokù a obrana proti nim. Kryptografické algoritmy a protokoly.
+
+6. Sítì a internetové technologie
+Architektura ISO/OSI. Rodina protokolu TCP/IP (ARP, IPv4, IPv6, ICMP, UDP, TCP) - adresace, routing, fragmentace, spolehlivost, flow control, congestion control, NAT. Rozhraní BSD sockets. Spolehlivost - spojované a nespojované protokoly, typy, detekce a oprava chyb. Bezpeènost - IPSec, principy fungování AH, ESP, transport mode, tunnel mode, firewalls. Internetové a intranetové protokoly a technologie - DNS, SMTP, FTP, HTTP, NFS, HTML, XML, XSLT a jejich pouití.
+
+--------------------------------------------------------------------------------
+
+Základy informatiky - obor Správa poèítaèovıch systémù
+
+1. Základy teoretické informatiky
+Logika – jazyk, formule, sémantika, tautologie. Rozhodnutelnost, splnitelnost, pravdivost, dokazatelnost. Normální tvary vırokovıch formulí, prenexní tvary formulí predikátové logiky. Automaty – Chomského hierarchie, tøídy automatù a gramatik, determinismus a nedeterminismus.
+
+2. Algoritmy a datové struktury
+Èasová sloitost algoritmù, sloitost v nejhorším a prùmìrném pøípadì. Tøídy sloitosti P a NP, pøevoditelnost, NP-úplnost. Binární vyhledávací stromy, vyvaování, haldy. Hašování. Sekvenèní tøídìní, porovnávací algoritmy. Grafové algoritmy - prohledávání do hloubky a do šíøky, souvislost, topologické tøídìní, nejkratší cesta, kostra grafu. Tranzitivní uzávìr. Algoritmy vyhledávání v textu. Algebraické algoritmy - DFT, Euklidùv algoritmus. Základy kryptografie, RSA, DES.
+
+3. Databáze
+Podstata a architektury DB systémù. Normální formy. Referenèní integrita. Transakèní zpracování, vlastnosti transakcí, uzamykací protokoly, zablokování. Základy SQL. Indexy, triggery, uloené procedury, uivatelé, uivatelská práva. Vícevrstevné architektury. Vazba databází na internetové technologie. Správa databázovıch systémù.
+
+4. Architektura poèítaèù a operaèních systémù
+Architektury poèítaèe. Procesory, multiprocesory. Sbìrnice, protokoly. Vstupní a vıstupní zaøízení, pøenos dat. Technologie dálkového pøenosu dat. Velkokapacitní záznamová média, zálohování, technologie ukládání a zabezpeèení záznamù. Architektury OS. Vztah OS a HW, obsluha pøerušení. Procesy, vlákna, plánování. Synchronizaèní primitiva, vzájemné vylouèení. Zablokování a zotavení z nìj. Organizace pamìti, alokaèní algoritmy. Principy virtuální pamìti, stránkování, algoritmy pro vımìnu stránek, vıpadek stránky, stránkovací tabulky, segmentace. Systémy souborù, adresáøové struktury. Bezpeènost, autentifikace, autorizace, pøístupová práva. Druhy útokù a obrana proti nim. Kryptografické algoritmy a protokoly.
+
+5. Sítì a internetové technologie
+Architektura ISO/OSI. Rodina protokolu TCP/IP (ARP, IPv4, IPv6, ICMP, UDP, TCP) - adresace, routing, fragmentace, spolehlivost, flow control, congestion control, NAT. Rozhraní BSD sockets. Spolehlivost - spojované a nespojované protokoly, typy, detekce a oprava chyb. Bezpeènost - IPSec, principy fungování AH, ESP, transport mode, tunnel mode, firewalls. Internetové a intranetové protokoly a technologie - DNS, SMTP, FTP, HTTP, NFS, HTML, XML, XSLT a jejich pouití.
+
+6. Administrace systémù
+Instalace systému, plánování síové topologie, rozklad zátìe . Zabezpeèení, systém práv, správa uivatelskıch úètù. Síové, systémové a adresáøové sluby, vzdálenı pøístup. Zálohování, automatizace úkolù, synchronizace, zotavení systému. Konkrétní souborové systémy. Instalace software, hromadná, vzdálená a odloená instalace. Èinnost systému pøi spouštìní a ukonèování, konfigurace. Skriptování a shelly. (Student si zvolí konkrétní platformu, buï Windows nebo Unix.)

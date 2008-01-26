@@ -1,0 +1,180 @@
+\subsection{SQL}
+
+Zdroje: slidy z přednášek Databázové systémy a Databázové aplikace Dr. T. Skopala a Dr. M. Kopeckého.
+
+\subsubsection*{Standardy SQL}
+
+SQL (\emph{Structured query language}) je standardní jazyk pro přístup k relačním databázím (a dotazování nad nimi). Je zároveň jazykem pro definici dat (definition data language), vytváření a modifikace schémat (tabulek), manipulaci s daty (data manipulation language), vkládání, aktualizace, mazání dat, řízení transakcí, definici integritních omezení aj. Jeho syntaxe odráží snahu o co nejpřirozenější formulace požadavků -- je podobná anglickým \uv{větám}.
+
+SQL je standard podle norem ANSI/ISO a existuje v několika (zpětně kompatibilních) verzích (označovaných podle roku uvedení):
+\begin{description}
+    \item[SQL 86] -- první \uv{nástřel}, průnik implementací SQL firmy IBM
+    \item[SQL 89] -– malá revize motivovaná komerční sférou, mnoho detailů ponecháno implementaci
+    \item[SQL 92] –- mnohem silnější a obsáhlejší jazyk. Zahrnuje už
+    \begin{pitemize}
+	\item modifikace schémat, tabulky s metadaty, 
+	\item vnější spojení, množinové operace
+	\item kaskádové mazání/aktualizace podle cizích klíčů, transakce
+	\item kurzory, výjimky
+    \end{pitemize}
+    Standard existuje ve čtyřech verzích: Entry, Transitional, Intermediate a Full.
+    \item[SQL 1999] -– přináší mnoho nových vlastností, např. 
+    \begin{pitemize}	
+	\item objektově-relační rozšíření
+	\item nové datové typy -- reference, pole, full-text
+	\item podpora pro externí datové soubory, multimédia
+	\item triggery, role, programovací jazyk, regulární výrazy, rekurzivní dotazy ...
+    \end{pitemize}
+    \item[SQL 2003] -– další rozšíření, např. XML management
+\end{description}
+
+Komerční systémy implementují SQL podle různých norem, někdy jenom SQL-92 Entry, dnes nejčastěji SQL-99, ale nikdy úplně striktně. Některé věci chybí a naopak mají všechny spoustu nepřenositelných rozšíření -- např. specifická rozšíření pro procedurální, transakční a další funkcionalitu (T-SQL (Microsoft SQL Server), PL-SQL (Oracle) ). S novými verzemi se kompatibilita zlepšuje, často je možné používat obojí syntax. Přenos aplikace za běhu na jinou platformu je ale stále velice náročný -- a to tím náročnější, čím víc věcí mimo SQL-92 Entry obsahuje. Pro otestování, zda je špatně syntax SQL, nebo zda jen daná databázová platforma nepodporuje některý prvek, slouží SQL validátory (které testují SQL podle norem).
+
+
+\subsubsection*{Dotazy v SQL}
+
+Hlavním nástrojem dotazů v SQL je příkaz \texttt{SELECT}. Sdílí prvky relačního kalkulu i relační algebry -- obsahuje práci se sloupci, kvantifikátory a agregační funkce z relačního kalkulu a další operace -- projekce, selekce, spojení, množinové operace -- z relační algebry. Na rozdíl od striktní formulace relačního modelu databáze povoluje duplikátní řádky a NULLové hodnoty atributů.
+
+Netříděný dotaz v SQL sestává z:
+\begin{pitemize}
+    \item příkazu(ů) \texttt{SELECT} (hlavní logika dotazování), to obsahuje vždy
+    \item může obsahovat i množinové operace nad výsledky příkazů \texttt{SELECT} -- \texttt{UNION}, \texttt{INTERSECTION} ...
+\end{pitemize}
+Výsledky nemají definované uspořádání (resp. jejich pořadí je určeno implementací vyhodnocení dotazu).
+
+Příkaz \texttt{SELECT} vypadá následovně (tato verze už zahrnuje i třídění výsledků):
+\begin{verbatim}
+SELECT [DISTINCT]
+ výraz1 [[AS] c_alias1] [, ...]
+FROM
+ zdroj1 [[AS] t_alias1] [, ...]
+[WHERE podmínka_ř]
+[GROUP BY výraz_g1 [, …]
+[HAVING podmínka_s]]
+[ORDER BY výraz_o1 [, …] ASC/DESC]
+\end{verbatim}
+Kde
+\begin{pitemize}
+    \item výrazy mohou být sloupce, sloupce s agregačními funkcemi, výsledky dalších funkcí ...
+
+\noindent \texttt{ výraz = <název sloupce>, <konstanta>, \\
+ (DISTINCT) COUNT(~<název sloupce>~),\\
+{}[DISTINCT] [~SUM~|~AVG~](~<výraz>~),\\
+{}[~MIN~|~MAX~](~<výraz>~)}\\
+a navíc lze použít operátory $+,-,*,/$.
+
+    \item zdroje jsou tabulky nebo vnořené selecty
+    \item výrazy i zdroje být přejmenovány pomocí \texttt{AS}, např. pro odkazování uvnitř dotazu nebo jména na výstupu (od SQL-92)
+    \item podmínka je logická podmínka (spojovaná logickými spojkami \texttt{AND, OR}) na hodnoty dat ve zdrojích:
+
+\texttt{podmínka = <výraz> BETWEEN <x> AND <y>, <výraz> LIKE "\%\_ ... ",\\
+<výraz> IS [NOT] NULL,\\
+<výraz> > = <> <= < > [<výraz>/ ALL / ANY <dotaz>],\\
+<výraz> NOT IN [<seznam hodnot> / <dotaz>], EXIST ( <dotaz> )}
+
+    \item \texttt{GROUP BY} znamená agregaci podle unikátních hodnot jmenovaných sloupců (v ostatních sloupcích vznikají množiny hodnot, které se spolu s oněmi unikátnímí vyskytují na stejných řádkách
+    \item \texttt{HAVING} označuje podmínku na agregaci
+    \item \texttt{ORDER BY} definuje, podle hodnot ve kterých sloupcích nebo podle kterých jiných výrazů nad nimi provedených se má výsledek setřídit (\texttt{ASC} požaduje vzestupné setřídění, \texttt{DESC} sestupné).
+\end{pitemize}
+
+SQL nemá příkaz na omezení rozsahu na některé řádky (jako např. \uv{potřebuji jen 50.-100. řádek výpisu}), a to lze řešit buď složitě standardně (počítání kolik hodnot je menších než vybraná, navíc náročné na hardware) nebo pomocí některého nepřenositelného rozšíření.
+
+\medskip\noindent
+Pořadí vyhodnocování jednoho příkazu \texttt{SELECT} (nebereme v úvahu optimalizace):
+\begin{penumerate}
+    \item Nejprve se zkombinují data ze všech zdrojů (tabulek, pohledů, poddotazů). Pokud jsou odděleny čárkami, provede se kartézský součin (to samé co \texttt{CROSS JOIN}), v SQL-92 a vyšším i složitější spojení -- \texttt{JOIN ON} (vnitřní spojení podle podmínky), \texttt{NATURAL JOIN} (\uv{přirozené} spojení podle stejných hodnot stejně pojmenovaných sloupců), \texttt{OUTER JOIN} (\uv{vnější} spojení, do kterého jsou zahrnuty i záznamy, pro které v jednom ze zdrojů není nalezeno nic, co by odpovídalo podmínce, doplněnné NULLovými hodnotami) atd.
+    \item Vyřadí se vzniklé řádky, které nevyhovují podmínce (\texttt{WHERE})
+    \item Zbylé řádky se seskupí do skupin se stejnými hodnotami uvedených výrazů (\texttt{GROUP BY}), každá skupina obsahuje atomické sloupce s hodnotami uvedených výrazů a množinové sloupce se skupinami ostatních hodnot sloupců.
+    \item Vyřadí se skupiny, nevyhovující podmínce (\texttt{HAVING})
+    \item Výsledky se setřídí podle požadavků
+    \item Vygeneruje se výstup s požadovanými hodnotami
+    \item V případě \texttt{DISTINCT} se vyřadí duplicitní řádky
+\end{penumerate}
+
+
+\begin{poznamka}
+\begin{pitemize}
+    \item Klauzule \texttt{GROUP BY} setřídí před vytvořením skupin všechny řádky dle výrazů v klauzuli. Proto by se měl seskupovat co nejmenší možný počet řádek. Pokud je možné řádky odfiltrovat pomocí WHERE, je výsledek efektivnější, než následné odstraňování celých skupin.
+    \item  Klauzule \texttt{DISTINCT} třídí výsledné záznamy (před operací ORDER BY), aby našla duplicitní záznamy. Pokud to jde, je vhodné se bez ní obejít.
+    \item Klauzule \texttt{ORDER BY} by měla být použita jen v nutných případech. Není příliš vhodné ji používat v definicích pohledů, nad kterými se dále dělají další dotazy.
+\end{pitemize}
+\end{poznamka}
+
+
+\subsubsection*{Definice a manipulace s daty, ostatní příkazy}
+
+Standard SQL podporuje několik druhů datových typů:
+\begin{pitemize}
+    \item textové v národní a globální (UTF) znakové sadě (několika druhů -- proměnné a pevné délky): \texttt{CHARACTER(n)}, \texttt{NCHAR(n)},
+    \texttt{CHAR VARYING(n)}
+    \item číselné typy -- \texttt{ NUMERIC(p[,s]), INTEGER, INT, SMALLINT,\\  FLOAT(presnost), REAL, DOUBLE PRECISION}
+    \item datumové typy -- \texttt{DATE, TIME, TIMESTAMP, TIMESTAMP(presnost\_sekund) WITH TIMEZONE}
+\end{pitemize}
+Databázové servery ne vždy podporují všechny uvedené typy. Nemusí je podporovat nativně, někdy si pouze \uv{přeloží} název typu na podobný nativně podporovaný typ.
+
+\medskip
+\begin{obecne}{Příkaz \texttt{CREATE TABLE}}
+Tento příkaz slouží k vytvoření nové tabulky. Je nutné definovat její název, atributy a jejich domény (datové typy); dále je možné definovat integritní omezení (klíče, cizí klíče, odkazy, podmínky). Příkaz vypadá následovně:
+\begin{center}
+\texttt{CREATE TABLE <název> <def. sloupce/i.o. tabulky, ...> }
+\end{center}
+A uvnitř potom
+\begin{verbatim}
+def. sloupce = <název> <dat.typ> 
+    [DEFAULT NULL|<hodnota>] [<i.o.sloupce>] 
+dat.typ = [VARCHAR(n) | BIT(n) | INTEGER | FLOAT | DECIMAL ...] 
+i.o.sloupce = [CONSTRAINT <jméno>] [NOT NULL / UNIQUE / PRIMARY KEY], 
+    REFERERENCES <tabulka>(<sloupec>) <akce>, CHECK <podmínka> 
+akce = [ON UPDATE / ON DELETE] 
+    [CASCADE / SET NULL / SET DEFAULT / NO ACTION(hlášení chyby) ] 
+i.o.tabulky = UNIQUE, PRIMARY KEY <sloupec, ... >, 
+    FOREIGN KEY <sloupec, ... >, 
+    REFERENCES <tabulka>(<sloupec, ... >), 
+    CHECK( <podmínka> )
+\end{verbatim}
+\end{obecne}
+
+\medskip
+\begin{obecne}{Příkazy pro manipulaci se schématem}
+\begin{pitemize}
+    \item Úprava tabulky:
+\begin{verbatim}
+ALTER TABLE <název> ADD {COLUMN} <def.sloupce>, ADD <i.o.tabulky>, 
+    ALTER COLUMN <sloupec> [ SET / DROP ], DROP COLUMN <sloupec>, 
+    DROP CONSTRAINT <jméno i.o.> 
+\end{verbatim}
+    \item Smazání tabulky (není to samé jako vymazání všech dat z tabulky!):
+\begin{verbatim}
+DROP TABLE <tabulka> 
+\end{verbatim}
+    \item Vytvoření \uv{pohledu} -- navenek se chová jako tabulka, ale vnitřně se při každém dotazu provede vnořený dotaz (který definicí pohledu zapisuji):
+\begin{verbatim}
+CREATE VIEW <název "tabulky"> ( <sloupec, ... > ) 
+    AS <dotaz> {WITH [ LOCAL / CASCADED ] CHECK OPTION }
+\end{verbatim}
+    Některé databázové platformy umožňují do takto vytvořených pohledů i zapisovat.
+\end{pitemize}
+\end{obecne}
+
+\medskip
+\begin{obecne}{Příkazy pro manipulaci s daty}
+\begin{pitemize}
+    \item Vložení nových dat do tabulky
+\begin{verbatim}
+INSERT INTO <tabulka> ( <sloupec, ... > ) 
+    [VALUES ( <výraz, ... > ) / (<dotaz>) ] 
+\end{verbatim}
+    \item Úprava dat (na řádcích které vyhovují podmínce se nastaví zadané hodnoty vybraným sloupcům):
+\begin{verbatim}
+UPDATE <tabulka> SET 
+    ( <sloupec> = [ NULL / <výraz> / <dotaz> ] , ... ) 
+    WHERE (<podmínka>) 
+\end{verbatim}
+    \item Smazání řádků vyhovujících podmínce z tabulky:
+\begin{verbatim}
+DELETE FROM <tabulka> ( WHERE <podmínka> ) 
+\end{verbatim}
+\end{pitemize}
+\end{obecne}
+
+TODO: doplnit ?

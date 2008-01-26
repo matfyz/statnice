@@ -1,0 +1,28 @@
+\subsection{Vstupní a výstupní zařízení}
+
+K I/O zařízením je možné přistupovat dvěma způsoby: pomocí \textbf{port}ů (speciální adresový port CPU) nebo \textbf{pamětovým mapováním} (namapování do fyzické paměti).
+
+Zařízení mají různé charakteristiky:
+\begin{pitemize}
+	\item \textbf{druh}~-- blokové (disk, síťová karta), znakové (klávesnice, myš)
+	\item \textbf{přístup}~-- sekvenční (datová páska), náhodný (hdd, cd)
+	\item \textbf{komunikace}~-- synchronní (pracuje s daty na žádost~-- disk), asynchronní (\uv{nevyžádaná} data~-- síťová karta)
+	\item \textbf{sdílení}~-- sdílené (preemptivní, lze odebrat~-- síťová karta (po multiplexu OS)), vyhrazené (nepreemptivní~-- tiskárna, sdílení se realizuje přes \emph{spooling}). Reálně se rozdíly stírají.
+	\item \textbf{rychlost} (od několika Bps po GBps)
+	\item \textbf{směr dat}~-- R/W, R/O (CD-ROM), W/O (tiskárna) 
+\end{pitemize}
+
+Přenos dat mezi zařízením a CPU/pamětí:
+\begin{pitemize}
+	\item \textbf{polling}~-- aktivní čekání na změnu zařízení, přenos provádí CPU
+	\item \textbf{přerušení}~-- asynchronní přerušení od zařízení, přenos provádí CPU
+	\item \textbf{DMA (Direct Memory Access)}~-- zařízení si samo řídí přístup na sběrnici a přenáší data z/do paměti; po skončení přenosu přerušení (oznámení o dokončení)
+\end{pitemize}
+
+Cíle I/O software:
+\begin{pitemize}
+	\item \textbf{Nezávislost zařízení}~-- programy nemusí dopředu vědět, s jakým přesně zařízením budou pracovat~-- je jedno jestli pracuji se souborem na pevném disku, disketě nebo na CD-ROM
+	\item \textbf{Jednotné pojmenování} (na UNIXu /dev)
+	\item \textbf{Připojení (mount)}~-- časté u vyměnitelných zařízení (disketa); možné i u pevných zařízení (disk); nutné pro správnou funkci cache OS
+	\item \textbf{Obsluha chyb}~-- v mnoha případech oprava bez vědomí uživatele (velmi často způsobeno právě uživatelem)
+\end{pitemize}

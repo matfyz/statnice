@@ -1,0 +1,397 @@
+\section{Vlastní čísla a vlastní hodnoty}
+
+
+\begin{pozadavky}
+\begin{pitemize}
+\item Vlastní čísla a vlastní hodnoty lineárního operátoru resp. čtvercové matice.
+\item Jejich výpočet.
+\item Základní vlastnosti.
+\item Uvedení matice na diagonální tvar.
+\item Informace o Jordanově tvaru v obecném případě.
+\end{pitemize}
+\end{pozadavky}
+
+Otázka vychází především ze skript pana Jiřího Tůmy a částečně i ze skript pana Jiřího Rohna.
+
+\subsection{Definice}
+\begin{definice}
+Nechť \textbf{A} je čtvercová matice řádu n s reálnými (komplexními) prvky. Jestliže platí
+\begin{equation}\label{1}Ax = \lambda x\end{equation}
+pro jisté $\lambda \in \mathbb{C}$ a pro \emph{nenulový vektor} $x \in \mathbb{R}^{n\times1}\ (\mathbb{C}^{n\times1}) $. Pak $\lambda$ nazveme \emph{vlastním číslem} matice
+\textbf{A} a vektor x \emph{vlastním vektorem} příslušným k tomuto vlastnímu číslu.
+
+Množinu všech vlastních čísel matice \textbf{A} nazýváme \emph{spektrum} matice \textbf{A} a označujeme ji $\sigma$(\textbf{A}).
+
+Funkci $p(\lambda) = \det(\textbf{A} - \lambda \textbf{I}_n)$ nazveme \emph{charakteristický polynom} matice \textbf{A}.
+\end{definice}
+
+\begin{pozorovani}
+Z definice přímo plyne:
+
+$$\lambda \in \sigma(\textbf{A}) \Leftrightarrow \quad\textit{matice}\quad \textbf{A} - \lambda \textbf{I}_n \quad\textit{je\quad singulární}\quad \Leftrightarrow \det( \textbf{A} - \lambda \textbf{I}_n ) = 0$$
+
+Poslední podmínka nám říká, jak najít vlastní čísla matice, pokud existují.
+Vlastní vektory vypočteme úpravou (\ref{1}) na: \begin{displaymath}(\textbf{A}-\lambda \textbf{I}_n)x=0\end{displaymath}
+\end{pozorovani}
+
+\begin{definice}
+Je-li $F:\textbf{V}\rightarrow$\textbf{V} lineární operátor na reálném (komplexním) vektorovém prostoru \textbf{V}, pak skalár $\lambda$ nazýváme \emph{vlastní číslo} lineárního operátoru \textbf{V}, pokud existuje nenulový vektor $x \in \textbf{V}$, pro který platí $F(x)=\lambda x$.
+Je-li $\lambda$ vlastní číslo operátoru F, pak každý vektor $x \in \textbf{V}$, pro který platí $F(x)=\lambda x$, nazýváme \emph{vlastní vektor} lineárního operátoru $F$ příslušný vlastnímu číslu $\lambda$.
+Množinu všech vlastních čísel operátoru $F$ označujeme $\sigma(F)$ a nazýváme \emph{spektrum} operátoru $F$.
+\end{definice}
+
+\begin{definiceN}{podobné matice, diagonalizovatelnost}
+Řekneme, že matice \textbf{A} a \textbf{B} jsou \emph{podobné}, pokud existuje nějaká regulární matice \textbf{P} taková, že platí $\textbf{B}=\textbf{P}^{-1}\textbf{A}\textbf{P}$.
+
+Reálná(komplexní) matice \textbf{A} řádu n  se nazývá \emph{diagonalizovatelná}, pokud existuje regulární reálná(komplexní) matice \textbf{P} řádu $n$, pro kterou platí, že součin $\textbf{P}^{-1}\textbf{A}\textbf{P}$ je diagonální matice, tj. pokud matice \textbf{A} je podobná nějaké diagonální matici.
+
+Lineární operátor $F:\textbf{V}\rightarrow$\textbf{V} na reálném(komplexním) vektorovém prostoru \textbf{V} se nazývá \emph{diagonalizovatelný}, pokud existuje báze $\mathbb{B}$ prostoru \textbf{V}, pro kterou platí, že matice $[F]_B$ operátoru $F$ vzhledem k bázi $\mathbb{B}$ je diagonální.
+\end{definiceN}
+
+\subsection{Výpočet vlastních čísel a vlastních vektorů }
+
+\begin{priklad}
+
+$$\mathbf{A} =
+\begin{pmatrix}
+  3 & 2 \\
+  2 & 6 \\
+\end{pmatrix}\text{, spočítáme tedy kdy se } \det
+\begin{pmatrix}
+  3-\lambda & 2 \\
+  2 & 6-\lambda \\
+\end{pmatrix} = 0$$
+
+$$\det\begin{pmatrix}
+  3-\lambda & 2 \\
+  2 & 6-\lambda \\
+\end{pmatrix} = (3-\lambda)(6-\lambda)-4 = \lambda^2 - 9\lambda + 14$$
+
+$$\lambda^2 - 9\lambda + 14 = 0 \quad \text{dává dvě řešení:} \quad \lambda_1 = 2 \text{ a } \lambda_2 = 7$$
+
+\noindent vlastní vektor příslušný vlastnímu číslu $\lambda_1 = 2$:
+
+$$\begin{pmatrix}
+  3 & 2 \\
+  2 & 6 \\
+\end{pmatrix} -
+\begin{pmatrix}
+  2 & 0 \\
+  0 & 2 \\
+\end{pmatrix} =
+\begin{pmatrix}
+  1 & 2 \\
+  2 & 4 \\
+\end{pmatrix}$$
+
+$$\begin{pmatrix}
+  1 & 2 \\
+  2 & 4 \\
+\end{pmatrix}x = 0 \Rightarrow x=(-2,1)$$
+
+\noindent vlastní vektor příslušný vlastnímu číslu $\lambda_2 = 7$:
+
+$$\begin{pmatrix}
+  3 & 2 \\
+  2 & 6 \\
+\end{pmatrix} -
+\begin{pmatrix}
+  7 & 0 \\
+  0 & 7 \\
+\end{pmatrix} =
+\begin{pmatrix}
+  -4 & 2 \\
+  2 & -1 \\
+\end{pmatrix}$$
+
+$$\begin{pmatrix}
+  -4 & 2 \\
+  2 & -1 \\
+\end{pmatrix}x = 0 \Rightarrow x=(1,2)$$
+\end{priklad}
+
+\subsection{Vlastnosti}
+
+\begin{vetaN}{vlastnosti vlastních čísel}
+Pro komplexní čtvercovou matici \textbf{A} řádu $n$ platí:
+\begin{penumerate}
+  \item charakteristický polynom matice \textbf{A} řádu $n$ je polynom stupně $n$ s vedoucím koeficientem rovným $(-1)^n$
+  \item komplexní číslo $\lambda$ je vlastním číslem matice \textbf{A} právě když je kořenem charakteristického polynomu $p(\lambda)$ matice \textbf{A}
+  \item matice \textbf{A} má $n$ vlastních komplexních čísel, počítáme-li každé tolikrát, kolik je jeho násobnost jako kořene charakteristického polynomu
+  \item pokud \textbf{A} je reálná matice, pak $\lambda \in \sigma(\textbf{A})$ právě když komplexně sdružené $\overline{\lambda} \in \sigma(\textbf{A})$
+\end{penumerate}
+
+\medskip
+\begin{dukaz}
+\begin{penumerate}
+    \item plyne z definice determinantu.
+    \item $\exists x\neq 0: \mathbf{A}x=\lambda x\ \Leftrightarrow\ \mathbf{A}x-\lambda x=0\ \Leftrightarrow\ (\mathbf{A}-\lambda \textbf{I}_n)x=0$, tj. matice $(\mathbf{A}-\lambda \textbf{I}_n)$ je singulární, takže musí mít nulový determinant.
+    \item plyne ze Základní věty algebry.
+    \item taktéž.
+\end{penumerate}
+\end{dukaz}
+\end{vetaN}
+
+\begin{veta}
+Determinant čtvercové matice je roven součinu jejích vlastních čísel.
+\end{veta}
+
+\begin{veta}
+Vlastními čísly horní(dolní) trojúhelníkové matice jsou právě všechny diagonální prvky.
+\end{veta}
+
+\begin{veta}
+Je-li \textbf{A} reálná symetrická matice, pak každé vlastní číslo matice \textbf{A} je reálné.
+\end{veta}
+
+\begin{veta}
+Je-li \textbf{A} čtvercová reálná(komplexní) matice řádu n, \textbf{P} reálná(komplexní) regulární matice stejného řádu a $\textbf{B}=\textbf{P}^{-1}\textbf{A}\textbf{P}$, pak obě matice \textbf{A} a \textbf{B} mají stejný charakterictický polynom a tedy i stejné spektrum.
+
+\medskip
+\begin{dukaz}
+$\det(\textbf{P}^{-1}\textbf{AP}-t\textbf{I})=\det(\textbf{P}^{-1}\textbf{AP}-t\textbf{P}^{-1}\textbf{IP})=\det(\textbf{P}^{-1})\cdot\det(\mathbf{A}-t\mathbf{I})\cdot{\det(\mathbf{P}})=\det(\mathbf{A}-t\mathbf{I})$.
+\end{dukaz}
+\end{veta}
+
+\begin{veta}
+Jsou-li \textbf{A}, \textbf{B} čtvercové matice stejného typu, potom \textbf{AB} a \textbf{BA} mají stejná vlastní čísla.
+\end{veta}
+
+\subsection{Uvedení matice na diagonální tvar}
+
+\begin{vetaN}{O diagonalizovatelnosti a bázi}
+Čtvercová reálná(komplexní) matice \textbf{A} řádu $n$ je diagonalizovatelná, právě když existuje báze prostoru \ $\mathbb{R}^n\ (\mathbb{C}^n)$, která je složena z vlastních vektorů matice \textbf{A}.
+
+Lineární operátor $F:\textbf{V}\rightarrow$\textbf{V} na reálném(komplexním) vektorovém prostoru \textbf{V} je diagonalizovatelný právě když existuje báze prostoru \textbf{V} složená z vlastních vektorů operátoru $F$.
+
+\medskip
+\begin{dukaz}
+Je-li \textbf{A} diagonalizovatelná, znamená to, že existuje regulární matice \textbf{R} taková, že $\textbf{R}^{-1}\textbf{AR} = \textbf{D}$ (a \textbf{D} je diagonální), což je to samé jako $\textbf{AR} = \textbf{RD}$. Sloupce matice R tvoří vlastní vektory příslušné vlastním číslům matice \textbf{A}. \textbf{R} je regulární, takže vlastní vektory jsou lineárně nezávislé a tedy tvoří bázi.
+
+Mám-li $n$ lineárně nezávislých vlastních vektorů, mohu z nich sestavit matici \textbf{R} a pro ní už platí, že $\textbf{R}^{-1}\textbf{AR} = \textbf{D}$.
+\end{dukaz}
+\end{vetaN}
+
+\begin{dusledek}
+Je-li \textbf{A} čtvercová matice řádu n a \textbf{P} regulární matice taková, že $\textbf{P}^{-1}\textbf{A}\textbf{P}=\textbf{D}$ pro nějakou diagonální matici \textbf{D}, pak na hlavní diagonále matice \textbf{D} jsou všechna vlastní čísla matice \textbf{A}.
+\end{dusledek}
+
+\begin{vetaN}{Vlastní čísla a diagonalizovatelnost}
+Platí:
+\begin{penumerate}
+    \item Jsou-li $\lambda_1,...,\lambda_m$ navzájem různá vlastní čísla matice \textbf{A} řádu $n$ a $u_i\neq0$ je vlastní vektor matice \textbf{A} příslušný vlastnímu číslu $\lambda_i$ pro libovolné $i=1,...,m$, pak je posloupnost vektorů $u_1,\dots,u_m$ lineárně nezávislá.
+
+    \item Má-li matice \textbf{A} řádu $n$ celkem $n$ navzájem různých vlastních čísel, pak je diagonalizovatelná.
+
+    \item Má-li lineární operátor $F:\textbf{V}\rightarrow\textbf{V}$ celkem $n$ navzájem různých vlastních čísel, pak je diagonalizovatelný.
+\end{penumerate}
+
+\medskip
+\begin{dukaz}
+\begin{penumerate}
+    \item indukcí a sporem, $u_1,\dots,u_k$ dávají nejmenší protipříklad, pak z rovnice $0=\mathbf{A}0=\sum_{i=1}^k a_i\lambda_iu_i$ a $0=\lambda_k\cdot 0=\lambda_k\cdot\sum_{i=1}^k a_i u_i$, pak dostávám spor (buď byly $u_1,\dots,u_{k-1}$ závislé, nebo je $u_k$ nulové)
+    \item z $n$ lineárně nezávislých vlastních vektorů sestrojím matici \textbf{R} a platí \textbf{AR}=\textbf{RD}, kde \textbf{D} je diagonální matice s vlastními čísly na diagonále.
+\end{penumerate}
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{O diagonalizovatelnosti a násobnostech}
+Čtvercová reálná(komplexní) matice \textbf{A} řádu $n$ je diagonalizovatelná, právě když pro každé vlastní číslo $\lambda$ matice \textbf{A} platí, že algebraická násobnost $\lambda$ se rovná dimenzi nulového prostoru matice $\textbf{A}-\lambda \textbf{I}_n$ , tj. číslu $\dim \mathcal{N}(\textbf{A}-\lambda \textbf{I}_n)$.
+
+Neboli: čtvercová matice \textbf{A} řádu $n$ je diagonalizovatelná, právě když pro každé její vlastní číslo $\lambda_i$ s násobností $r_i$ platí $\mathrm{rank}(\mathbf{A}-\lambda_i I)=n-r_i$.
+
+\medskip
+\begin{dukaz}
+Matice je diagonalizovatelná, právě když existuje báze prostoru $\mathbb{C}^n$ ($\mathbb{R}^n$), složená z vlastních vektorů, a tu lze rozložit na $k$ bází $\mathrm{Ker}(\textbf{A}-\lambda\textbf{I})$, které mají dimenzi $r_i$.
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{spektrální věta pro diagonalizovatelné matice}
+Čtvercová matice \textbf{A} řádu n se spektrem $\sigma(\textbf{A}) = \{\lambda_1,...,\lambda_t\}$ je diagonalizovatelná právě když existují matice $\textbf{E}_1,...,\textbf{E}_t$ řádu n, pro které platí:
+\begin{penumerate}
+  \item $\textbf{A} = \lambda_1 \textbf{E}_1 + \lambda_2 \textbf{E}_2 + ... + \lambda_t \textbf{E}_t$
+  \item ${\textbf{E}_i}^2 = \textbf{E}_i$ pro každé $i = 1,2,...,t$
+  \item $\textbf{E}_i \textbf{E}_j = 0$ pro libovolné dva různé indexy $i,j = 1,2,...,t$
+  \item $\textbf{E}_1 + \textbf{E}_2 + ... + \textbf{E}_t = \textbf{I}_n$
+
+  \bigskip
+  Dále pro diagonalizovatelnou matici \textbf{A} platí, že
+  \item matice $\textbf{E}_i$ jsou jednoznačně určené maticí \textbf{A} a vlastnostmi \textit{1,2,3,4}
+  \item hodnost každé z matic $\textbf{E}_i$ se rovná algebraické násobnosti vlastního čísla $\lambda_i$
+  \item je-li $f(x)= c_0 + c_1 x + ... + c_k x^k$ libovolný polynom s komplexními koeficienty, pak platí $f(\textbf{A})= c_0 \textbf{I}_n + c_1 \textbf{A} + ... + c_k \textbf{A}^k = f(\lambda_1)\textbf{E}_1 + f(\lambda_2)\textbf{E}_2 + ... + f(\lambda_k)\textbf{E}_k$
+  \item nějaká matice \textbf{B} komutuje s maticí \textbf{A} (tj. $\textbf{AB}=\textbf{BA}$) právě tehdy, když komutuje s každou z matic $\textbf{E}_i$ pro $i = 1,2,...,t$
+\end{penumerate}
+\end{vetaN}
+
+\subsection{Jordanův tvar v obecném případě }
+\begin{definiceN}{Jordanův tvar}
+Diagonalizovatelné matice mají dobře pochopitelnou strukturu popsanou ve spektrální větě. Matice, které nelze diagonalizovat, nemají bázi složenou z vlastních vektorů, musí mít nějaké vícenásobné vlastní číslo $\lambda$, pro které je dimenze nulového prostoru $\mathcal{N}(\textbf{J}-\lambda \textbf{I}_n)$ menší než algebraická násobnost čísla $\lambda$. (viz věta o diagonalizovatelnosti a násobnostech)
+
+Příklad takové matice řádu $n$, pro $n\geq2$
+
+$$\textbf{J} = \begin{pmatrix}
+  \lambda & 1 & 0 & 0 & \cdots & 0 & 0 \\
+  0 & \lambda & 1 & 0 & \cdots & 0 & 0 \\
+  0 & 0 & \lambda & 1 & \cdots & 0 & 0 \\
+  0 & 0 & 0 & \lambda & \cdots & 0 & 0 \\
+   &  & \vdots &  & \ddots &  & \vdots \\
+  0 & 0 & 0 & 0 & \cdots & \lambda & 1 \\
+  0 & 0 & 0 & 0 & \cdots & 0 & \lambda \\
+\end{pmatrix}$$
+
+Všechny prvky na diagonále se rovnají stejnému číslu $\lambda$, všechny prvky bezprostředně nad hlavní diagonálou  se rovnají 1, ostatní prvky jsou nulové.
+\end{definiceN}
+\begin{pozorovani}
+Charakteristický polynom matice \textbf{J} se rovná:
+$$p(t)=(\lambda - t)^n$$
+\end{pozorovani}
+
+\begin{pozorovani}
+Matice $\textbf{J}-\lambda \textbf{I}_n$ je v řádkově odsťupňovaném tvaru, její hodnost se rovná $n-1$ a její nulový prostor $\mathcal{N}(\textbf{J}-\lambda \textbf{I}_n)$ má proto dimenzi rovnou 1, což se nerovná algebraické násobnosti vlastního čísla $\lambda$, matice \textbf{J} tedy není diagonalizovatelná.
+\end{pozorovani}
+
+\begin{definiceN}{Jordanova buňka}
+Matice \textbf{J} se nazývá Jordanova buňka řádu $n$ příslušná vlastnímu číslu $\lambda$.
+\end{definiceN}
+
+\begin{vetaN}{O Jordanově kanonickém tvaru}
+Pro každou čtvercovou matici \textbf{A} existuje regulární matice \textbf{P} taková, že
+
+$$\textbf{P}^{-1}\textbf{A}\textbf{P} = \begin{pmatrix}
+  \textbf{J}_1 & 0 & 0 & \cdots & 0 \\
+  0 & \textbf{J}_2 & 0 & \cdots & 0 \\
+  0 & 0 & \textbf{J}_3 & \cdots & 0 \\
+   & \vdots &  & \ddots & \vdots \\
+  0 & 0 & 0 & \cdots & \textbf{J}_k \\
+\end{pmatrix}$$
+
+kde každá z matic $\textbf{J}_i$ pro $i=1,...,k$ je Jordanova buňka nějakého řádu $n_i$ příslušná vlastnímu číslu $\lambda_i$. Čísla $\lambda_1,...,\lambda_k$ jsou všechna, nikoliv nutně různá, vlastní čísla matice \textbf{A} a platí dále $n_1 + ... + n_k = n$. Dvojice $n_i,\lambda_i$ pro $i=1,...,k$ jsou maticí \textbf{A} určené jednoznačně až na pořadí (tj. reprezentují třídu podobných matic).
+\end{vetaN}
+
+
+\begin{definiceN}{Hermitovskost}
+Nechť \textbf{A} je komplexní matice, potom matici $\textbf{A}^H$, pro kterou platí, že $(\textbf{A}^H)_{ij} = \overline{a_{ji}}$ nazýváme 
+\emph{hermitovskou transpozicí} matice \textbf{A} (někdy se používá název \uv{konjugovaná matice}). 
+
+Komplexní čtvercová matice \textbf{A} se nazývá \emph{unitární}, pokud platí, že $\textbf{A}^H\textbf{A} = \textbf{I}$. 
+Komplexní čtvercová matice \textbf{A} se nazývá \emph{hermitovská}, pokud $\textbf{A}^H = \textbf{A}$.
+\end{definiceN}
+
+\begin{pozorovani}
+Platí: $(\textbf{AB})^H = \textbf{B}^H\textbf{A}^H$ (důkaz je stejný jako pro obyčejnou transpozici). 
+\end{pozorovani}
+
+\def\Complex{\mathbb{C}}
+\def\Real{\mathbb{R}}
+
+\begin{vetaN}{O hermitovských maticích} 
+Každá hermitovská matice $A$ má všechna vlastní čísla reálná ( i když je sama komplexní). Navíc existuje unitární matice $R$ taková, že $R^{-1}A R$ je diagonální. (tzn. hermitovská matice je diagonalizovatelná).
+\end{vetaN}
+
+\begin{dusledek} Interpretace v $\Real$:
+Pro každou symetrickou matici $A$ platí, že všechna její vl. čísla jsou reálná a navíc existuje ortogonální matice $R$: $R^{-1}AR$ je diagonální.
+Příslušný vl. vektor $x$ lze vzít reálný, protože $(A - \lambda I)x = 0$ -- soustava lin. rovnic s reálnou singulární maticí -- musí mít netriviální reálné řešení.
+\end{dusledek}
+
+
+\subsection{Spektrální věta - část důkazu}
+
+\ramcek{10cm}{Tato část není v požadavcích ke zkouškám!}
+
+\begin{dukaz}
+Důkaz spektrální věty je poměrně dlouhý - několik stránek, uvedu zde tedy jen část důkazu, doufám že tu lehčí :)
+
+\bigskip
+\noindent \textbf{\uv{A je diagonalizovatelná $\Rightarrow$  vlastnosti  1,2,3,4}}
+
+Nechť $m_i$ je algebraická násobnost vlastního čísla $\lambda_i$ pro $i=1,...,t$. Matice \textbf{A} je diagonalizovatelná, tedy dle \textbf{Definice 3} existuje regulární matice \textbf{P} řádu n taková, že součin $\textbf{P}^{-1}\textbf{A}\textbf{P}$ je diagonální matice, a tato diagonální matice má na diagonále vlastní čísla matice \textbf{A} dle \textbf{důsledku tvrzení 7 TODO}.  Tedy
+
+\begin{equation}\label{pap}
+\textbf{P}^{-1}\textbf{A}\textbf{P} = \begin{pmatrix}
+  \lambda_1 \textbf{I}_{m_1} & 0 & \cdots & 0 \\
+  0 & \lambda_2 \textbf{I}_{m_2} & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & \cdots & \lambda_t \textbf{I}_{m_t} \\
+\end{pmatrix}
+\end{equation}
+
+kde $\textbf{I}_{m_i}$ jsou jednotkové matice řádu $m_i$. Označíme pro $i=1,...,t$ symbolem $\textbf{D}_i$ matici, kterou dostaneme z blokové matice na pravé straně poslední rovnosti tak, že nahradíme všechny výskyty vlastního čísla $\lambda_i$ číslem 1 a výskyty ostatních vlastních čísel $\lambda_j$ pro $j \neq i$ číslem 0. Například
+
+$$\textbf{D}_2 = \begin{pmatrix}
+  0 & 0 & \cdots & 0 \\
+  0 & \textbf{I}_{m_2} & \cdots & 0 \\
+  \vdots & \vdots & \ddots & \vdots \\
+  0 & 0 & \cdots & 0 \\
+\end{pmatrix}$$
+
+Jedná se vlastně o "částečnou" jednotkovou matici, která má pouze na části diagonály čísla 1. Pak platí:
+
+\begin{equation*}
+\begin{split}
+\textbf{I}_n & = \textbf{D}_1 + \textbf{D}_2 + ... + \textbf{D}_t\\
+\textbf{P}^{-1}\textbf{A}\textbf{P} & = \lambda_1 \textbf{D}_1 + \lambda_2 \textbf{D}_2 + ... + \lambda_t \textbf{D}_t\\
+\textbf{A} & = \lambda_1\textbf{P}\textbf{D}_1\textbf{P}^{-1} + \lambda_2\textbf{P}\textbf{D}_2\textbf{P}^{-1} + ... + \lambda_t\textbf{P}\textbf{D}_t\textbf{P}^{-1}
+\end{split}
+\end{equation*}
+V první rovnosti jsme vlastně jen sečetli "částečné jednotkové matice" $\textbf{D}_i$ a výsledek je jednotková matice. Pokud všechny matice $\textbf{D}_i$ vynásobíme vlastními čísly $\lambda_i$ a sečteme je, dostaneme matici na pravé straně rovnice (\ref{pap}). A ve třetí rovnosti se jen zbavíme matic $\textbf{P}$ a $\textbf{P}^{-1}$ na levé straně.
+
+Položíme $\textbf{E}_i = \textbf{P}\textbf{D}_i\textbf{P}^{-1}$ pro $i=1,...,t$ a dostaneme tak z třetí rovnosti vlastnost 1.
+
+Protože ${\textbf{D}_i}^2 = \textbf{D}_i$ a $\textbf{D}_i\textbf{D}_j = 0$ pro libovolné různé indexy $i,j,=1,...,t$ , dostáváme
+
+\begin{equation*}
+\begin{split}
+{\textbf{E}_i}^2 & = \textbf{P}\textbf{D}_i\textbf{P}^{-1}\textbf{P}\textbf{D}_i\textbf{P}^{-1} = \textbf{P}{\textbf{D}_i}^2\textbf{P}^{-1} = \textbf{P}\textbf{D}_i\textbf{P}^{-1} = \textbf{E}_i\\
+\textbf{E}_i\textbf{E}_j & = \textbf{P}\textbf{D}_i\textbf{P}^{-1}\textbf{P}\textbf{D}_j\textbf{P}^{-1} = \textbf{P}\textbf{D}_i\textbf{D}_j\textbf{P}^{-1} = \textbf{P}0\textbf{P}^{-1} = 0\\
+\textbf{E}_1 + ... + \textbf{E}_t & = \textbf{P}\textbf{D}_1\textbf{P}^{-1} + ... + \textbf{P}\textbf{D}_t\textbf{P}^{-1} = \textbf{P}(\textbf{D}_1 + ... + \textbf{D}_t)\textbf{P}^{-1} =\\
+& = \textbf{P}\textbf{I}_n\textbf{P}^{-1} = \textbf{I}_n
+\end{split}
+\end{equation*}
+což dokazuje vlastnosti 2,3,4.
+V první rovnosti jsme využili, že ${\textbf{D}_i}^2 = \textbf{D}_i$ ,  ve druhé jsme využili $\textbf{D}_i\textbf{D}_j = 0$ a ve třetí $\textbf{I}_n = \textbf{D}_1 + \textbf{D}_2 + ... + \textbf{D}_t$.
+
+Opačnou implikaci, tedy že z vlastností 1,2,3,4 plyne diagonalizovatelnost matice nebudu dokazovat. Ze zbývajících vlastností 5,6,7,8 dokážu vlastnosti 6 a 7.
+
+\bigskip
+\noindent \textbf{Vlastnost 6}
+
+Matice $\textbf{D}_i$ (z předchozího důkazu), má hodnost $m_i$, proto má tutéž hodnost i matice $\textbf{E}_i = \textbf{P}\textbf{D}_i\textbf{P}^{-1}$ , což dokazuje 6.
+
+\bigskip
+\noindent \textbf{Vlastnost 7}
+
+Tento důkaz vypadá na první pohled odporně ale nenechte se odradit :) je to pouze rozepisování sum.
+
+\bigskip
+\noindent Dle vlastnosti 1 :
+$$\textbf{A}^2 = (\lambda_1\textbf{E}_1 + ... + \lambda_t\textbf{E}_t)(\lambda_1\textbf{E}_1 + ... + \lambda_t\textbf{E}_t)$$
+
+\noindent to se rovná (jen přepsaní na sumu, násobení každý s každým)
+$$\sum_{i,j=1}^t \lambda_i \textbf{E}_i \lambda_j \textbf{E}_j$$
+
+\noindent dáme li matice k sobě, vznikne nám $\textbf{E}_i\textbf{E}_j$ což je dle vlastnosti 3 rovno nule (pro různé indexy i a j), tyto násobení tedy můžeme ignorovat a přepsat sumu tak, aby se mezi sebou násobili pouze matice se stejným indexem. Dále víme z vlasnosti 2 že ${\textbf{E}_i}^2 = \textbf{E}_i$ , tedy
+$$\sum_{i=1}^t {\lambda_i}^2 {\textbf{E}_i}^2 = \sum_{i=1}^t {\lambda_i}^2 {\textbf{E}_i}$$
+
+\noindent jestliže nyní předpokládáme
+$$\textbf{A}^l = \sum_{i=1}^t {\lambda_i}^l {\textbf{E}_i}$$
+
+\noindent pro nějaké $l\geq2$, pak dostáváme (a upravujeme stejně jako v předchozím případě)
+\begin{equation*}
+\begin{split}
+\textbf{A}^{l+1} & = (\lambda_1\textbf{E}_1 + ... + \lambda_t\textbf{E}_t)({\lambda_1}^l{\textbf{E}_1}^l + ... + {\lambda_t}^l{\textbf{E}_t}^l) =\\
+& = \sum_{i,j=1}^t \lambda_i \textbf{E}_i {\lambda_j}^l {\textbf{E}_j}^l = \sum_{i=1}^t {\lambda_i}^{l+1} {\textbf{E}_i}^2 = \sum_{i=1}^t {\lambda_i}^{l+1} \textbf{E}_i
+\end{split}
+\end{equation*}
+
+\noindent Protože rovněž platí
+$$\textbf{A}^0 = \textbf{I}_n = \textbf{E}_1 + ... + \textbf{E}_t = {\lambda_1}^0 \textbf{E}_1 + ... + {\lambda_t}^0 \textbf{E}_t$$
+
+\noindent tedy jsme dokázali, že rovnost
+$$\textbf{A}^l = \sum_{i=1}^t {\lambda_i}^l {\textbf{E}_i}$$
+
+\noindent platí pro každé nezáporné celé číslo $l$. Pro každé číslo $j = 0,...k$ dostáváme
+$$c_j \textbf{A}^j = c_j \sum_{i=1}^t {\lambda_i}^j {\textbf{E}_i}$$
+
+\noindent a tedy platí
+$$f(\textbf{A}) = \sum_{j=0}^k c_j{\textbf{A}_j} = \sum_{j=0}^k c_j(\sum_{i=1}^t {\lambda_i}^j {\textbf{E}_i}) = \sum_{i=1}^t (\sum_{j=0}^k c_j {\lambda_i}^j){\textbf{E}_i} = \sum_{i=1}^t f(\lambda_i) \textbf{E}_i$$
+\end{dukaz}

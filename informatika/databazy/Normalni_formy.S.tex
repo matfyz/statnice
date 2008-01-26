@@ -1,0 +1,92 @@
+\subsection{Normální formy}
+
+Je zřejmé, že u složitějších aplikací není každé schéma vhodné. Například pokud
+by ve schématu docházelo k redundanci dat. Mohla by potom nastat situace, že při
+nějaké aktualizaci, bychom změnili pouze některé výskyty a tím bychom databázi
+přivedli do nekonzistentního stavu. Jedním ze způsobů jak se těchto problému
+vyvarovat je mít databázi v (první, druhé \dots) \textbf{normální formě}.
+
+Normálních forem je několik. Čím větší normální formu schéma splňuje tím je
+snadnější ho udržovat v konzistentním stavu a později rozšiřovat. Vyšší stupeň
+normalizovanosti vede obvykle k většímu počtu tabulek a tedy k nutnosti
+používání většího množství operací typu \emph{join}. To může zapříčinit snížení
+výkonu. Díky tomu jsou vysoce normalizovaná schémata typicky používána v
+databázových aplikací, které používají spoustu izolovaných transakcí (např.
+automatický bankovní systém). Naproti tomu méně normalizovaná schémata jsou
+nasazována v aplikacích, které obsahují data převážně pro čtení (např.
+zpravodajské systémy).
+
+\begin{definice}
+Řekneme, že atribut \emph{B} je \textbf{funkčně závislý} na atributu \emph{A}
+(značíme $A\rightarrow B$), jestliže pro každou hodnotu atributu \emph{A}
+existuje právě jedna hodnota atributu \emph{B}.\\[5mm]
+\textbf{Nadklíčem}, někdy též \textbf{superklíčem}, schématu $A$ rozumíme každou
+podmnožinu množiny $A$ na níž $A$ funkčně závisí. Jinak řečeno nadklíč je množina
+atributů, která jednoznačně určuje řádek tabulky.\\[5mm]
+\textbf{Klíč}, nebo také \textbf{potenciální klíč}(candidate key), schématu $A$
+je takový nadklíč schématu $A$, jehož žádná vlastní podmnožina není nadklíčem
+$A$. Čili minimální nadklíč.\\[5mm]
+Každý atribut, který je obsažen alespoň v jednom potenciálním klíči se nazývá
+\textbf{klíčový}, ostatní atributy jsou \textbf{neklíčové}.
+\end{definice}
+
+\subsubsection*{První normální forma (1NF)}
+
+\begin{definiceN}{1NF} Schéma je v \emph{první normální formě}, jestliže každý atribut
+schématu je elementárního (jednoduchého) typu, je nestrukturovaný.
+\end{definiceN}
+
+Jiná definice říká, že by schéma mělo být reprezentací nějaké \emph{relace} a
+neobsahovat \emph{opakující se skupiny (repeating groups)}. Jelikož ale význam
+\emph{opakujících se skupin} není přesně stanoven, existují jisté spory ohledně
+toho které schéma 1NF splňuje a které ne.
+
+\subsubsection*{Druhá normální forma (2NF)}
+
+\begin{definiceN}{2NF}
+Schéma je v \emph{druhé normální formě}, jestliže je v první normální formě a
+žádný neklíčový atribut není funkčně závislý na žádné podmnožině klíče.
+\end{definiceN}
+
+To znamená, že neklíčový atribut může závist pouze na celém klíči. Pokud by
+závisel jen na jeho části, měli bychom tabulku rozdělit na dvě. Mějme například
+tabulku zaměstnanců s atributy: jméno, schopnosti, adresa. Ve které dvojice
+\{jméno, schopnosti\} je klíč, čili jednoznačně určuje záznam. Nechť adresa
+závisí pouze na jméně. Potom tabulka není v 2NF.
+
+\begin{poznamka} Všimněme si pokud je schéma v 1NF a zároveň všechny její
+potenciální klíče sestávají pouze z jednoho atributu, můžeme rovnou říct, že
+schéma splňuje 2NF. \end{poznamka}
+
+\subsubsection*{Třetí normální forma (3NF)}
+
+\begin{definiceN}{3NF}
+Schéma je ve \emph{třetí normální formě}, jestliže je v 2NF a žádný neklíčový
+atribut není tranzitivně závislý na žádném klíči.
+\end{definiceN}
+
+Tranzitivní závislost, je taková funkční závislost $X \rightarrow Y$, že $Y$
+nezávisí na $X$ přímo, ale existuje nějaké $Z$ takové, že $X \rightarrow Z$ a $Z
+\rightarrow Y$. Jinak řečeno neklíčové atributy musí na klíči záviset přímo a ne
+přes nějaký jiný atribut.
+
+Alternativní definice říká, že schéma je v 3NF právě tehdy, když pro každou
+funkční závislost $X \rightarrow Y$ platí alespoň jedna z následujících podmínek:
+\begin{pitemize}
+\item závislost je triviální, tj. $X$ obsahuje $Y$, 
+\item $X$ je nadklíč schématu,
+\item $Y$ je klíčový atribut, tj. $Y$ je obsažen v nějakém potenciálním klíči.
+\end{pitemize}
+
+\subsubsection*{Boyce-Coddova normální forma(BCNF)}
+
+\begin{definiceN}{BCNF}
+Schéma je v Boyce-Coddově normální formě právě tehdy, když pro každou
+netriviální funkční závislost $X \rightarrow Y$ platí, že $X$ je nadklíč
+schématu.
+\end{definiceN}
+
+BCNF je o něco silnější než 3NF. Pokud se podíváme na alternativní definici 3NF, je
+dobře vidět rozdíl. Vynecháme-li třetí podmínku, dostaneme definici BCNF. Jinak
+řečeno žádný samostatný atribut nesmí záviset na ničem jiném než na nadklíči.
+

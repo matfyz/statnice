@@ -1,0 +1,78 @@
+\subsection{Třídy složitosti P a NP, převoditelnost, NP-úplnost}
+
+TODO: doplnit, tohle asi nestaci na pohodovou zkousku (aspon podle toho co jsem vnimal, jsa svedek zkouseni u Dr. Yaghoba) -- chce to napr. nejaky priklad prevedeni jako delal Kucera, mozna jeste neco
+
+\begin{definice}
+  \begin{pitemize}
+  \item \textbf{Úloha}~-- Pro dané zadání (vstup, \emph{instanci úlohy}) najít výstup s danými vlastnostmi.
+  \item \textbf{Optimalizační úloha}~-- Pro dané zadání najít optimální (většinou
+  nejmenší nebo největší) výstup s danými vlastnostmi.
+  \item \textbf{Rozhodovací problém}~-- Pro dané zadání odpovědět ANO/NE.
+  \end{pitemize}
+\end{definice}
+
+\begin{definiceN}{třída P}
+ \textbf{Třídu složitosti P} (někdy též PTIME) tvoří problémy řešitelné
+ sekvenčními deterministickými algoritmy v polynomiálním čase, tj. jejich časová
+ složitost je $O(n^k)$. O algoritmech ve třídě P také říkáme, že jsou
+ \textbf{efektivně řešitelné.}
+\end{definiceN}
+
+\begin{definiceN}{třída NP}
+ \textbf{Třída NP} (NPTIME) je třída problémů řešitelných v polynomiálním čase
+ sekvenčními nedeterministickými algoritmy. 
+\end{definiceN}
+
+\begin{poznamka}
+  Ví se, že $P \subseteq NP$. Neví se však, zda $P \neq NP$. Předpokládá se to,
+  ale ještě to nikdo nedokázal.
+\end{poznamka}
+
+\begin{obecne}{Příklady problémů ze třídy NP}
+  \begin{pitemize}
+    \item \textbf{KLIKA}(úplný podgraf)~-- Je dán neorientovaný graf $G$ a číslo
+    $k$. Existuje v $G$ úplný podgraf velikosti aspoň $k$?
+    \item \textbf{HK}(Hamiltonovská kružnice)~-- Je dán neorientovaný graf $G$.
+    Existuje v $G$ Hamiltonovská kružnice?
+    \item \textbf{SP}(Součet podmnožiny)~-- Jsou dána přirozená čísla $a_1,
+    \dots, a_n,b$. Existuje podmnožina čísel $a_1,\dots,a_n$, jejíž součet je
+    přesně $b$?
+  \end{pitemize}
+\end{obecne}
+
+\begin{definiceN}{převody mezi rozhodovacími problémy}
+  Nechť $A$, $B$ jsou dva rozhodovací problémy. Říkáme, že $A$ je
+  \textbf{polynomiálně redukovatelný (převoditelný)} na $B$, pokud existuje
+  zobrazení $f$ z množiny zadání problému $A$ do množiny zadání problému $B$ s
+  následujícími vlastnostmi:
+  \begin{pitemize}
+    \item Nechť $X$ je zadání problému $A$ a $Y$ zadání problému $B$, takové, že
+    $f(X)=Y$. Potom je $X$ kladné zadání problému $A$ právě tehdy, když $Y$ je
+    kladné zadání problému $B$.
+    \item Nechť $X$ je zadání problému $A$. Potom je zadání $f(X)$ problému $B$
+    (deterministicky sekvenčně) zkonstruovatelné v polynomiálním čase vzhledem k
+    velikosti $X$.
+  \end{pitemize}
+\end{definiceN}
+
+\begin{definiceN}{NP-těžký problém}
+  Problém $B$ je \textbf{NP-těžký}, pokud pro libovolný problém $A$ ze třídy NP
+  platí, že $A$ je polynomiálně redukovatelný na $B$.
+\end{definiceN}
+
+\begin{definiceN}{NP-úplný problém}
+  Problém je \textbf{NP-úplný}, pokud patří do třídy NP a je NP-těžký.
+\end{definiceN}
+
+\begin{obecne}{Důsledky}
+  \begin{pitemize}
+    \item Pokud je $A$ NP-těžký a navíc je $A$ polynomiálně redukovatelný na $B$, tak je
+      $B$ taky NP-těžký.
+    \item Pokud existuje polynomiální algoritmus pro nějaký NP-těžký problém, pak
+      existují polynomiální algoritmy pro všechny problémy ve třídě NP.
+  \end{pitemize}
+\end{obecne}
+
+\begin{vetaN}{Cook-Levin 1971}
+ Existuje NP-úplný problém. (Dokázáno pro SAT)
+\end{vetaN}

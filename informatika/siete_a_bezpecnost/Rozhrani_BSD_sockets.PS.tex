@@ -1,0 +1,85 @@
+\subsection{Rozhraní BSD Sockets}
+
+\subsubsection*{Úvod}
+\textbf{Berkeley (BSD) sockets} je rozhranie (API) na vyvíjanie aplikácií ktoré používajú medziprocesovú komunikáciu (napr. v rámci siete). De facto je to štandardná abstrakcia pre sieťové sockety. Primárnym jazykom tohto API je C, pre väčšinu ostatných však existujú podobné rozhrania.
+
+BSD sockets je API umožňujúce komunikáciu medzi dvomi hostmi alebo procesmi na jednom počítači, používajúc koncepciu internetových socketov. Toto rozhranie je implicitné pre TCP/IP a je teda jednou zo základných technológií internetu. Programátori môžu využívať rozhrania socketov na troch úrovniach, najzákladnejšou z nich sú RAW sockety (aj keď túto úroveň sa využijú zväčša len na počítačoch implementujúcich technológie týkajúce sa už priamo internetu).
+
+\subsubsection*{Hlavičkové súbory}
+Berkeley sockets používajú viaceré hlavičkové súbory, okrem iného:
+\begin{pitemize}
+\item\textbf{sys/socket.h} Core BSD socket functions and data structures.
+\item\textbf{netinet/in.h} AF\_INET and AF\_INET6 address families. Widely used on the Internet, these include IP addresses and TCP and UDP port numbers.
+\item\textbf{sys/un.h} AF\_UNIX address family. Used for local communication between programs running on the same computer. Not used on networks.
+\item\textbf{arpa/inet.h} Functions for manipulating numeric IP addresses.
+\item\textbf{netdb.h} Functions for translating protocol names and host names into numeric addresses. Searches local data as well as DNS.
+\end{pitemize}
+
+\subsubsection*{TCP}
+TCP poskytuje koncept spojenia. Proces vytvorí TCP socket pomocou volania socket() s parametrom PF\_INET(6) a SOCK\_STREAM.
+
+\begin{obecne}{Server}
+Vytvorenie jednoduchého TCP servera vyžaduje nasledujúce kroky:
+\begin{pitemize}
+\item Vytvorenie TCP socketu (pomocou volania \emph{socket()})
+\item Pripojenie socketu na port, kde bude načúvať (\emph{bind()}; parametrami je sockaddr\_in štruktúra, v ktorej sa nastavuje sin\_family (AF\_INET-IPv4,\\AF\_INET6-IPv6) a sin\_port)
+\item Pripravenie socketu na načúvanie na porte (\emph{listen()}).
+\item Akceptovanie príchodzích pripojení pomocou \emph{accept()}. Táto funkcia blokuje volajúceho do príchodu pripojenia a vracia identifikátor príchodzieho spojenia, ktorý sa môže ďalej použiť. accept() je hneď možné volať na pôvodný identifikátor socketu na čakanie na ďalšie spojenia.
+\item Komunikácia s klientom pomocou \emph{send()}, \emph{recv()} alebo \emph{read()} a \emph{write()}
+\item Keď už socket nie je potrebný, je možné ho zavrieť pomocou \emph{close()}.
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Klient}
+Vytvorenie TCP klienta vyžaduje nasledujúce kroky:
+\begin{pitemize}
+\item Vytvorenie TCP socketu (pomocou volania \emph{socket()})
+\item Pripojenie k serveru pomocou \emph{connect()}) (znovu sa používa štruktúra sockaddr\_in, vypĺňa sa sin\_family, sin\_port (ako pri serveri) + sin\_addr (adresa servera))
+\item Komunikácia so serverom pomocou \emph{send()}, \emph{recv()} alebo \emph{read()} a \emph{write()}
+\item Keď už socket nie je potrebný, je možné ho zavrieť pomocou \emph{close()}.
+\end{pitemize}
+\end{obecne}
+
+\subsubsection*{UDP}
+UDP je protokol bez spojenia (conectionless) a bez garancie doručenia správ. UDP balíky môžu (okrem správneho počtu/poradia) doraziť mimo poradia, môžu byť duplikované alebo nedoraziť ani raz. Vďaka minimálnym garanciám má UDP oproti TCP oveľa menšiu réžiu. Keďže tento protokol nevytvára spojenia, dáta sa prenášajú v datagramoch.
+
+Adresovací priestor UDP (porty UDP) je úplne nezávislý na priestore portov TCP.
+
+\begin{obecne}{Server}
+Keďže sa nevytvárajú spojenia, po vytvorení socketu (ako pri TCP pomocou socket()+bind()) už aplikácia (server) rovno čaká príchodzie datagramy pomocou funkcie \emph{recvfrom()}. Na konci sa socket zatvára pomocou close().
+\end{obecne}
+
+\begin{obecne}{Klient}
+U klienta je tiež oproti spojovanej verzii zjednodušenie - stačí vyrobiť socket (pomocou socket()) a potom už iba posielať datagramy pomocou \emph{sendto()}. Na konci sa socket zatvára pomocou close().
+\end{obecne}
+
+\subsubsection*{Najdôležitejšie funkcie}
+
+\begin{pitemize}
+
+\item \textbf{int socket(int domain, int type, int protocol)}
+	\begin{pitemize}
+		\item \emph{domain} (PF\_INET | PF\_INET6)
+		\item \emph{type} (SOCK\_STREAM, SOCK\_DGRAM,\\SOCK\_SEQPACKET (spoľahlivé zoradené balíky),\\SOCK\_RAW (raw protokoly nad sieťovou vrstvou))
+		\item \emph{protocol} (väčšinou IPPROTO\_IP, ďalšie sú v netinet/in.h)
+	\end{pitemize}
+
+	\item \textbf{struct hostent *gethostbyname(const char *name)\\
+	struct hostent *gethostbyaddr(const void *addr, int len, int type)}
+	\begin{pitemize}
+		\item Vracia pointer na hostent štruktúru, ktorá popisuje internetového hosta zadaného pomocou mena alebo adresy (obsahuje buď informácie od name servera, alebo z lokálneho /etc/hosts súboru)...
+	\end{pitemize}
+
+	\item \textbf{int connect(int sockfd, const struct sockaddr *serv\_addr, socklen\_t addrlen)}
+	\item \textbf{int bind(int sockfd, struct sockaddr *my\_addr, socklen\_t addrlen)}
+	\item \textbf{int listen(int sockfd, int backlog)}
+	\begin{pitemize}
+		\item \emph{backlog} určuje maximálne koľko pripojení môže vo fronte čakať na akceptovanie...
+	\end{pitemize}
+
+	\item \textbf{int accept(int sockfd, struct sockaddr *cliaddr, socklen\_t *addrlen)}\\
+	do \emph{cliaddr} sa vyplnia informácie o klientovi...
+\end{pitemize}
+
+\subsubsection*{Blokujúce a neblokujúce volania}
+BSD sockety môžu fungovať v dvoch módoch - blokujúcich a neblokujúcich. V blokujúcom móde funkcie nevrátia riadenie programu, kým nie sú spracované všetky dáta - čo môže spôsobiť rôzne problémy (program \uv{zamrzne}, keď socket načúva; alebo keď socket čaká na dáta, ktoré neprichádzajú). Typicky sa nastavuje neblokujúci mód pomocou \emph{fcntl()} alebo \emph{ioctl()}

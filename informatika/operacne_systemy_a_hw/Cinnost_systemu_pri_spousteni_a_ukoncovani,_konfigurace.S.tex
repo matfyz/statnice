@@ -1,0 +1,44 @@
+\subsection{Činnost systému při spouštění a ukončování, konfigurace}
+
+TODO: tohle je jenom copy \& paste z Wiki
+
+\subsubsection*{Spouštění systému}
+
+\begin{pitemize}
+  \item start zavaděče (LILO, GRUB)
+  \item nahrání kernelu
+  \item spuštění kernelu, detekce HW, spuštění ovladačů
+  \item mount root readonly
+  \item spuštění procesu init
+  \item kontrola disků
+  \item re-mount root read-write
+  \item start-up skript (/etc/init.d)
+  \item běžící systém, spuštění konzolí (getty) 
+  \item při spouštění možnost aktivovat single-user režim 
+  \item úrovně běhu (SystemV, Linux):
+  \begin{pitemize}
+    \item 0 - systém zastaven
+    \item 1 - single-user
+    \item 2 - multi-user, bez sítě a bez NFS
+    \item 3 - multi-user
+    \item 5 - multi-user + X11
+    \item 6 - reboot
+    \item konfigurace v /etc/inittab 
+    \end{pitemize}
+\end{pitemize}
+
+\subsubsection*{Vypnutí systému}
+
+\begin{pitemize}
+    \item ukončení programů, zastavení služeb, signál TERM, po chvíli KILL
+    \item vypráznění diskových cache, uložení dat, odpojení disků
+    \item vypnutí napájení
+    \item shutdown - možno nastavit čas vypnutí a zaslat oznámení všem přihlášeným 
+\end{pitemize}
+
+\subsubsection*{Konfigurace}
+
+\begin{pitemize}
+    \item na Unixových systémech se konfigurace ve většině případů provádí editací textových souborů
+    \item většina konfigurace schována v adresáři /etc
+\end{pitemize}

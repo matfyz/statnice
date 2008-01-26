@@ -1,0 +1,63 @@
+\subsection{Referenční integrita}
+
+Jedná se o nástroj databázového stroje, který pomáhá udržovat
+vztahy v relačně propojených databázových tabulkách.
+
+Referenční integrita se definuje \emph{cizím klíčem}, a to pro dvojici tabulek,
+nebo nad jednou tabulkou, která obsahuje na sobě závislá data (například
+stromové struktury). Tabulka, v níž je pravidlo uvedeno, se nazývá podřízená
+tabulka (používá se také anglický termín slave). Tabulka, jejíž jméno je v
+omezení uvedeno je nadřízená tabulka (master). Pravidlo referenční integrity
+vyžaduje, aby každý záznam použitý v podřízené tabulce existoval v nadřízené
+tabulce. To znamená, že každý záznam musí v cizím klíči obsahovat hodnoty
+odpovídající primárními klíči v nadřízené tabulce, nebo null.
+
+To sebou nese dva důsledky:
+\begin{pitemize}
+\item při přidání záznamu do podřízené tabulky se kontroluje, zda stejná hodnota
+klíče existuje v nadřízené tabulce – porušení pravidla vyvolá chybu,
+\item při mazání nebo úpravě záznamů v nadřízené tabulce se kontroluje, zda
+v podřízené tabulce není záznam se stejnou hodnotou klíče – porušení pravidla
+může vyvolat chybu nebo úpravu dat v podřízené tabulky v souladu s definovanými
+akcemi.
+\end{pitemize}
+
+\begin{obecne}{Příklad}
+V databázi spolku přátel psů máme následující tabulky:
+\begin{pitemize}
+ \item \emph{osoby} se sloupci \emph{\underline{osoba-id}} a \emph{jméno},
+ \item \emph{psi} se sloupci \emph{\underline{pes-id}}, \emph{majitel} a \emph{rasa}.
+\end{pitemize}
+
+Aby byla data v databázi korektní, je třeba, aby každý záznam psa měl uvedeného
+platného majitele. Proto označíme v tabulce psi sloupec \emph{majitel} jako cizí
+klíč, vztažený k sloupci (klíči) \emph{osoba-id} v tabulce osoby. Když je poté
+přidán záznam pro psa, databáze bude vyžadovat, aby číslo v poli \emph{majitel}
+nabývalo některé z existujících hodnot \emph{osoba-id} tabulky osoby. Zároveň
+můžeme určit, zda se při smazání osoby smažou i záznamy všech psů, kterým je
+osoba majitelem, nebo zda má pokus o smazání osoby vlastnící alespoň jednoho psa
+selhat.
+\end{obecne}
+
+Existuje tedy několik \emph{referenčních akcí}, které mohou být vyvolány, když
+dochází ke změně nebo mazání v závislých tabulkách:
+\begin{description}
+  \item[CASCADE] -- Pokud je smazán řádek v nadřízené tabulce, řádky z podřízené
+  tabulky obsahující mazaný cizí klíč budou smazány také.
+
+  \item[RESTRICT] -- Řádek v nadřízené tabulce nesmí být smazán ani změněn, pokud
+  v podřízené tabulce existují závisející řádky. Nedojde ani k pokusu o změnu dat.
+  
+  \item[NO ACTION] -- Operace Update nebo Delete je spuštěna na nadřízenou tabulku
+  a na konci je teprve vyhodnoceno, jestli nedošlo k porušení integrity. Rozdíl
+  oproti akci RESTRICT je ten, že samotným dotazem, nebo například triggerem může
+  být zařízeno, aby k porušení integrity nedošlo. Potom je operace normálně
+  provedena.
+  
+  \item[SET NULL] -- Cizí klíč v podřízené tabulce je nastaven na \emph{null},
+  pokud dojde ke změně či smazání v odpovídajícím řádku nadřízené tabulky.
+
+  \item[SET DEFAULT] -- Téměř to samé jako SET NULL, hodnoty cizího klíče jsou
+  nastaveny na defaultní hodnotu sloupce, pokud dojde ke změně či smazání
+  odpovídajícího řádku v nadřízené tabulce.
+\end{description}

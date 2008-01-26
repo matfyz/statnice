@@ -1,0 +1,152 @@
+\subsection{Skriptování a shelly}
+
+Uplně přesně nevím co by tady mělo být, tak aspoň takovej přehled.
+
+\subsubsection*{Skriptování}
+
+Skriptovací jazyk je programovací jazyk, který je interpretován přímo jak je
+zadáván z klávesnice. Nedochází tedy k tomu, jako u klasických programovacích
+jazyků, že by byl program nejdříve přeložen do binární podoby a potom spuštěn.
+Skript zůstává ve své původní podobě a je vyhodnocován příkaz po příkazu, tak
+jak je zadáván. Skriptovací jazyky byly vytovořeny pro urychlení standardního
+vývojového cyklu editace~-- kompilace~-- linkování~-- spuštění a také pro
+možnost automatizovat některé úlohy.
+
+Skripty mohou být také zkompilovány, ale protože napsat interpretr je jednodušší
+než napsat kompilátor, tak jsou mnohem častěji interpretovány. Skriptovacích
+jazyků je obrovské množství.
+
+\paragraph{Skriptovací jazyky aplikací} -- Velká většina rozsáhlých aplikací
+obsahuje svuj vlastní skriptovací jazyk, ušitý přesně na míru požadavkům
+konkrétní aplikace. Například některé počítačové hry používají skripty pro popis
+chování postav, které nehraje člověk.
+\begin{pitemize}
+\item Emacs Lisp,
+\item Matlab,
+\item QuakeC,
+\item UnrealScript,
+\item Vim scripting language.
+\end{pitemize}
+
+\paragraph{Skriptovací jazyky pro WEB} -- Důležitá součást rodiny skriptovacích
+jazyků jsou jazyky používáné k tvorbě interaktivních webových aplikací.
+\begin{pitemize}
+\item ASP,
+\item PHP,
+\item JavaScript,
+\item VBScript.
+\end{pitemize}
+
+\paragraph{Jazyky pro zpracování textu} -- Jedno z nejstarších použití
+skriptovacích jazyků bylo automatické zpracování textových dat. Spoustu jich
+bylo původně navrženo jako pomoc administrátorům při zpracování textových
+konfiguračních souborů a později až dorostly do právoplatných skriptovacích
+jazyků.
+\begin{pitemize}
+\item awk,
+\item Sed,
+\item XSLT.
+\end{pitemize}
+
+\paragraph{Obecné skriptovací jazyky} -- Některé jazyky jsou přímo určeny pro
+nejširší použití a nejsou vázány na nějaké konkrétní použití. 
+\begin{pitemize}
+\item Lisp,
+\item Perl,
+\item Python,
+\item Ruby,
+\item Tcl.
+\end{pitemize}
+
+\paragraph{Job control languages} -- Hlavní skupina skriptovacích jazyků vznikla
+za účelem spouštění a kontrolování běhu programů. Většinou bývají navázány na
+nějaký operační systém, ale mohou fungovat i na různých architekturách.
+\begin{pitemize}
+\item AppleScript,
+\item bash, csh, ksh \dots,
+\item cmd.exe, command.com.
+\end{pitemize}
+
+
+\subsubsection*{Shelly}
+
+Unix shell je tradiční uživatelský interface pro operační systém Unix, nebo
+systémy na unixu založené. Uživatelé řídí práci počítače přímo psaním textových
+příkazů pro shell. Pro OS Windows existuje obdoba zvaná \emph{command.com}, nebo
+\emph{cmd.exe}.
+
+V nejobecnějším významu termín \emph{shell} znamená jakýkoliv program, který
+uživatel používá k zadávání příkazů. V OS Unix si uživatel může vybrat jaký
+shell bude používat, proto jich bylo vyvinuto nepřeberné množství. Název shell
+(skořápka, ulita, plášť \dots) proto, že "schovává" detaily pod ním ležícího
+operačního systému za svůj interface.
+
+Výraz shell také znamená nějaký konkrétní program, jako třeba \emph{Bourne
+shell}, nebo \emph{Korn shell}. Bourne shell byl použit u prvopočátků operačního
+systému Unix a stal se de facto standardem mezi shelly. Každý Unixový systém má
+alespoň jeden shell s ním kompatibilní. Program Bourne shell je v Unixove
+hierarchii uložen v \texttt{/bin/sh}. Na některých systémech, jako třeba BSD, je
+\texttt{/bin/sh} přímo Bourne shell, nebo jeho ekvivalent, na linuxu je to
+většinou link na kompatibilní, ale rozšířený a mnohem mocnější shell.
+
+\paragraph{Bourne shell (sh)} -- původní Unixový shell, který napsal Steve
+Bourne v Bell Labs. Chybí mu některé věci pro interaktivní práci (doplňování
+příkazů, manipulace s historií, editace příkazové řádky \dots), ale již obsahuje
+jednoduše použitelný jazyk pro psaní shell skriptů. Dnes se používají spíše
+modernější shelly pro svou větší uživatelskou přátelskost.
+
+\paragraph{C shell (csh)} -- shell používající syntaxi podobnou jazyku C. Je o
+trochu šikovnější pro interaktivní používání (přidává aliasy a příkazovou
+historii), ale zase o něco nešikovnější pro psaní skriptů.
+
+\paragraph{TC shell (tcsh)} -- csh obohacený o doplňování příkazů, editaci
+příkazové řádky a další vylepšení.
+
+\paragraph{Bourne again shell (bash)} -- shell nově napsaný ve Free Software
+Foundation v rámci GNU iniciativy. Obsahuje jazyk pro psaní skriptů použitý v
+\emph{sh}, ale přidává spoustu užitečných funkcí pro interaktivní používání.
+
+\paragraph{Korn shell (ksh)} -- rozšíření \emph{sh} a tedy s ním zpětně
+kompatibilní. Velice mocný nástroj i pro interaktivní používání i pro
+skriptování. Hlavní výhoda proti ostatním shellům je propracovanost jeho použití
+jako programovacího jazyka.
+
+\paragraph{Z shell (zsh)} -- moderní shell vzniklý rozšířením \emph{sh} a
+přidáním velikého počtu vylepšení a užitečných věcí z \emph{bash, ksh, tcsh}.
+Obsahuje například: programovatelné doplňování příkazů, sdílení historie příkazů
+mezi všemi běžícími shelly, kontrola syntaxe, široce nastavitelné možnosti pro
+vzhled a chování promptu\dots
+
+\begin{obecne}{Základní shellové nástroje}
+  \begin{pitemize}
+    \item  cat, grep, head, tail, wc, tee
+    \item cp, rm, mv
+    \item ls
+    \item cd, pwd, mkdir, rmdir
+    \item echo
+    \item more, less
+    \item read
+    \item sort, cut, tr
+    \item find
+    \item xargs
+    \item sed - stream editor
+    \item awk
+    \item a desítky dalších \dots
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Skriptování v shellu}
+  \begin{pitemize}
+    \item  roury (pipe)
+    \item standardní vstup, standardní výstup, chybový výstup
+    \item proměnné, speciální proměnné \$X, uvozování, parametry skriptu
+    \item proměnné prostředí
+    \item subshelly
+    \item podmínky, cykly
+    \item funkce
+    \item přesměrování~-- <, >, >>
+    \item signály
+    \item expanzní znaky, regulární výrazy 
+  \end{pitemize}
+\end{obecne}
+

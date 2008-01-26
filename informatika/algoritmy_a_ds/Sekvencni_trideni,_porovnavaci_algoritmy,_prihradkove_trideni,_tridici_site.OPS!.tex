@@ -1,0 +1,154 @@
+\subsection{Sekvenční třídění, porovnávací algoritmy, přihrádkové třídění, třídící sítě}
+
+TODO: trochu víc formalismu by tu neškodilo, taky je potřeba sjednotit óčkovou notaci (zřejmě prosté nahrazení symbolu $O$ symbolem $\Theta$ by stačilo, ale chce to ověřit).
+
+\subsubsection*{Sekvenční třídění a porovnávací algoritmy}
+
+Pojmy \uv{sekvenční třídění} a \uv{porovnávací algoritmy} mohou znamenat vlastně cokoliv, takže uvedu pár nejběžnějších třídících algoritmů a budu doufat, že to bude ke zkoušce stačit \texttt{:-(}. Zdrojem mi budiž Wikipedie a kniha Algoritmy a programovací techniky Doc. P. Töpfera.
+
+\bigskip
+
+\begin{algoritmusN}{Selection sort, třídění výběrem}
+Selection sort je jeden z nejjednodušších třídích algoritmů. Jde o vnitřní třídění -- tedy celá posloupnost prvků by měla být v paměti. Má časovou složitost $\Theta(n^2)$ a obecně bývá pomalejší než insertion sort. Pracuje následovně:
+
+Udržuje si množinu setříděných prvků na začátku posloupnosti (pole), která je na začátku prázdná a na konci představuje celé pole. Zbytek pole za setříděnou množinou je neuspořádaný. V jednom kroku vždy vybere jeden prvek a vloží ho do utříděné části (kterou tím zvětší o 1 a zároveň zmenší nesetříděnou). Jeden krok algoritmu (kterých je $n$ pro $n$ prvků v každém případě) vypadá takto: 
+\begin{penumerate}
+    \item Najdi nejmenší prvek z nesetříděného úseku.
+    \item Vlož ho přesně za konec setříděného úseku (a prvek co tam byl původně si s ním vymění místo)
+\end{penumerate}
+
+Heapsort, který popíšu později, může být považovaný za variantu selection sortu, protože také vybírá minimum a začleňuje do setříděné části.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Insertion sort, třídění vkládáním}
+Insertion sort je také relativně jednoduchý a na velké datové soubory neefektivní, ale jednoduchý na implementaci a rychlejší než nejprimitivnější algoritmy bubble sort a selection sort. Navíc je efektivní pro data, která jsou už částečně předtříděná -- v nejhorším případě sice běží v čase $O(n^2)$, ale v nejlepším případě (úplné setřídění dat) je lineární -- obecně běží v čase $O(n+d)$, kde $d$ je počet inverzí ve tříděné posloupnosti. Navíc je stabilní (zachovává pořadí prvků se stejným klíčem) a \uv{in-place}, tedy nepotřebuje žádné pomocné datové struktury. Proti selection sortu ale většinou potřebuje více přepisování (a to může u velkých datových struktur vadit).
+
+V jednom kroku vždy vezme nějaký prvek (berou se po řadě od začátku pole), zapamatuje si jeho hodnotu, a dokud před ním jsou prvky s větším klíčem, posouvá je na pozici o 1 větší (čímž vždy přepíše následující, takže původní prvek se ztratí) a pokud narazí na prvek s menším klíčem, do za něj napíše onen zapamatovaný prvek (a místo tam je, protože celou cestu k němu posouval prvky). Algoritmus vypadá takto:
+\begin{verbatim}
+insert sort( array a ){
+  for( i = 1; i < a.length - 1; ++i ){
+    value = a[i];
+    j = i-1;
+    while( j >= 0 && a[j] > value ){ 
+      a[j + 1] = a[j];
+      j = j-1;
+    }
+    a[j+1] = value;
+  }
+}
+\end{verbatim}
+
+Jednou z variant insertion sortu je \emph{Shell sort}, který porovnává prvky ne vedle sebe, ale vzdálené o nějaký počet polí, který se postupně zmenšuje. Může dosahovat složitost $O(n^{3/2})$ až $O(n^{4/3})$. S jistými úpravami se u něj dá dosáhnout až $O(n\log^2 n)$. Jiné vylepšení je \emph{library sort}, který si při vkládání nechává mezery pro další prvky (podobně jako v knihovně nejsou poličky úplně plné) -- ten může s velkou pravděpodobností běžet v čase $O(n\log n)$, ale zase potřebuje větší paměťový prostor.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Bubble sort, bublinkové třídění}
+Bubble sort je velmi jednoduchý třídící algoritmus (asi nejjednodušší na implementaci), s časovou složitostí $O(n^2)$. V nejlepším případě (pro úplně setříděná data) mu ale stačí jen jeden průchod, takže $O(n)$. Většinou ale bývá pomalejší i než insertion sort, takže se na velké množiny dat nehodí.
+
+Algoritmus prochází v jednom kroku celé pole a hledá pozice, kde se prvek s menším klíčem nachází bezprostředně za prvkem s větším klíčem. Takovéto dva prvky pak vymění. Kroky opakuje, dokud neprojde celé pole bez jediného prohození prvků (nebo v \uv{tupější} variantě $n$-krát pro $n$ prvků, protože pak je zaručeno, že posloupnost bude pro libovolné pořadí prvků setříděná -- ta má ale pak složitost $O(n^2)$ v každém případě!).
+
+Vylepšení algoritmu lze dosáhnout jednoduchou úvahou: největší prvek je už při prvním průchodu polem odsunutý až na konec. To se samozřejmě opakuje pro každý průchod (ve druhém je předposlední na druhém místě od konce atp.), takže lze průchody postupně zkracovat a konec pole už netestovat -- dosáhneme tím v průměru dvojnásobné rychlosti.
+
+Variantou bubble sortu je \emph{shake sort} neboli \emph{cocktail sort}, který střídavě prochází posloupnost prvků nejdřív od začátku a pak od konce (a přitom provádí to samé jako bubble sort). Tím může v některých případech o trochu třídění zrychlit -- příkladem budiž posloupnost prvků $(2,3,4,5,1)$, která potřebuje jen 1 průchod cocktail-sortem tam a jeden zpět, ale pro bubble-sort by potřebovala 4.
+
+Dalším vylepšením bubble sortu je \emph{Comb sort}, který o něco zvyšuje rychlost. Je založen na stejné myšlence jako shell sort -- tedy nejsou porovnávány prvky bezprostředně za sebou, ale prvky posunuté o nějaký ofset -- ten je na začátku roven délce posloupnosti, a postupně se dělí \uv{zkracovacím faktorem} (běžná hodnota $1.3$) až dosáhne jedné. Složitost se pohybuje mezi $O(n^2)$ v nejhorším případě a $O(n\log n)$ v nejlepším. V průměrném případě jde stále o $O(n^2)$, ale s menší konstantou než u bubble-sortu (TODO: tohle je potřeba set-sakra ověřit ... opsané z německé wiki a \uv{talk:Comb sort} na anglické, takže fakt \uv{důvěryhodné}).
+\end{algoritmusN}
+
+\begin{algoritmusN}{Heap sort, třídění haldou}
+Heapsort je také třídící algoritmus založený na porovnávání a myšlenkově vychází ze selection sortu, ke kterému přidává práci s haldou. Většinou bývá pro typická vstupní data pomalejší než quicksort, ale zaručuje časovou složitost $O(n\log n)$ i v nejhorším případě. Jde o \uv{in-place} algoritmus (halda se může nacházet přímo v nesetříděné části pole), ale není \uv{stabilní}.
+
+Algoritmus sám, máme-li vyřešené operace na haldě, je velice jednoduchý -- nejdříve pro každý prvek opakuje jeho vložení do haldy (takže postupně vytvoří $n$-prvkovou haldu, která se s každým krokem zvětšuje o 1), pro implementaci haldy na začátku pole je vhodný \uv{max-heap}, a potom opakuje odebrání maxima a jeho přesun na volné místo hned za konci zmenšivší se haldy -- takže od konce pole postupně roste směrem k začátku setříděná posloupnost.
+
+Upravený heapsort s použitím ternární haldy dosahuje o multiplikativní konstantu lepší výsledky, existuje i (prý :-)) složitá varianta \emph{smoothsort}, která se blíží časové složitosti $O(n)$, pokud jsou data částečně předtříděná -- heapsort totiž pracuje pro libovolnou posloupnost v čase $O(n\log n)$.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Merge sort, třídění sléváním}
+Dalším třídícím algoritmem založeným na porovnávání prvků je mergesort. Je stabilní, takže zachovává pořadí dat se stejným klíčem. Jde o příklad algoritmu typu \uv{rozděl a panuj}, stejně jako u níže popsaného quicksortu. Byl vynalezen Johnem Von Neumannem. Je založen na rozdělení posloupnosti na dvě zhruba stejné poloviny, rekurzivním setřídění a potom \uv{slévání} dvou již setříděných posloupností. Jeho časová složitost je $O(n\log n)$ i v nejhorším případě, provádí většinou méně porovnání než quicksort, má větší nároky na paměť v případě rekurzivního volání (existuje ale i nerekurzivní verze), ale většinou nepracuje na místě a potřebuje alokovat paměť pro výstup setříděných posloupností (i toto se dá odstranit, ale je to zbytečně složité a přílišné zrychlení oproti použití jiného algoritmu nepřinese). Jeho přístup ho ale činí ideálním k použití na médiích se sekvenčním přístupem k datům (např. pásky). Jde tedy použít i ke třídění na vnější paměti -- detaily viz sekce o databázích.
+
+Postup práce je následující:
+\begin{penumerate}
+    \item Rozděl nesetříděnou posloupnost na dvě (zhruba) poloviční části    
+    \item Pokud mají více než jeden prvek, setřiď je rekurzivním zavoláním mergesortu (tj. pro každou z nich pokračuj od kroku 1 do konce algoritmu), jinak pokračuj následujícím krokem.
+    \item Slij dvě setříděné posloupnosti do jedné -- vyber z obou posloupností první prvek, a pak opakovaně prvky porovnávej, zapisuj do setříděné posloupnosti menší z nich a doplňuj dvojici z té poloviční posloupnosti, odkud pocházel zapsaný prvek.
+\end{penumerate}
+\end{algoritmusN}
+
+\begin{algoritmusN}{Quicksort}
+Quicksort je jedním z nejrychlejších algoritmů pro třídění na vnitřní paměti, přestože v nejhorším případě může jeho časová složitost dosáhnout až $\Theta(n^2)$. Pro ideální i průměrná data dosahuje $\Theta(n\log n)$. Je také založen na principu \uv{rozděl a panuj}, i když poněkud jiným způsobem než předchozí zmiňovaný, od něhož se liší i tím, že není stabilní.
+
+Algoritmus nejdřív vybere nějaký prvek, tzv. \emph{pivot}, a prvky s klíčem větší než pivot přesune do jiné části pole než ty s klíčem menším. Pak rekurzivně třídí obě části pole -- když se dostane k polím délky 1, problém je vyřešen. Postup vypadá takto:
+\begin{penumerate}
+    \item Vyber pivot (jeden prvek ze seznamu). Tady jde o největší magii, protože k dosažení nejlepší rychlosti by se měl pokaždé vybírat medián. Nejjednodušší je vybrat první, ale tento výběr ovlivňuje výslednou rychlost práce, takže se vyplatí např vzít tři prvky, porovnat je a vzít si z nich ten prostřední.
+    \item Postupuj od začátku pole a hledej první prvek větší nebo rovný než pivot. Až ho najdeš, postupuj od konce a najdi první prvek menší než pivot. 
+    \item Prvky prohoď a opakuj krok 2 a 3, dokud se hledání od začátku a od konce nepotká na nějaké pozici -- tu pojmenujeme třeba $k$.
+    \item Rekurzivním voláním setřiď prvky $(0,\dots,k)$ a $(k+1,\dots,n-1)$ (má-li tříděné pole délku $n$) -- to znamená pro obě části pole pokračuj od kroku 1. Pokud je $k=0$ nebo $k=n-2$, není třeba už rekurzivního volání, protože posloupnosti délky 1 jsou setříděné.
+\end{penumerate}
+
+Pro algoritmus existuje i nerekurzivní verze (stačí rekurzi nahradit zásobníkem úseků čekajících na zpracování). Je vidět, že na volbě pivotu závisí všechno -- pokud pokaždé jako pivot volím 1. nebo $n-1$. hodnotu v poli v pořadí podle velikosti, dělím pak vždy na části o délce 1 a $n-1$, takže tento rekurzivní krok provedu až $n$-krát a dostanu se k času $\Theta(n^2)$. Samozřejmě, díky existenci algoritmu pro nalezení mediánu v čase $\Theta(n)$ je možné i tady dosáhnout zaručené složitosti $\Theta(n\log n)$, ale v praxi je to kvůli vysoké multiplikativní konstantě nepoužitelné -- k výběru pivotu se většinou s úspěchem užívá nějaká jednoduchá heuristika, jak je nastíněno v popisu algoritmu samotného.
+
+Heapsort bývá pomalejší než quicksort, ale zaručuje nízkou časovou složitost i pro nejhorší případ a navíc potřebuje méně paměti -- nároky quicksortu navíc (kromě tříděné posloupnosti) jsou $O(\log n)$ minimálně, kvůli nutnosti použití rekurzivního volání nebo zásobníku. Oproti mergesortu ho nelze použít na data se sekvenčním přístupem, tyto nevýhody ale vyvažuje relativní jednoduchostí implementace a rychlostí v průměrném případě.
+
+Variantou quicksortu je \emph{introsort}, který ho kombinuje s heapsortem, pokud hloubka rekurze dosáhne nějakých nepřijatelných hodnot -- tak je zaručena časová složitost $\Theta(n\log n)$ i v nejhorším případě (samozřejmě je to ale v nejhorším případě pořád pomalejší než použití jen heapsortu). Jedna z variant tohoto algoritmu se dá použít k hledání $k$-tého nejmenšího prvku (tedy i mediánu), kdy dosahuje složitosti $O(n)$ průměrně až $O(n^2)$ nejhůře.
+\end{algoritmusN}
+
+
+\subsubsection*{Přihrádkové třídění}
+
+\begin{algoritmusN}{Bucket sort, Radix sort, přihrádkové třídění}
+Radix sort je zvláštní třídící algoritmus -- jeho složitost je totiž lineární. Dosahuje to tím, že neporovnává všechny tříděné prvky (složitost problému třídění pomocí porovnávání je $\Theta(n\log n)$, takže by to jinak nebylo možné), je ho ale možné použít jen pro třídění dat podle klíče z nějaké ne příliš velké množiny -- max. rozsah tříděných hodnot závisí na tom, jak velké pole si můžeme dovolit vymezit v paměti pro tento účel.
+
+Nejjednodušší varianta (tzv. \emph{pigeonhole sort}, nebo-li \emph{counting sort}) opravdu počítá s klíči ze zadaného rozmezí $[l,h]$. Pro něj si připraví cílové pole velikosti $h-l+1$, tj. \uv{přihrádky}. Do nich pak přímo podle klíče přehazuje čtené prvky (jestliže přihrádky realizujeme jako seznamy, bude třídění dokonce stabilní). Nakonec projde přihrádky od začátku do konce a co v nich najde, to vypíše (a výstup bude setříděný). Variantou counting sortu je \emph{bucket sort}, kdy se do jedné přihrádky nedávají jen prvky se stejným klíčem, ale prvky s klíčem v nějakém malém rozmezí -- ty pak lze setřídit rychle, protože jich zřejmě nebude mnoho, a navíc se ušetří paměť.
+
+
+Protože ale klíče velikosti max. tisíců hodnot jsou většinou trochu málo, v praxi se běžně používají složitější varianty -- ty zahrnují několik průchodů nahoře popsaného algoritmu, při nichž se třídí jenom podle části klíče. Ty se dělí na ty, které začínají od nejméně významné části klíče (\emph{least significant digit radix sort}) a ty, které jdou od nejvýznamnější části (\emph{most significant digit}). První z nich mají tu výhodu, že lze zachovat stabilitu třídění, druhá zase může třídit i podle klíčů různé délky a zastavovat se po nalezení unikátních prefixů, takže se hodí např. pro lexikografické třídění podle řetězcových klíčů.
+
+Třídění typu least significant digit vypadá následovně:
+\begin{penumerate}
+    \item Vezmi nejméně významnou část klíče (určitý počet bitů).
+    \item Rozděl podle této části klíče data do přihrádek, ale v nich zachovej jejich pořadí (to je nutné kvůli následnému průchodu, zároveň to dělá z tohoto algoritmu stabilní třídění).
+    \item Opakuj toto pro další (významnější) část klíče.
+\end{penumerate}
+
+Most significant digit varianta (rekurzivní verze, je založená na bucket sortu) běhá takto:
+\begin{penumerate}
+    \item Vezmi nejvýznamnější část klíče (první písmeno, například).
+    \item Rozděl prvky podle této části do přihrádek (takže v jedné se jich octne docela hodně)
+    \item Rekurzivně setřiď každou z přihrádek (začni podle další části klíče), pokud je v ní více než jeden prvek (tohle zaručí zastavení za rozlišujícím prefixem).
+    \item Slep přihrádky do jedné (setříděné) posloupnosti.
+\end{penumerate}
+
+Popisované algoritmy většinou potřebují $O(n+(h-l))$ času k třídění, je-li $h-l$ (zhruba) počet přihrádek -- to znamená, že sice jde o složitost lineární, ale lineární i v počtu přihrádek, což se nemusí vždy oproti konvenčnímu třídění vyplatit. Navíc jsou problémem vysoké nároky na paměť (nelze třídění provést \uv{na místě} v jediném poli). Pro malou množinu hodnot klíčů (nebo u most significant digit varianty krátké odlišující prefixy) jsou ale časově efektivnější.
+\end{algoritmusN}
+
+
+
+\subsubsection*{Třídící sítě}
+
+Zdrojem této sekce jsou zápisky z přednášek Prof. L. Kučery Algoritmy a datové struktury II.
+\bigskip
+
+\begin{definiceN}{Bitonická posloupnost}
+Řekneme, že posloupnost prvků je \emph{bitonická}, pokud po spojení do cyklu (tedy nultý prvek za $n$-tý) obsahuje dva monotónní úseky. Nebo-li obsahuje až na fázový posuv dva monotónní úseky.
+\end{definiceN}
+
+\begin{definiceN}{Komparátor}
+\emph{Komparátor} je speciální typ hradla (představme si pod tím nedělitelnou elektronickou součástku, případně jen virtuální), která má dva výstupy a dva vstupy. Pokud na vstupy přivedeme dva prvky (klíče, čísla), z levého výstupu vydá menší z nich a z pravého výstupu větší (takže vlastně porovná dva prvky a na výstup je vyplivne ve správném pořadí). Pracuje v konstantním čase.
+\end{definiceN}
+
+\begin{definiceN}{Třídící síť}
+Třídící síť je správně sestavená množina komparátorů dohromady spojená vstupy a výstupy tak, že při přivedení posloupnosti délky $n$ na vstup ji vydá setříděnou na výstupu. Komparátory v ní jsou rozčleněné do hladin, jejichž počet pak udává celkovou dobu výpočtu -- předpokládá se tam, že komparátory v jednotlivých vrstvách pracují paralelně, takže třídící sítě mohou dosahovat časové složitosti pouhých $O(\log n)$. Algoritmus s takovou časovou složitostí sice existuje, ale má velmi vysokou multiplikativní konstantu, takže se v praxi nepoužívá. Příkladem třídící sítě je i bitonické třídění.
+\end{definiceN}
+
+\begin{algoritmusN}{Bitonické třídění}
+Bitonická třídící síť je založena na použití bitonických posloupností a rekurze. Obvod (pro třídění dat délky $n$) se dělí na dvě části:
+\begin{pitemize}
+    \item První část setřídí (rekurzivně) $1/2$ vstupu vzestupně, druhou polovinu sestupně a tím vytvoří bitonickou posloupnost. Obsahuje tedy dvě třídící sítě pro třídění posloupností délky $\frac{n}{2}$.
+    \item Druhá část třídí jen bitonické posloupnosti -- první její vrstva rozdělí bitonickou posloupnost na vstupu na dvě bitonické posloupnosti (z větších a menších čísel). Další vrstvy už jsou opět implementovány rekurzivně -- tedy druhá vrstva dostane dvě posloupnosti a vyrobí z nich čtyři atd., až nakonec dojde k \uv{bitonickým posloupnostem} délky 1.
+\end{pitemize}
+
+K rozdělení jedné bitonické posloupnosti délky $k$ na dvě stačí jen $\frac{k}{2}$ komparátorů, které porovnávají vždy $i$-tý a $k+i$-tý prvek. Dojde sice k nějakému fázovému posuvu, ale to ničemu nevadí. Dobře je to vidět při znázornění na kružnici, doporučuji prohlédnout si postup v programu Algovision Prof. Kučery (\texttt{http://kam.mff.cuni.cz/\~{}ludek/AlgovisionPage.html}).
+
+Je vidět, že počet vrstev potřebných k dělení bitonických posloupností délky $N$ je $log_2 N$ ($B(N)=\log N$). Pro celkový počet vrstev, a tedy dobu zpracování -- $T(n)$ nám vychází následující vzorec
+$$T(N) = T(\frac{n}{2}) + B(N) = \log N + \log(N/2) + \dots + 1$$
+z čehož díky vzorci pro součet aritmetické posloupnosti $1+2+\dots+k=\frac{k(k+1)}{2}$ vyjde
+$$T(N) = O(\frac{1}{2} \log^2 N)$$
+\end{algoritmusN}

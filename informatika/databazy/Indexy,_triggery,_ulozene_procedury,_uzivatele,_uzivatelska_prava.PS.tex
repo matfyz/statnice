@@ -1,0 +1,137 @@
+\subsection{Indexy, triggery, uložené procedury, uživatelé}
+
+TODO: pořádná definice indexu
+
+\begin{obecne}{Index}
+Index je obvykle definován výběrem tabulky a jejího konkrétního sloupce (nebo sloupců), nad kterými si designér databáze přeje dotazování urychlit; dále pak technickým určením typu. Chování a způsoby uložení indexů se mohou významně lišit podle použité databázové technologie.
+Výjimku mohou tvořit například full-textové indexy, které jsou v některých případech (nerelační databáze typu Lotus Notes) definovány nad celou databází, nikoliv nad konkrétní tabulkou. 
+\end{obecne}
+
+\begin{obecne}{Použití indexu}
+Na první pohled by se mohlo zdát, že čím víc indexů, tím lepší chování databáze a že po vytvoření indexů pro všechny sloupce všech tabulkách dosáhneme maximálního zrychlení. Tento přístup naráží bohužel na dva zásadní problémy: 
+\begin{penumerate}
+    \item Každý index zabírá v paměti vyhrazené pro databázi nezanedbatelné množství místa (vzhledem k paměti vyhrazené pro tabulku). Při existenci mnoha indexů se může stát, že paměť zabraná pro jejich chod je skoro stejně velká, jako paměť zabraná jejími daty - zvláště u rozsáhlých tabulek (typu faktových tabulek v datovém skladu) může něco takového být nepřijatelné. 
+    \item Každý index zpomaluje operace, které mění obsah indexovaných sloupců (například SQL příkazy UPDATE, INSERT). To je dáno tím, že databáze se v případě takové operace nad indexovaným sloupcem musí postarat nejen o změny v datech tabulky, ale i o změny v datech indexu. 
+\end{penumerate}
+\end{obecne}
+
+\begin{obecne}{Typy indexů}
+Indexy mohou mít svůj typ, který blíže určuje, jakým způsobem má být přistupování k datům tabulky optimalizováno. Označení se různí, ale nejčastěji je to:
+\begin{pitemize}
+    \item PRIMARY - Tento typ se v každé tabulce může vyskytovat nejvýše jednou. Definuje sloupec tabulky, který svou hodnotou jednoznačně identifikuje záznam. Ve většině případů se dodržuje konvence takový sloupec nazvat ID a jeho datový typ stanovit jako celé číslo (není-li potřeba jinak). Databázový server by měl být schopen nedopustit, aby byla do sloupce, k němuž se tento typ indexu vztahuje, byla vložena hodnota, která již v tabulce existuje (většinou takový pokus končí chybovou hláškou). 
+    \item UNIQUE - Tento typ je podobný PRIMARY co do jednoznačnosti záznamu v tabulce (jak naznačuje i jeho název) a dopadu, který to na práci s databází má; ale může se vyskytovat u více sloupců tabulky. Podle účelu, ke kterému má tabulka sloužit, se občas definují indexy složené z více sloupců - potom opět nelze vložit záznam, který by již v této kombinaci někde v tabulce existoval. 
+    \item INDEX - Definicí indexu tohoto typu je v tabulce zajištěna optimalizace vyhledávání podle sloupce, ke kterému se daný index váže. Většinou si databázový server vytvoří a nadále udržuje vnitřní seznam odkazů na řádky tabulky, seřazený podle hodnot sloupce, k němuž se váže. Udržování takto seřazené posloupnosti urychluje vyhledávání (je možno použít některé interpolační numerické metody), řazení i jiné zásahy do tabulky, které jsou omezeny podmínkou na dotyčné záznamy. 
+    \item FULL-TEXT - Vytvořením tohoto indexu se databázový server bude snažit optimalizovat full-textové vyhledávání v daném sloupci u dané tabulky.
+\end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Triggery}
+  Databázový trigger je programový kód, který je automaticky vykonán jako
+  reakce na nějakou událost v určité databázové tabulce. Triggery mohou omezit
+  přístup k určitým datům, provádět logování, nebo kontrolovat změny dat.
+
+  Rozlišujeme dvě hlavní třídy triggerů a to \emph{řádkový trigger} a
+  \emph{dotazový (statement) trigger}. Řádkový trigger můžeme definovat pro
+  každý řádek tabulky, zatímco dotazový trigger se vykoná pouze jednou pro
+  konkrétní databázový dotaz. Každá třída triggerů může být několika typů. Jsou
+  \emph{before triggers} a \emph{after triggers}, což značí kdy má být trigger
+  vykonán. Také se můžeme setkat s \emph{instead of triggers}, který je potom
+  vykonán \emph{místo} dotazu kterým byl spuštěn. 
+
+  Jaké události mohou trigger spustit se pochopitelně liší databázový systém od
+  systému, ale existují tři typické události, které to mohou být:
+  \begin{penumerate}
+    \item INSERT~-- nový záznam je vložen do databáze,
+    \item UPDATE~-- záznam je měněn,
+    \item DELETE~-- záznam je mazán.
+  \end{penumerate}
+  Kromě těchto typických událostí může databázový systém umožňovat nastavovat
+  triggery také na mazání, či vytváření celých tabulek, či dokonce přihlášení
+  nebo odhlášení uživatele.
+
+  Hlavní vlastnosti a efekty databázových triggerů jsou:
+  \begin{pitemize}
+    \item nepřijímají žádné parametry nebo argumenty,
+    \item nemohou volat operace pro řízení transakcí COMMIT a ROLLBACK,
+    \item mají přístup k datům, které budou měněny, je tedy možné vykonávat akce
+    na základě nich,
+    \item nemohou vracet záznamy,
+    \item obtížně se ladí,
+    \item mnoho triggerů nebo složité triggery mohou práci s databází velice
+    zpomalit a navíc znepřehlednit.
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{K čemu triggery používat?}
+  Triggery se v databázích používají z několika důvodů, které mohou souviset s
+  konzistencí dat, jejich údržbou, nebo mohou být způsob, kterým databáze
+  komunikuje s okolím. Podívejme se na některá typická schémata:
+  \begin{pitemize}
+    \item \textbf{Konzistence dat}~-- Trigger může provést výpočet a na základě
+    toho povolit nebo nepovolit změnu dat v databázi. Například trigger může zakázat
+    smazání zákazníka z databáze v případě, kdy má u nás nějaký dluh a podobně.  
+    \item \textbf{Logování}~-- Trigger může evidovat kdo, kdy a jak měnil data.
+    Lze tak dohledat pracovníka, který zadal špatné údaje nebo zjistit, v kolik
+    hodin došlo k včerejší uzávěrce.
+    \item \textbf{Verzování dat}~-- Díky triggerům lze snadno naprogramovat
+    aplikaci tak, aby jedna tabulka udržovala historii změn tabulky jiné. To lze
+    s úspěchem použít třeba jako bezpečnostní mechanismus. 
+    \item \textbf{Zasílání zpráv}~-- Trigger může spustit nějaký externí
+    program nebo proces. Například může trigger autorovi poslat e-mail,
+    pokud byl k jeho článku přidán příspěvek.
+  \end{pitemize}
+\end{obecne}
+
+\begin{obecne}{Uložené procedury}
+  Uložená procedura (anglicky stored procedure) je databázový objekt, který
+  neobsahuje data, ale část programu, který se nad daty v databázi má vykonávat.
+
+  Uložená procedura je především procedura. Jedná se o část programu, který je
+  (nebo by aspoň měl být) jasně funkčně oddělený od svého okolí, má interface
+  (seznam parametrů) pro komunikaci s jinými moduly programu. Může mít vlastní
+  lokální proměnné neviditelné pro ostatní části programu. 
+
+  Uložená procedura je uložená (rozuměj: uložená v databázi). To znamená, že se k
+  ní lze chovat stejně jako ke každému jinému objektu databáze (indexu, pohledu,
+  triggeru apod.). Lze jí založit, upravovat a smazat pomocí příkazů dotazovacího
+  jazyka databáze (v případě relační databáze obvykle pomocí příkazů DDL SQL). 
+
+  Pro psaní uložených procedur je obvykle používán specifický jazyk konkrétní
+  databáze, který je rozšířením jejího dotazovacího jazyka (hezkým příkladem je
+  databáze Oracle s procedurálním jazykem PL/SQL, který je rozšířením klasického
+  dotazovacího jazyka SQL).
+\end{obecne}
+
+\begin{obecne}{Proč ukládat procedury?}
+  \begin{pitemize}
+      \item \textbf{Jednotné rozhraní}~-- Použití uložených procedur vychází z
+      faktu, že většina operací nad daty v databázi probíhá stejně bez ohledu na
+      to, kdo operaci provádí. Příklad: Pokud je třeba uložit do tabulky
+      zákazníků nového zákazníka, tak se to z pohledu databáze děje stejně pro
+      zákazníka internetového obchodu, pro zákazníka, kterého zadává pracovnice
+      telefonického centra přes formulář programu napsaného například v C++ ,
+      nebo pro zákazníky, kteří jsou vkládáni automaticky na základě textového
+      reportu, který přijde každý den z \uv{kamenných} prodejních míst a je
+      zpracováván pomocí programu napsaného v PowerBuilderu. Je tedy celkem
+      dobrý důvod, aby existovala uložená procedura \uv{Zapiš nového zákazníka},
+      kterou by mohly volat všechny tři výše uvedené aplikace - alternativou bez
+      uložené procedury by bylo, že bych podobnou proceduru musel napsat ve
+      třech verzích - jednou v C++, jednou v Power Builderu a jednou v rámci
+      programu pro internetový obchod (třeba ASP nebo PHP). 
+      \item \textbf{Skrytí datových operací}~-- Druhou výhodou použití uložených
+      procedur je, že se nemusím (v programu na \uv{klientské} straně) zabývat
+      tím, jak jsou data uložena v konkrétních tabulkách. V našem případě je mi
+      jedno, jak si databáze uvnitř pamatuje zákazníky - prostě zadám jako
+      parametr procedury jméno, příjmení, číslo kreditky a co si zákazník koupil
+      - a databáze (resp. její uložená procedura) si to nějak přebere. Uložené
+      procedury se v případě databázových aplikací staly základním kamenem pro
+      realizaci architektury klient/server, kdy je na jedné straně (klientská
+      část) realizována v běžném procedurálním programovacím jazyku komunikace s
+      uživatelem (formuláře nebo třeba webové stránky) a na druhé straně
+      (serverová část) je pomocí uložených procedur realizována správa dat v
+      relační databázi. Obě části (klientská a serverová) mezi sebou komunikují
+      přes co nejjednodušší rozhraní - voláním uložených procedur. 
+  \end{pitemize}
+\end{obecne}
+
+TODO: uživatelé

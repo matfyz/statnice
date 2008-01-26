@@ -1,0 +1,180 @@
+
+\subsection{Organizace dat na vnější paměti, B-stromy a jejich varianty}
+
+
+\subsubsection*{Vnější paměť}
+
+\begin{definiceN}{Vnější paměť}
+\emph{Vnější paměť} je úložiště dat (paměťové médium), u kterého je rychlost načítání dat zpravidla nízká a přístup k nim ne úplně přímý (záleží na uspořádání dat na médiu), ne-li pouze sekvenční (oproti vnitřní paměti s rychlým náhodným přístupem a menší kapacitou). Příkladem vnější paměti je pevný disk nebo magnetická páska.
+
+\emph{Magnetické pásky} poskytují vysokou kapacitu, ale nízkou rychlost a pouze sekvenční přístup. Pro jejich kapacitu je důležitá hustota záznamu, potřebují meziblokové mezery pro vyrovnání nepřesnosti přetáčení pásky.
+
+\emph{Pevné disky} umožňují přímý přístup, ale jeho rychlost není vždy stejná. Ovlivňuje ji fyzická vzdálenost dat -- pevný disk má několik \emph{válců}, na nichž jsou uloženy jednotlivé datové \emph{stopy}. K válcům přísluší \emph{čtecí hlavy} (je jich stejně jako válců, ale pohybují se všechny současně, takže může v 1 okamžiku číst jen jedna). Disky jsou většinou rozděleny na \emph{sektory} -- nejmenší jednotku dat, kterou je možné načíst nebo uložit (zpravidla jednotky KB). Pro rychlost přístupu k datům jsou důležité tyto veličiny (výrobcem disků jsou zpravidla udávány průměrné hodnoty):
+\begin{pitemize}
+    \item \emph{seek} ($s$) -- přesun na jinou stopu, dnes zpravidla kolem 4-8~ms
+    \item \emph{(average) rotational delay} ($r$) -- otočení válců -- 1 půlotáčka, pro nejčastější 7200rpm disk je to cca 4~ms
+    \item \emph{block transfer time} ($btt$) -- doba přenesení 1 bloku po sběrnici, na ATA/100 disku se 4~KB bloky teoreticky 0.04~ms
+\end{pitemize}
+Pokud jsou data umístěna na disku za sebou sekvenčně, rychlost jejich načtení je mnohem vyšší než při náhodném rozmístění, protože není třeba provádět přesuny mezi stopami a otáčení válců navíc.
+\end{definiceN}
+
+\begin{priklad}
+\emph{Jak vypadá načtení 1~MB dat z pevného disku?} Předpokládejme, že na 1 stopu se vejde 512~KB a 1 blok má 4~KB. Jsou-li data umístěna na disku sekvenčně, potřebuji pro načtení 1~MB dat najít první blok a potom číst dvě celé stopy (2 otáčky), tj. celkem $s+r+(2\cdot2r)$ (a přenos po sběrnici lze zanedbat, protože probíhá zároveň se čtením). Pokud jsou data na disku náhodně rozprostřena, potřebuji celkem 256-krát najít blok a načíst ho: $256\cdot(s+r+btt)$, takže operace trvá až 100-krát déle.
+\end{priklad}
+
+
+\subsubsection*{Soubor}
+
+\begin{definiceN}{Záznam, klíč}
+\emph{(Logický) záznam} je jednotka dat (např. v databázi), má \emph{atributy} (z nichž každý má jméno a doménu -- povolenou množinu hodnot). Logickému záznamu v reprezentaci na disku odpovídá \emph{fyzický záznam} (nějaké délky $R$ -- pevné nebo proměnné), který navíc může obsahovat ještě další data -- oddělovače, ukazatele, hlavičky. 
+
+\emph{Klíč} je množina atributů, která jednoznačně identifikuje záznam; proti tomu \emph{vyhledávací klíč} je množina atributů, pro kterou lze nalézt množinu odpovídajících záznamů. Vyhledávací klíče jsou tří druhů: hodnotový (\uv{obyčejné} hodnoty některých atributů), hašovaný a relativní (přímo pozice v souboru).
+\end{definiceN}
+
+\begin{definiceN}{Soubor}
+(Homogenní) \emph{soubor} je multimnožina záznamů. Fyzicky na vnější paměti je organizován do \emph{bloků (stránek)} (velikosti $B$, typicky několika KB) -- hl. jednotkou přenosu dat mezi vnitřní a vnější pamětí. Poměr velikosti záznamu k velikosti bloku ($B/R$) se nazývá \emph{blokovací faktor} ($\lfloor b\rfloor$). Záznamy mohou být rozprostřeny i přes několik stránek, nebo může být pouze jeden záznam na 1 stránku; ideální (ale ne vždy dosažitelné) je, pokud beze zbytku zaplňují stránky. Na souboru jsou definovány operace se záznamy: \emph{insert, delete, update} a \emph{fetch}.
+\end{definiceN}
+
+\begin{definiceN}{Dotaz}
+\emph{Dotaz} je každá funkce, která každému svému argumentu přiřadí odpovídající množinu záznamů ze souboru (\uv{totální vyčíslitelná funkce definovaná na souboru}). Dotazy mohou být těchto typů:
+\begin{pitemize}
+    \item Načtení všech záznamů ({\tt SELECT * FROM tabulka})
+    \item Na úplnou shodu ({\tt SELECT * FROM tabulka WHERE sloupec1 = 'hodnota' AND sloupec2 = 'hodnota'} pro tabulku se 2 sloupci -- dány jsou všechny atributy)
+    \item Na částečnou shodu\\({\tt SELECT * FROM tabulka WHERE sloupec1 = 'hodnota'} pro tabulku se 2 sloupci -- zadaná je jen část atributů)
+    \item Na intervalovou shodu (částečnou nebo úplnou) ({\tt SELECT * FROM tabulka WHERE sloupec1 > 'hodnota'})
+\end{pitemize}
+U souborů se sleduje rychlost provedení těchto operací.
+\end{definiceN}
+
+
+\subsubsection*{Statické metody organizace souboru}
+
+\begin{definiceN}{Schéma organizace souboru}
+\emph{Schéma organizace souboru} je popis logické paměťové struktury, do níž lze zobrazit logický soubor, spolu s algoritmy operací nad touto strukturou. Ta je obvykle tvořena z logických stránek (bloků pevné délky) a může popisovat více provázaných log. souborů, z nichž \emph{primární soubor} je ten, který obsahuje uživatelská data. Operace definované nad schématem org. souboru jsou kromě operací nad soubory ještě \emph{build, reorganization, open} a \emph{close}.
+
+Proti němu stojí \emph{fyzické schéma souboru} -- struktura nad fyzickými soubory, nejblíže hardwaru je \emph{implementační schéma souboru}.
+
+Zajištění \emph{Vyváženosti struktury} znamená zajištění omezení cesty při vyhledávání nějakým výrazem (zaručení asymptotické složitosti), navíc zaručení rovnoměrnosti zaplnění struktury -- \emph{faktor naplnění stránek}. Schémata, která splňují obě podmínky, se nazývají \emph{dynamická}, ostatní jsou označována jako \emph{statická}.
+\end{definiceN}
+
+\begin{poznamkaN}{Časové odhady}
+Pro schémata organizace souborů se počítají časové odhady provedení jednotlivých operací -- jednodušších, jako je přístup k záznamu ($T_F$), \emph{rewrite} -- přepis během 1 otáčky disku ($T_{RW}$), příp. sekvenční čtení; dále i složitějších jako vyhledání záznamu, přidání, smazání a úprava záznamu, reorganizace struktury nebo načtení celého souboru.
+\end{poznamkaN}
+
+\begin{obecne}{Hromada (neuspořádaný sekvenční soubor)}
+\emph{Hromada(heap)} je naprosto nejjednodušší schéma organizace souboru, kdy jsou záznamy v souboru jen náhodně seřazeny za sebou. Časová složitost vyhledávání je $O(n)$, pokud $n$ je počet záznamů. Jde o \emph{nehomogenní soubor}, kde záznamy obvykle nemají pevnou délku. 
+\end{obecne}
+
+\begin{obecne}{Uspořádaný sekvenční soubor}
+V \emph{uspořádaném sekvenčním souboru} jsou záznamy řazeny podle klíče. Aktualizované záznamy se umístí do zvláštního souboru a až při další operaci \uv{reorganization} jsou přidány do primárního. Složitost nalezení záznamu je také $O(n)$, ale pokud se hledá podle klíče, podle kterého jsou záznamy seřazeny, a navíc je soubor na médiu s přímým přístupem, sníží se na $O(\log n)$.
+\end{obecne}
+
+\begin{obecne}{Index-sekvenční soubor}
+Toto schéma uvažuje primární soubor jako sekvenční, uspořádaný podle primárního klíče. Nad ním je pak vytvořen (třeba i víceúrovňový) \emph{index}. Ten sestává ze seznamu čísel stránek a minimálních hodnot klíče jim odpovídajících záznamů. Pokud má index víc úrovní, provádí se pro vyšší úrovně to samé na blocích indexů úrovně o 1 nižší. Nejvyšší úroveň indexu se obvykle vejde do 1 bloku, tzv. \emph{master}. 
+
+Počet potřebných úrovní pro $n$ záznamů se dá spočítat jako $\lceil\log_p\frac{n}{\lfloor b\rfloor}\rceil$, kde $p=\lfloor\frac{B}{V+P}\rfloor$ při velikosti klíče $V$ a pointeru na stránku $P$. Problémem je přidávání nových záznamů, kdy se tyto řetězí za sebe v tzv. \emph{oblasti přetečení} (každý z nich má pointer na další záznam v oblasti přetečení). Pro oddálení nutnosti vkládání do oblasti přetečení lze iniciálně bloky plnit na méně než 100\%.
+\end{obecne}
+
+
+\begin{obecne}{Indexovaný soubor}
+\emph{Indexovaný soubor} znamená primární soubor plus indexy pro různé vyhledávací klíče. Neindexují se už stránky, ale přímo záznamy, a proto primární soubor nemusí být nutně setříděný. Index může být podobný jako u index-sekvenčního souboru, pro záznamy se stejným klíčem je ale vhodné, aby byly na všech úrovních indexu kromě poslední sloučené. Při aktualizaci se nepoužívá oblast přetečení, mění se pouze index.
+
+Existuje i několik dalších variant indexů. Pro zmenšení náročnosti dotazů na kombinovanou částečnou shodu se používá \emph{kombinovaný index} pro více atributů, u něhož je ale nutné předem zjistit na které kombinace atributů budou často pokládány dotazy, a pro takové kombinace tento index teprve vytvořit. \emph{Clusterovaný index} zaručuje, že záznamy s podobnou hodnotou indexovaného atributu jsou blízko sebe v primárním souboru -- např. pokud je primární soubor podle tohoto atributu setříděny. Tento index lze použít jen pro 1 atribut. 
+
+\emph{Bitové mapy} se dají použít jako index pro atributy s malou doménou (množinou možných hodnot) -- pro každou hodnotu této domény se vyrobí vektor bitů stejné délky, jako je počet záznamu v primárním souboru, kde jednička na $i$-té pozici indikuje, že $i$-tý záznam má právě tuto hodnotu atributu. To umožňuje jednoduché provádění booleovských dotazů na tento atribut. Vektory bitů navíc lze komprimovat, takže nezabírají tolik místa.
+\end{obecne}
+
+\begin{obecne}{Soubor s přímým přístupem}
+V tomto schématu jsou záznamy v primárním souboru (\uv{adresovém prostoru} velikosti $M$) rozptýleny pomocí \emph{hashovací funkce}. Často se používá funkce $h=k\mod M'$, kde $M'$ je nejbližší prvočíslo menší než velikost adresového prostoru. Hashovací funkcí se určuje buď jenom číslo stránky, nebo i relativní pozice v ní. Při hashování vznikají kolize, které se dají řešit \emph{otevřeným adresováním} (řetězením kolizních záznamů za sebe), \emph{rehashováním} (další funkcí) nebo použitím \emph{oblasti přetečení}. Snaha je většinou umístit kolizní záznamy do stejné stránky. 
+
+Pokud je hashovací funkce prostá, jedná se o \emph{perfektní hashování}. Toho ale v praxi vlastně nelze dosáhnout, takže se tento výraz používá i pro označení stavu, kdy je pro nalezení záznamu potřeba nejvýš $O(1)$ přístupů k médiu. Očekávaná délka řetězce kolizí při počtu $N$ záznamů v prostoru velikosti $M$ je $1/(1-\frac{N}{M})$.
+\end{obecne}
+
+\subsubsection*{Třídění na vnější paměti}
+
+\begin{algoritmusN}{Třídění sléváním (Mergesort)}
+Tento algoritmus se používá pro třídění dat, která se nevejdou do vnitřní paměti. Dá se použít i při sekvenčním přístupu k datovým souborům. Nejjednodušší verze bez bufferů vypadá takto:
+\begin{pitemize}
+    \item inicializace: na začátku každého kroku data rozdělí do 2 souborů
+    \item načte 2 záznamy, každý z jednoho souboru a porovná je
+    \item ve správném pořadí je zapíše do výstupního souboru, ze vstupního souboru si načte další dva
+    \item v prvním kroku získám uspořádané posloupnosti délky 2; v dalších krocích vždy porovnám načtené prvky, zapíšu menší z nich a ze souboru odkud tento pocházel si načtu další, takže získám vždy uspořádané posloupnosti dvojnásobné délky než v předchozím kroku
+    \item po $\lceil\log n\rceil$ krocích je soubor s $n$ záznamy setříděný.
+\end{pitemize}
+Vylepšení se dosáhne např. přímo střídavým zapisováním výstupu do 2 souborů, kdy se zbavím nutnosti na začátku každého kroku data dělit, nebo použitím více souborů najednou. Je taky možné využít rostoucích posloupností prvků, které se v souboru nacházejí již před započetím třídění.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Třídění haldou}
+Pro třídění ve vnitřní paměti se používá algoritmus \emph{třídění haldou (heapsort)}, který se dá zakomponovat do vylepšení třídění sléváním (viz níže). Jeho základem je datová struktura \emph{halda} (konkrétně maximální halda, max-heap), reprezentovaná jako pole záznamů, na kterém je binární stromová struktura: záznam $k$ má vždy vyšší klíč než jeho dva synové, nacházející se na pozicích $2k+1$ a $2k+2$ při číslování od $0$ (pokud tato pozice není větší než velikost haldy, v opačném případě záznam nemá syny). Na pozici $0$ se tak nachází záznam s nejvyšším klíčem. Postup třídění je následovný:
+\begin{pitemize}
+    \item největší prvek (z pozice $0$) se prohodí s tím prvkem, jehož číslo pozice odpovídá aktuální velikosti haldy
+    \item velikost haldy se zmenší o 1
+    \item dokud neplatí podmínka, že klíč prvku získaného z konce haldy je větší než oba klíče jeho synů, prohazuje se tento se synem s větším klíčem (a tak posouvá v haldě dál)
+    \item toto se opakuje, dokud je velikost haldy větší než 1, odzadu tak v poli vzniká setříděná posloupnost
+\end{pitemize}
+Časová složitost algoritmu je $O(n\cdot\log n)$ pro pole záznamů velikosti $n$.
+\end{algoritmusN}
+
+\begin{algoritmusN}{$n$-cestné třídění}
+Pokud mám k dispozici ve vnitřní paměti $n+1$ stránek, mohu postupovat následovně:
+\begin{pitemize}
+    \item v 1. kroku načíst do paměti $n$ stránek
+    \item ty setřídit pomocí heapsortu (nebo i quicksortu apod.) a získat tak delší setříděné úseky (\emph{běhy})
+    \item slévat vždy $n$ nejkratších běhů (pomocí mergesortu) a vytvářet tak jeden běh
+    \item toto opakovat, dokud existuje více než 1 běh.
+\end{pitemize}
+Čas. složitost pro $M$ stránek v souboru je $O(2M\lceil\log_n M/n\rceil)$.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Dvojitá halda}
+Delší běhy při slévání se dají vytvářet pomocí dvojité haldy -- v paměti mám dvě haldy z celkem $n$ prvků, opakovaně z první haldy odebírám a zapisuji minimální prvek do výstupního běhu a načítám další prvek, pokud ten je větší než minimum haldy, vložím ho do prvé haldy, pokud je menší, vložím ho do druhé haldy, která vzniká od konce mého pole. Až se první halda vyčerpá, použiji druhou a začnu nový běh. Toto v nejhorším případě dává stejnou velikost běhů jako obyčejná halda, průměrně je 2x lepší.
+\end{algoritmusN}
+
+
+\subsubsection*{B-stromy}
+
+\begin{definiceN}{B-strom}
+B-strom řádu $m$ je výškově vyvážený strom, který má násl. vlastnosti:
+\begin{penumerate}
+    \item Kořen má minimálně 2 syny, pokud není sám listem.
+    \item Každý jiný uzel kromě listů má nejméně $\lceil\frac{m}{2}\rceil$ a nejvíce $m$ synů a vždy o 1 méně dat. záznamů (listy mají jen datové záznamy).
+    \item Klíče všech záznamů v $i$-tém podstromu uzlu $A$ jsou větší než klíč $i$-tého záznamu uzlu $A$ a menší nebo rovny klíči $i+1$-tého záznamu.
+    \item všechny \emph{větve} (cesty od kořene k listu) jsou stejně dlouhé.
+\end{penumerate}
+Variantou jsou \emph{redundantní B-stromy}, kdy všechna data jsou umístěna v listech, vnitřní uzly obsahují pouze vyhledávací klíče. Jiná možnost je použití pouze klíče a odkazu na celý záznam, místo vkládání kompletních záznamů do stromu.
+\end{definiceN}
+
+\begin{algoritmusN}{Operace na B-stromě}
+\emph{Vyhledávání} v B-stromech podle klíče se provádí jednoduchým průchodem do hloubky.
+
+\emph{Vkládání} se děje nalezením místa pro vložení. Pokud ještě daný rodič neobsahuje $m$ synů, jednoduše nového syna vložím. Pokud ano, je nutné rozštěpit rodičovský uzel na dva (do každého dám polovinu synů). Toto se může opakovat směrem k vyšším vrstvám, případně až do kořene.
+
+\emph{Odebírání} prvků je opačný postup, v případě podtečení uzlu (zůstane v něm méně než $\lceil\frac{m}{2}\rceil$ synů) musím přebírat data od sousedních uzlů nebo slévat. V redundantních B-stromech není nutné při mazání odstraňovat vyhledávací klíč z vnitřních uzlů -- prvek s touto hodnotou se ve stromě už nebude nacházet, ale vyhledávat podle jeho klíče je dál možné.
+\par
+Lepší naplněnosti uzlů za cenu snížení rychlosti se dá dosáhnout pomocí \emph{vyvažování stránek} -- při přetečení stránky nejdřív kontroluji, jestli nejsou volné sousední; pokud ano, přerozdělím data a upravím klíče. Podobně je možné postupovat při mazání (i pokud není třeba slévat).
+\par
+Dalším vylepšením je odložení štěpení -- ke každému listu nebo skupině listů přísluší stránka přetečení, kam se vkládají záznamy, které se už do daného místa nevejdou. Nové vkládání a štěpení je provedeno až tehdy, jestliže se stránka přetečení i všechny příslušné uzly naplní. Takto upravený strom s více než 1 úrovní má vždy všechny listy zaplněné (za předpokladu nepoužití mazání). Přísluší-li stránky přetečení skupinám listů, musím je při mazání a přidávání listů taktéž štěpit a slévat.
+\end{algoritmusN}
+
+\begin{definiceN}{B+ stromy}
+\emph{B+ stromy} jsou mírným vylepšením B-stromů pro zrychlení intervalových dotazů: všechny uzly ve stejné úrovni (a nebo jenom listy) jsou spojeny do spojového seznamu (možná je jednosměrná i obousměrná varianta).
+\end{definiceN}
+
+\begin{definiceN}{B* stromy}
+\emph{B* stromy} (řádu $m$) jsou úpravou B-stromů na základě vyvažování stránek. Druhá podmínka B-stromů se upraví tak, že každý uzel kromě kořene a listů má minimálně $\lceil(2m-1)/3\rceil$ a max. $m$ synů a odpovídající počet dat. záznamů. Listy mají opět jen stejné rozmezí pro počet dat. záznamů. Při vkládání prvků se stěpení odkládá opět do té doby, dokud nejsou plní i sourozenci daného listu; potom se štěpí buď 2 listy do 3, nebo 3 do 4 (buď s pomocí jednoho nebo dvou sousedních sourozenců). Odebírání podobně zahrnuje slévání 3 uzlů do 2 (nebo 4 do 3). Při obém lze ve složitější variantě zapojit ještě více uzlů.
+\end{definiceN}
+
+\begin{definiceN}{Prefixové stromy (Trie)}
+Tento druh stromů slouží k uložení dat, klíčovaných řetězci. Jde o redundantní stromy, data jsou uložena až v listech; vyhledávací klíče jsou vždy co nejkratší možné prefixy řetězců, nutné k odlišení uzlů. Celé hodnoty klíčů (a další data) se nacházejí až v listech. Při vkládání a štěpení stránek se nějakou heuristikou hledá nejkratší prefix, který by vzniklé stránky oddělil. Vylepšená varianta neukládá u synů předponu klíče, kterou má rodič -- je to paměťově efektivnější, ale zvyšuje výpočetní nároky.
+\end{definiceN}
+
+\begin{definiceN}{Stromy s proměnnou délkou záznamu}
+Jde o modifikaci B-stromu, která umožňuje do něj uložit záznamy proměnné délky. Listy se neštěpí podle počtu záznamů, ale zhruba na poloviny podle velikosti dat. Druhá podmínka B-stromů se upraví následovně: celková délka záznamů v jednom uzlu je minimálně $\lceil B/2\rceil$ a maximálně $B$ (kde $B$ je nějaká zvolená hodnota, větš. velikost stránky na disku). Existuje i varianta s podmínkou \uv{$2/3$}, jako mají B*-stromy.
+
+Problémem této struktury je tendence delších záznamů ke stoupání ke kořeni, čímž se snižuje arita záznamů. To se řeší hledáním dělícího záznamu s min. délkou tak, aby vzniklé uzly splňovaly podmínky stromu (a je to docela náročné). Navíc štěpení je složitější -- 1 stránka se může štěpit na 3 (vložím-li hodně dlouhý záznam), může dojít ke zmenšení stromu při vložení apod., běžně se používá obecný algoritmus nahrazování, jehož speciální případy jsou insert a delete.
+\end{definiceN}
+
+
+\begin{definiceN}{Vícerozměrné B-stromy}
+Používají se, je-li potřeba efektivně hledat záznamy podle více atributů. Jde o propojenou množinu stromů. K jednotlivým atributům příslušejí prvky pole odkazů na seznamy stromů, ve kterých se podle daných atributů dá hledat. Pro první atribut je potřeba jen 1 strom, v něm je pro každý klíč odkaz na celý strom 2. atributu (pro další je to podobné). Stromy stejného atributu jsou ve spojovém seznamu. Mohu hledat všechny záznamy, pro které znám hodnoty všech atributů, nebo jenom jejich podmnožinu -- vyžaduje to projít více stromů, ale není třeba množinových operací.
+\end{definiceN}

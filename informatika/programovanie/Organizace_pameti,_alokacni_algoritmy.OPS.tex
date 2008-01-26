@@ -1,0 +1,54 @@
+\subsection{Organizace paměti, alokační algoritmy}
+
+\textbf{Hierarchie paměti} (směrem odshora dolů roste velikost, cena na bajt a rychlost klesá~-- a naopak\dots):
+\begin{pitemize}
+    \item \emph{registry CPU} --- 10ky-100vky bajtů (IA-32: obecné registy pár 10tek), IA-64~-- až kB (extrém), stejně rychlé jako CPU. 
+    \item \emph{cache} --- z pohledu aplikací není přímo adresovatelná; dnes řádově MB, rozdělení podle účelu, několik vrstev. L1 cache (cca 10ky kB)~-- dělené instrukce/data; L2 (cca MB) sdílené instr\&data, běží na rychlosti CPU (dřív bývala pomalejší), servery~-- L3 (cca 10MB). Vyrovnává rozdíl rychlosti CPU a RAM. Využívá lokality programů -- cyklení na místě; sekvenčního přístupu k datům. Pokud nenajdu co chci v cache -- \uv{cache-miss}, načítá se potřebné z RAM (po blocích), jinak (v 95-7\% případů) nastane \uv{cache-hit}, tj. požadovaná data v cache opravdu jsou a do RAM nemusím.
+    \item \emph{hlavní paměť} (RAM) --- přímo adresovatelná procesorem, 100MB~-- GB; pomalejší než CPU; CAS~-- doba přístupu na urč. místo~-- nejvíc zdržuje (v 1 sloupci už čte rychle, dat. tok dostatečný), další~-- latence~-- doba než data dotečou do CPU~-- hraje roli vzdálenost (AMD- integrovaný řadič v CPU) 
+    \item \emph{pomocná paměť} --- není přímo adresovatelná, typicky HDD; náh. přístup, ale pomalejší. ~100GB, různé druhy~-- IDE, SATA, SCSI; nejvíc zdržuje přístupová doba (čas seeku) cca 2-10ms; obvykle sektor~-- 512 B; roli hraje i rychlost otáčení (4200~-- 15000 RPM)~-- taky řádově ms. 
+    \item \emph{zálohovací paměť} --- nejpomalejší, z teorie největší, dnes ale neplatí; typicky~-- pásky; pro větší kapacitu~-- autoloadery ; sekvenční přístup; dnes~-- kvůli rychlosti často zálohování RAIDem.
+\end{pitemize}
+
+\textbf{Správce paměti}: část OS, která spravuje paměťovou hierarchii se nazývá\\správce paměti (memory manager):
+\begin{pitemize}
+	\item udržuje informace o volné/plné části paměti
+	\item stará se o přidělování paměti
+	\item a \uv{výměnu paměti s diskem}
+\end{pitemize}
+
+\textbf{Přiřazení adresy}
+\begin{pitemize}
+	\item při překladu (je již známo umístění procesu, generuje se absolutní kód, PS: statické linkování)
+	\item při zavádění (OS rozhodne o umístění~-- generuje se kód s relokacemi, PS: dynamické linkování)
+	\item za běhu (proces se může stěhovat i za běhu, relokační registr)
+\end{pitemize}
+
+\textbf{Overlay}~-- Proces potřebuje více paměti než je skutečně k dispozici.
+Programátor tedy rozdělí program na nezávislé části (které s v paměti podle
+potřeby vyměňnují) a část nezbytnou pro všechny části\dots
+
+\textbf{Výměna (swapping)}~-- dělá se, protože proces musí být v hlavní paměti,
+aby jeho instrukce mohly být vykonávány procesorem... Jde o výměnu obsahu paměti
+mezi hlavní a záložní.
+
+\textbf{Překlad adresy}~-- nutný, protože proces pracuje v logickém (virtuálním) adresovém prostoru, ale HW pracuje s fyzickým adresovým prostorem...
+
+\textbf{Spojité přidělování}~-- přidělení jednoho bloku / více pamětových oddílů (\emph{pevně}~-- paměť pevně rozdělena na části pro různé velikosti bloků/\emph{volně}~-- v libovolné části volné paměti může být alokován libovolně veliký blok)
+
+\textbf{Informace o obsazení paměti}~-- bitová mapa / spojový seznam volných bloků (spojování uvolněného bloku se sousedy)
+
+\textbf{Alokační algoritmy}:
+\begin{pitemize}
+	\item \emph{First-fit}~-- první volný dostatečné velikosti~-- rychlý, občas ale rozdělí velkou díru
+	\item \emph{Next-fit}~-- další volný dostatečné velikosti~-- jako First-fit, ale rychlejší
+	\item \emph{Best-fit}~-- nejmenší volný dostatečné velikosti~-- pomalý (prohledává celý seznam), zanechává malinké díry (ale nechává velké díry vcelku)
+	\item \emph{Worst-fit}~-- největší volný~-- pomalý (prohledává celý seznam), rozdělí velké díry
+	\item \emph{Buddy systém}~-- paměť rozdělena na bloky o velikosti $2^n$, bloky stejné velikosti v seznamu, při přidělení zaokrouhlit na nejbližší $2^n$, pokud není volný, rozštípnou se větší bloky na příslušné menší velikosti, při uvolnění paměti se slučují sousední bloky (buddy)
+\end{pitemize}
+
+\textbf{Fragmentace paměti}:
+\begin{pitemize}
+	\item \emph{externí}~-- volný prostor rozdělen na malé kousky, pravidlo 50\% -- po nějaké době běhu programu bude cca 50\% paměti fragmentováno a u toho to zůstává
+	\item \emph{interní}~-- nevyužití celého přiděleného prostoru
+	\item \emph{sesypání}~-- pouze při přiřazení adresy za běhu, nebo segmentaci~-- nelze při statickém přidělení adresy
+\end{pitemize}

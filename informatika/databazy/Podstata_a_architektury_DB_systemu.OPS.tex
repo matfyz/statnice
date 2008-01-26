@@ -1,0 +1,108 @@
+\subsection{Podstata a architektury DB systemů}
+
+Zdroje: Wikipedie, slidy Dr. T. Skopala k Databázovým systémům
+\bigskip
+
+\begin{definiceN}{Databáze}
+Databáze je logicky uspořádaná (integrovaná) kolekce navzájem souvisejících dat. Je sebevysvětlující, protože data jsou uchovávána společně s popisy, známými jako metadata (také schéma databáze). Data jsou ukládána tak, aby na nich bylo možné provádět strojové dotazy -- získat pro nějaké parametry vyhovující podmnožinu záznamů.
+
+Někdy se slovem \uv{databáze} myslí obecně celý databázový systém.
+\end{definiceN}
+
+\begin{definiceN}{Systém řízení báze dat}
+Systém řízení báze dat (SŘBD, anglicky database management system, DBMS) je obecný softwarový systém, který řídí sdílený přístup k databázi, a poskytuje mechanismy, pomáhající zajistit bezpečnost a integritu uložených dat. Spravuje databázi a zajišťuje provádění dotazů.
+\end{definiceN}
+
+\begin{definiceN}{Databázový systém}
+Databázovým systémem rozumíme trojici, sestávající z:
+\begin{pitemize}
+    \item databáze
+    \item systému řízení báze dat
+    \item chudáka admina
+\end{pitemize}
+\end{definiceN}
+
+\begin{obecne}{Smysl databází}
+Hlavním smyslem databáze je schraňovat datové záznamy a informace za účelem:
+\begin{pitemize}
+    \item sdílení dat více uživateli,
+    \item zajištění unifikovaného rozhraní a jazyků definice dat a manipulace s daty,
+    \item znovuvyužitelnosti dat,
+    \item bezespornosti dat a
+    \item snížení objemu dat (odstranění redundance).
+\end{pitemize}
+\end{obecne}
+
+\subsubsection*{Databázové modely}
+
+\begin{definiceN}{schéma, model}
+Typicky pro každou databázi existuje strukturální popis druhů dat v ní udržovaných, ten nazýváme \emph{schéma}. Schéma popisuje objekty reprezentované v databázi a vztahy mezi nimi. Je několik možných způsobů organizace schémat (modelování databázové struktury), známých jako \emph{modely}. V modelu jde nejen o způsob strukturování dat, definuje se také sada operací nad daty proveditelná. Relační model například definuje operace jako \uv{select} nebo \uv{join}. I když tyto operace se nemusejí přímo vyskytovat v dotazovacím jazyce, tvoří základ, na kterém je jazyk postaven. Nejdůležitější modely v této sekci popíšeme.
+\end{definiceN}
+
+\begin{poznamka}
+Většina databázových systémů je založena na jednom konkrétním modelu, ale čím dál častější je podpora více přístupů. Pro každý logický model existuje více fyzických přístupů implementace a většina systémů dovolí uživateli nějakou úroveň jejich kontroly a úprav, protože toto má velký vliv na výkon systému. Příkladem nechť jsou indexy, provozované nad relačním modelem.
+\end{poznamka}
+
+\begin{obecne}{\uv{Plochý} model}
+Toto sice nevyhovuje úplně definici modelu, přesto se jako triviální případ uvádí. Představuje jedinou dvoudimensionální tabulku, kde data v jednom sloupci jsou považována za popis stejné vlastnosti (takže mají podobné hodnoty) a data v jednom řádku se uvažují jako popis jediného objektu.
+\end{obecne}
+
+\begin{obecne}{Relační model}
+Relační model je založen na predikátové logice a teorii množin. Většina fyzicky implementovaných databázových systémů ve skutečnosti používá jen aproximaci matematicky definovaného relačního modelu. Jeho základem jsou \emph{relace} (dvoudimensionální tabulky), \emph{atributy} (jejich pojmenované sloupce) a \emph{domény} (množiny hodnot, které se ve sloupcích můžou objevit). Hlavní datovou strukturou je tabulka, kde se nachází informace o nějaké konkrétní  třídě entit. Každá entita té třídy je potom reprezentována řádkem v tabulce -- $n$-ticí atributů.
+
+Všechny relace (tj. tabulky) musí splňovat základní pravidla -- pořadí sloupců nesmí hrát roli, v tabulce se nesmí vyskytovat identické řádky a každý řádek musí obsahovat jen jednu hodnotu pro každý svůj atribut. Relační databáze obsahuje více tabulek, mezi kterými lze popisovat vztahy (všech různých kardinalit, tj. $1:1$, $1:n$ apod.). Vztahy vznikají i implicitně např. uložením stejné hodnoty jednoho atributu do dvou řádků v tabulce. K tabulkám lze přidat informaci o tom, která podmnožina atributů funguje jako \emph{klíč}, tj. unikátně identifikuje každý řádek, některý z klíčů může být označen jako primární. Některé klíče můžou mít nějaký vztah k vnějšímu světu, jiné jsou jen pro vnitřní potřeby schématu databáze (generovaná ID).
+\end{obecne}
+
+\begin{obecne}{Hierarchický model}
+V hierarchickém modelu jsou data organizována do stromové struktury -- každý uzel má odkaz na nadřízený (k popisu hierarchie) a setříděné pole záznamů na stejné úrovni. Tyto struktury byly používány ve starých mainframeových databázích, nyní je můžeme vidět např ve struktuře XML dokumentů. Dovolují vztahy $1:N$ mezi dvěma druhy dat, což je velice efektivní k popisu různých reálných vztahů (obsahy, řazení odstavců textu, tříděné informace). Nevýhodou je ale nutnost znát celou cestu k záznamu ve struktuře a neschopnost systému reprezentovat redundance v datech (strom nemá cykly).
+\end{obecne}
+
+\begin{obecne}{Síťový model}
+Síťový model organizuje data pomocí dvou hlavních prvků, \emph{záznamů} a \emph{množin}. Záznamy obsahují pole dat, množiny definují vztahy $1:N$ mezi záznamy (jeden \emph{vlastník}, mnoho \emph{prvků}). Záznam může být vlastníkem i prvkem v několika různých množinách. Jde vlastně o variantu hierarchického modelu, protože síťový model je také založen na konceptu více struktur nižší úrovně závislých na strukturách úrovně vyšší. Už ale umožňuje reprezentovat i redundantní data. Operace nad tímto modelem probíhají \uv{navigačním} stylem: program si uchovává svoji současnou pozici mezi záznamy a postupuje podle závislostí, ve kterých se daný záznam náchází. Záznamy mohou být i vyhledávány podle klíče. 
+
+Fyzicky jsou většinou množiny -- vztahy -- reprezentovány přímo ukazateli na umístění dat na disku, což zajišťuje vysoký výkon při vyhledávání, ale zvyšuje náklady na reorganizace. Smysl síťové navigace mezi objekty se používá i v objektových modelech.
+\end{obecne}
+
+\begin{obecne}{Objektový model}
+Objektový model je aplikací přístupů známých z objektově-orientovaného programování. Je založen na sbližování programové aplikace a databáze, hlavně ve smyslu použití datových typů (objektů) definovaných na jednom místě; ty zpřístupňuje k použití v nějakém běžném programovacím jazyce. Odstraní se tak nutnost zbytečných konverzí dat. Přináší do databází také věci jako zapouzdření nebo polymorfismus. Problémem objektových modelů je neexistence standardů (nebo spíš produktů, které by je implementovaly).
+
+Kombinací objektového a relačního přístupu vznikají \emph{objektově-relační} databáze -- relační databáze, dovolující uživateli definovat vlastní datové typy a operace na nich. Obsahují pak hybrid mezi procedurálním a dotazovacím programovacím jazykem.
+
+\end{obecne}
+
+
+\subsubsection*{Architektury databázových systémů}
+
+Zdroj: Wiki ČVUT (státnice na FELu ;-))
+\bigskip
+
+Architektury databázových systémů se obecně dělí na 
+\begin{pitemize}
+    \item \emph{centralizované} (kde se databáze předpokládá fyzicky na jednom počítači) a
+    \item \emph{distribuované},
+\end{pitemize}
+případně na
+\begin{pitemize}
+    \item \emph{jednouživatelské} a
+    \item \emph{víceuživatelské}.
+\end{pitemize}
+
+\begin{obecne}{Distribuované databázové systémy}
+\emph{Distribuovaný systém řízení báze dat} je vlastně speciálním případem obecného distribuovaného výpočetního systému. Jeho implementace zahrnuje fyzické rozložení dat (včetně možných replikací databáze) na více počítačů -- \emph{uzlů}, přičemž jejich popis je integrován v globálním databázovém schématu. Data v uzlech mohou být zpracovávána lokálními SŘBD, komunikace je organizována v síťovém provozu pomocí speciálního softwaru, který umí zacházet s distribuovanými daty. Fyzicky se řeší rozložení do uzlů, svázaných komunikačními kanály, a jeho transparence (neviditelnost -- navenek se má tvářit jako jednolitý systém). Každý uzel v síti je sám o sobě databázový systém a z každého uzlu lze zpřístupnit data kdekoliv v síti.
+
+Dále se dělí na dva typy:
+\begin{pitemize}
+    \item Federativní databáze -- neexistuje globální schéma ani centrální řídící autorita, řízení je také distribuované.
+    \item Heterogenní databázové systémy -- jednotlivé autonomní SŘBD existují (vznikly nezávisle na sobě) a jsou integrovány, aby spolu mohly komunikovat.
+\end{pitemize}
+
+Výhodou oproti centralizovaným systémům je vyšší efektivita (data mohou být uložena blízko místa nejčastějšího používání), zvýšená dostupnost, výkonnost a rozšiřitelnost; nevýhodou zůstává problém složitosti implementace, distribuce řízení a nižší bezpečnost takových řešení.
+\end{obecne}
+
+\begin{obecne}{Víceuživatelské databázové systémy}
+\emph{Víceuživatelské} jsou takové systémy, které umožňují vícenásobný uživatelský přístup k datům ve stejném okamžiku. V důsledku možného současného přístupu více uživatelů je nutné systém zabezpečit tak, aby i nadále zajišťoval integritu a konzistenci uložených dat. Existují obecně dva možné přístupy:
+\begin{pitemize}
+    \item Uzamykání -- Dříve často používaná metoda založená na uzamykání aktualizovaných záznamů, v případě masivního využití aktualizačních příkazů u ní ale může docházet k značným prodlevám. 
+    \item Multiversion Concurency Control -- Modernější vynález. Jeho princip spočívá v tom, že při požadavku o aktualizaci záznamu v tabulce je vytvořena kopie záznamu, která není pro ostatní uživatele až do provedeného commitu viditelná.
+\end{pitemize}
+\end{obecne}

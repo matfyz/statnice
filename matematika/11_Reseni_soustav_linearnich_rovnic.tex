@@ -1,0 +1,259 @@
+\def\b#1{\mathbf{#1}}
+\def\Ker{\mathrm{Ker\ }}
+\def\Real{\mathbb{R}}
+\def\rank{\mathrm{rank}}
+\def\dim{\mathrm{dim}}
+\def\Span{\mathcal{L}}
+
+
+\section{Řešení soustav lineárních rovnic}
+
+\begin{pozadavky}
+\begin{pitemize}
+    \item Lineární množiny ve vektorovém prostoru, jejich geometrická interpretace
+    \item Řešení soustavy rovnic je lineární množina
+    \item Frobeniova věta 
+    \item Řešení soustavy úpravou matice 
+    \item Souvislost soustavy řešení s ortogonálním doplňkem
+\end{pitemize}
+\end{pozadavky}
+
+Pojem \uv{lineární množina} moc používaný není, proto se držím výrazu \uv{afinní podprostor}. Vypracováno s použitím poznámek a syllabu z lineární algebry Prof. Matouška a textu Doc. M. Čadka z MU Brno k lineární algebře \\(\texttt{ftp://ftp.math.muni.cz/pub/math/people/Cadek/lectures/linearni\_algebra/LA2.pdf})\\
+
+\subsection{Lineární množiny ve vektorovém prostoru}
+
+\begin{definiceN}{lineární množina / afinní podprostor}
+Podmnožina vektorového prostoru $V$, která je buď prázdná, nebo tvaru
+$$\b{x}+U=\{\b{x}+\b{u}|\b{u}\in U\}$$
+kde $\b{x}\in V$ a $U\subset V$ je nějaký podprostor $V$, se nazývá \emph{afinní podprostor}, \emph{lineární množina} nebo \emph{lineál}.
+\end{definiceN}
+
+\begin{poznamkaN}{Nejednoznačnost určení afinního podprostoru}
+Jeden afinní podprostor je možné určit více způsoby, např. pro vektorový prostor $V$ s vektorem $\b{v}$ a jeho podprostorem $U$ dávají $\b{v}+U$ a $2\b{v}+U$ stejný afinní podprostor.
+\end{poznamkaN}
+
+\begin{vetaN}{Afinní podprostor určuje vekt. prostor}
+Mějme nějaký afinní podprostor $F$ ve vektorovém prostoru $V$. Je-li dáno:
+\begin{align*}
+    F &= U + \b{x} \\
+    F &= U' + \b{x'}
+\end{align*}
+pak jistě $U=U'$.
+
+\begin{dukaz}
+Označíme $\tilde{U}=\{\b{y}-\b{z}|y,z\in F\}$ a dokážeme, že $\tilde{U}=U$ i $\tilde{U}=U'$.
+\end{dukaz} 
+\end{vetaN}
+
+\begin{vetaN}{Lin. zobrazení určuje afinní podprostor}
+Budiž dáno lineární zobrazení $f:U\to V$ mezi nějakými dvěma vekt. prostory. Pro libovolné $b\in f[U]$ potom platí:
+$$f^{-1}(\b{b})=\{\b{u}\in U|f(\b{u})=\b{b}\}=\{\b{x}_0 + \Ker f\}$$
+kde $x_0$ je libovolný vektor z množiny $f^{-1}(\b{b})$ a $\Ker f$ je jádro zobrazení $f$ (tj. $\Ker f=f^{-1}(\b{0})$).
+
+\begin{dukaz}
+Plyne z faktu, že $\Ker f$ je vektorový podprostor $U$ a z linearity $f$.
+\end{dukaz}
+\end{vetaN}
+
+\subsection{Geometrická interpretace}
+
+\begin{definiceN}{dimenze afinního podprostoru, nadroviny}
+\emph{Dimenzi} afinního podprostoru $\b{x}+U$, kde $U\subseteq V$ je vektorový podprostor nějakého vekt. prostoru $V$, definujeme jako $\dim(U)$. 
+
+Jednodimensionání afinní podprostor se nazývá \emph{přímka}, dvoudimensionální \emph{rovina}, $n-1$-dimensionální afinní podprostor $n$-dimensionálního prostoru se jmenuje \emph{nadrovina}.
+\end{definiceN}
+
+\begin{poznamka}
+Totéž platí pro afinní podprostory v $n-$rozměrném eukleidovském geometrickém prostoru -- takže např. roviny nebo přímky v trojrozměrném eukleidovském prostoru jsou afinní podprostory.
+\end{poznamka}
+
+\begin{definiceN}{Afinní kombinace bodů}
+$\b{a},\b{b}$ buďte dva body (vektory) ve vektorovém prostoru $V$ nad tělesem $T$. Potom pro $\alpha,\beta\in T$ lineární kombinace
+$$\alpha\b{a}+\beta\b{b},\ \alpha+\beta=1_T$$
+určující nadrovinu se nazývá \emph{afinní kombinace bodů}. Afinní kombinace několika bodů $\b{a}_1,\dots,\b{a}_k$ jsou pro $\alpha_i\in T$ body 
+$$\sum_{i=1}^k\alpha_i\b{a}_i,\ \sum_{i=1}^k\alpha_i=1_T$$
+\end{definiceN}
+
+\begin{vetaN}{Geometrické vyjádření afinního podprostoru}
+V afinním podprostoru $F$ nějakého vekt. prostoru $V$ leží s každými $k$ body $\b{f}_1 \ldots \b{f}_k \in F$ i jejich afinní kombinace. Naopak každá množina $F$ ve vekt. prostoru $V$, v níž pro každé dva body leží i jejich afinní kombinace, je afinní podprostor.
+
+\begin{dukaz}
+$F=\{U+\b{x}\}$ pro nějaký podprostor $U\subset V$. Potom $$\forall i\in\{1,\dots,k\}:\b{f}_i=\b{x}+\b{u}_i$$ pro nějaké $\b{u}_i\in U$. Platí:
+$$\sum_{i=1}^k(\b{x}+\b{u}_i)\alpha_i = \sum_{i=1}^k\alpha_i\b{x} + \sum_{i=1}^k\alpha_i\b{u}_i = 1\cdot\b{x} + \sum_{i=1}^k\alpha_i\b{u}_i\in F$$
+
+Opačně zvolme $\b{u}\in F$, potom $F=\b{u}+\{\b{v}-\b{u},\b{v}\in F\}$ a stačí dokazát, že $U=\{\b{v}-\b{u},\b{v}\in F\}$ je podprostor $V$ (uzavřenost na skalární násobky a součty).
+\end{dukaz}
+\end{vetaN}
+
+
+\subsection{Řešení soustavy rovnic je lineární množina}
+
+\begin{definiceN}{Maticový zápis soustavy rovnic}
+Uvažujme soustavu $m$ lineárních rovnic o $n$ neznámých ve tvaru:
+$$\begin{matrix}
+a_{1,1}x_1 &+ a_{1,2}x_2 &+ \dots &+ a_{1,n}x_n &=& b_1 \\
+a_{2,1}x_1 &+ a_{2,2}x_2 &+ \dots &+ a_{2,n}x_n &=& b_2 \\
+    \vdots &             &        &  \vdots     & & \vdots \\
+a_{m,1}x_1 &+ a_{m,2}x_2 &+ \dots &+ a_{m,n}x_n &=& b_m \\
+\end{matrix}$$
+Takovou soustavu lze zapsat jako 
+$$A\b{x}=\b{b}$$
+kde 
+\begin{pitemize}
+    \item $A$ je \emph{matice soustavy} typu $m\times n$ (s $m$ řádky a $n$ sloupci), kde na souřadnicích $[i,j]$ je koeficient $a_{i,j}$,
+    \item $\b{b}$ je sloupcový vektor pravých stran (matice typu $m\times 1$) a
+    \item $\b{x}$ je sloupcový vektor neznámých (matice typu $n\times 1$)
+\end{pitemize}
+Maticový součin $A\b{x}=\b{b}$ zřejmě dává stejný výsledek jako explicitní zápis soustavy.
+\end{definiceN}
+
+
+
+\begin{vetaN}{Řešení soustavy rovnic je afinní podprostor}
+Pro soustavu lineárních rovnic $A\b{x}=\b{b}$, kde $A$ je matice typu $m\times n$, $\b{b}$ je vektor \uv{pravých stran} a $\b{x}$ vektor neznámých, platí, že množina jejích řešení je
+\begin{penumerate}
+    \renewcommand{\labelenumi}{\alph{enumi})} 
+    \item prázdná
+    \item tvaru $\{\b{x}_0+L\}$, kde $\b{x}_0$ je jedno z řešení soustavy $A\b{x}=\b{b}$ a $L$ je množina všech řešení \emph{homogenní} soustavy $A\b{x}=0$.
+\end{penumerate}
+
+\begin{dukaz}
+Je-li $F$ množina řešení rovnic $A\b{x}=\b{b}$ neprázdná, potom platí:
+\begin{penumerate}
+    \item řádky matice $A$ generují nějaký podprostor $L$, $\forall\b{u}\in L:A\b{u}=0$.
+    \item jestliže pro nějaké $\b{l}$ platí $A\b{l}=0$ (tedy $\b{l}\in L$) a mám nějaké $\b{x}_0$, pro které platí $A\b{x}_0=\b{b}$, potom z distributivity násobení matic plyne $A(\b{x}_0+\b{l})=\b{b}$.
+\end{penumerate}
+\end{dukaz}
+\end{vetaN}
+
+\begin{vetaN}{Afinní podprostor lze popsat soustavou rovnic}
+Opačné tvrzení platí také -- každý afinní podprostor lze popsat soustavou lineárních rovnic.
+
+\begin{dukaz}
+Ve vekt. prostoru $V$ mějme afinní podprostor $F=\{U+\b{v}\}$, kde $U\subseteq V$ je podprostor $V$ a $\b{x}\in V$. $\b{u}_1,\dots,\b{u}_k$ buď báze $U$. Potom každé $\b{x}\in F$ vyhovuje soustavě rovnic
+$$\left(\begin{matrix}\b{u}_1\\\vdots\\\b{u}_k\end{matrix}\right)\b{x}=\b{v}$$
+\end{dukaz}
+\end{vetaN}
+
+\begin{dusledek}
+Je-li dána soustava rovnic $A\b{x}=\b{b}$, kde matice $A$ má $n$ řádků, potom jí určený afinní podprostor má dimenzi $n - \rank(A)$.
+\end{dusledek}
+
+
+\begin{vetaN}{(neprázdný) průnik afinních podprostorů je afinní podprostor}
+Mějme dány afinní podprostory $F_1=\{U_1+\b{x}_1\}$ a $F_2=\{U_2+\b{x}_2\}$ pro nějaké podprostory $U_1,U_2$ vektorového prostoru $V$. Pokud $F_1\cap F_2\neq \emptyset$, potom $F_1\cap F_2$ je afinní podprostor $V$.
+
+\begin{dukaz}
+Plyne z předchozích vět o vztahu afinních podprostorů a soustav rovnic -- vezmeme rovnicové popisy $F_1$ a $F_2$ a složíme je pod sebe, tím dostaneme rovnicový popis dalšího afinního podprostoru (pokud daná soustava rovnic má řešení, tedy průnik je neprázdný).
+\end{dukaz}
+
+\begin{priklad}
+Např. průnik přímky a roviny v $\Real^3$ -- jeden bod -- je afinní podprostor :-).
+\end{priklad}
+\end{vetaN}
+
+
+\subsection{Frobeniova věta }
+ 
+
+\begin{vetaN}{Frobeniova}
+Soustava lineárních rovnic $A\b{x}=\b{b}$ (kde $A$ je matice s $n$ sloupci) má alespoň jedno řešení, právě když platí
+$$\rank(A)=\rank((A\ \b{b}))$$
+kde $(A\ \b{b})$ představuje tzv. \emph{rozšířenou matici soustavy}, tj. matici $A$ s \uv{přilepeným} vektorem pravých stran $\b{b}$ v posledním sloupci.
+\par\medskip
+\begin{dukaz}
+$n$-tice skalárů $\alpha_1,\dots,\alpha_n$ je řešením soustavy $A\b{x}=\b{b}$, jinak zapsáno $A_1\alpha_1+\dots+A_n\alpha_n=\b{b}$, právě když sloupec $\b{b}$ je lineární kombinací sloupců $A_i, i\in\{1,\dots,n\}$, tedy $\b{b}\in\Span(A_1,\dots,A_n)$. To znamená, že $\Span(A_1,\dots,A_n,\b{b})=\Span(A_1,\dots,A_n)$ a tedy
+$$\rank(A)=\dim(\Span(A_1,\dots,A_n))=\dim(\Span(A_1,\dots,A_n,\b{b}))=\rank((A\ \b{b}))$$
+\end{dukaz}
+\end{vetaN} 
+
+\subsection{Řešení soustavy úpravou matice }
+
+\begin{definiceN}{Elementární operace}
+Následující tři operace nazýváme \emph{elementárními operacemi} s maticí A (všechny jsou ekvivalentní vynásobení vhodnou regulární maticí zleva):
+\begin{penumerate}
+    \item vynásobení i-tého řádku číslem $\alpha \neq 0$ \\ 
+	(zapsáno formou maticového násobení $A' = (I+(\alpha -1)e_i e_i^T)A$)
+    \item vynásobení i-tého řádku číslem $\alpha$ a přičtení k j-tému řádku, $j \neq i$  \\
+	(maticový zápis $A' = (I+\alpha e_j e_i^T)A$)
+    \item výměna i-tého a j-tého řádku, $i \neq j$ (je možné \uv{složit} z předcházejících dvou) \\
+	(maticový zápis $A' = (I+(e_i - e_j)(e_j-e_i)^T) A$)
+\end{penumerate}
+\end{definiceN}
+
+\begin{vetaN}{O elementárních operacích}
+Elementární operace na rozšířené matici $(A\ \b{b})$ soustavy rovnic $A\b{x}=\b{b}$ nemění množinu řešení soustavy.
+\par\medskip
+\begin{dukaz}
+Důkaz stačí pro operace 1. a 2., protože třetí je jejich kombinací. Pro úpravy:
+\begin{penumerate}
+    \item Po úpravě jsou všechny rovnice (řádky matice) až na $i$-tou nezměněné, tedy každé $\b{x}$ řešení původní soustavy je splňuje. Pro upravený řádek platí $$\alpha(a_{i,1}x_1+\dots+a_{i,n}x_n)=\alpha\cdot b_i$$ což je zřejmě také splněno. Podobně se dokáže, že každé $\b{x}$ řešení upravené matice splňuje i všechny rovnice původní.
+    \item Všechny řádky až na $j$-tý jsou nezměněné a pro $j$-tý řádek platí: 
+$$\alpha(a_{i,1}x_1+\dots+a_{i,n}x_n)+(a_{j,1}x_1+\dots+a_{j,n}x_n)=\alpha b_i + b_j$$
+a to je také splněno. Opačná implikace se dokáže podobně.
+\end{penumerate}
+\end{dukaz}
+\end{vetaN}
+
+\begin{definiceN}{Odstupňovaný tvar matice}
+Řekneme, že matice $A$ typu $m\times n$ je v (řádkově) \emph{odstupňovaném tvaru}, jestliže jsou splněny následující podmínky:
+\begin{penumerate}
+    \item existuje $r: 0\leq r \leq m$ takové, že řádky $1,\dots,r$ jsou nenulové a $r+1,\dots,m$ nulové
+    \item pro $j(i)=\min\{j | a_{i,j}\neq 0\}$ platí $j(1)\leq j(2)\leq \dots\leq j(r)$
+\end{penumerate}
+\end{definiceN}
+
+\begin{algoritmusN}{Řešení soustavy lin. rovnic}
+Soustavu lineárních rovnic $A\b{x}=\b{b}$ lze řešit následovně
+\begin{penumerate}
+    \item Sestavit rozšířenou matici soustavy
+    \item Převést pomocí elementárních úprav matici do odstupňovaného tvaru
+    \item Pomocí zpětné substituce popsat všechna řešení
+\end{penumerate}
+\end{algoritmusN}
+
+\begin{algoritmusN}{Gaussova eliminace}
+\emph{Gaussova eliminace} je algoritmus pro úpravu dané matice $A$ na odstupňovaný tvar elementárními řádkovými úpravami. Postup:
+\begin{penumerate}
+    \item Utřídíme řádky podle délek úseků počátečních nul vzestupně
+    \item Najdeme-li dva řádky se stejně dlouhým úsekem poč. nul ($j(i)=j(i+1)$), potom k $i+1$-tému řádku přičteme $-\frac{a_{i+1,j(i)}}{a_{i,j(i)}}$-násobek i-tého řádku
+    \item Kroky 1. -- 2. opakujeme, dokud existují dva řádky se stejně dlouhým úsekem poč. nul.
+\end{penumerate}
+
+\noindent
+Je zaručeno, že algoritmus skončí, protože s každým cyklem roste součet délek počátečních úseků nul všech řádků minimálně o 1 a ten je omezený číslem $m\times n$. Složitost algoritmu je $O(m\cdot n^2)$.
+\end{algoritmusN}
+
+\begin{algoritmusN}{Zpětná substituce}
+Buď $E$ rozšířená matice soustavy $A\b{x}=\b{b}$ v odstupňovaném tvaru (získaná pomocí elementárních úprav). Pokud počáteční úsek nul na nějakém řádku má délku $n$ (tedy nenulové číslo je jen ve sloupci pravých stran), soustava nemá řešení. Jinak nazveme \emph{bázové proměnné} ty, v jejichž sloupci je v nějakém řádku první nenulové číslo ($x_{j(1)},\dots,x_{j(m)}$), ostatní nazveme \emph{volné}. Existuje potom jednoznačné přiřazení hodnot bázovým proměnným tak, že dohromady tvoří řešení soustavy. Každé řešení je navíc možné získat touto metodou.
+
+\medskip \noindent \emph{Postup:}
+
+\noindent Indukcí podle $i=r,r-1,\dots,2,1$. Nechť $x_{j(i)}$ je i-tá bázová proměnná a hodnoty proměnných $x_k$ pro $k>j(i)$ jsou dané (buď jsou volné, nebo využívám ind. předpoklad). Potom po dosazení do $i$-té rovnice získám 
+$$0x_1+\dots+0x_{j(i)-1}+a_{i,j(i)}x_{j(i)}+\dots+a_{i,j(n)}x_n=b_i$$
+tedy jednu rovnici o 1 neznámé, která má jednoznačné řešení. Libovolné řešení této soustavy $x_1,\dots,x_n$ lze získat touto metodou -- stačí nastavit volné proměnné podle něj a bázové vyjdou správně, protože jejich hodnota je určena jednoznačně. Navíc které proměnné jsou volné a které jsou bázové je také určeno jednoznačně -- jinak vždy najdu různé množiny řešení (což je pro stejnou soustavu rovnic nesmysl).
+\end{algoritmusN}
+
+\begin{algoritmusN}{Gauss-Jordanova eliminace}
+Gauss-Jordanova eliminace je varianta Gaussovy eliminace, která převádí matici na tzv. \emph{redukovaný odstupňovaný tvar}, to je takový tvar, kde v každém sloupci, příslušejícím nějaké bázové proměnné, je pouze jedno nenulové číslo. Zpětná substituce je pak jednodušší, ale je třeba více aritmetických operací (asymptoticky jsou však algoritmy stejné)
+
+TODO: zkontrolovat \& doplnit podrobněji
+\end{algoritmusN}
+
+\begin{poznamka}
+S řešením soustav rovnic Gaussovou metodou nastává problem při strojových výpočtech -- i malá zaokrouhlovací chyba může způsobit velmi radikální změnu množiny řešení (takové matice soustav se nazývají \emph{špatně podmíněné}).
+\end{poznamka}
+
+\subsection{Souvislost soustavy řešení s ortogonálním doplňkem}
+
+\begin{definiceN}{Ortogonální doplněk}
+Ve vektorovém prostoru $V$ se skaláním součinem definujeme \emph{ortogonální doplněk} množiny $M\subseteq V$ jako $$M^{\bot}=\{\b{v}\in V:\left<\b{v},\b{x}\right>=0\ \forall\b{x}\in M\}$$
+\end{definiceN}
+
+\begin{vetaN}{Množina řešení homogenní soustavy je ortog. doplněk řádků její matice}
+Mějme dánu homogenní soustavu lineárních rovnic $A\b{x}=\b{0}$ potom její množina řešení je ortogonální doplněk množiny jejích řádků 
+$$\{\b{x}|A\b{x}=\b{0}\}=\{A_1,A_2,\dots,A_n\}^{\bot}$$
+přičemž uvažujeme standardní skalární součin $\left<\b{x},\b{y}\right>=x_1y_1+\dots+x_ny_n$.
+\end{vetaN}
+
+TODO: tady je toho dost málo (ač je to všechno co jsme kdy probírali), jestě něco sem doplnit ???

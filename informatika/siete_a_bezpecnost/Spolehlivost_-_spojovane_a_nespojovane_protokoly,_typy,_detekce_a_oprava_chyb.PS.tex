@@ -1,0 +1,43 @@
+\subsection{Spolehlivost - spojované a nespojované protokoly, typy, detekce a oprava chyb}
+
+\subsubsection*{Spolehlivost}
+
+\textbf{Spolehlivost}:
+\begin{pitemize}
+	\item může být zajištěna na kterékoliv vrstvě (kromě fyzické)
+	\item TCP/IP řeší na transportní (TCP), ISO/OSI očekává spolehlivost na všech (počínaje linkovou)
+	\item větši režie, zpoždění při chybách 
+\end{pitemize}
+
+\textbf{Nespolehlivá komunikace}:
+\begin{pitemize}
+	\item menší režie, lepší odezva
+	\item výhodné pro audio/video přenosy, kde lze tolerovat ztráty 
+\end{pitemize}
+
+\subsubsection*{Spojované a nespojované protokoly}
+
+\textbf{Spojovaná komunikace}: stavová, virtuální okruhy, navazování a ukončení spojení. Viz TCP.
+
+\textbf{Nespojovaná komunikace}: zasílání zpráv, datagramy (UDP), nestavová, bez navazování a ukončování.  Viz UDP.
+
+\subsubsection*{Detekce a oprava chyb}
+\begin{pitemize}
+	\item schopnost poznat, že došlo k nějaké chybě při přenosu
+	\item Hammingovy kódy - příliš velká redundance, nepoužívané
+	\item potvrzování (ACK) - viz TCP/IP
+		\begin{pitemize}
+			\item příjemce si znovu nechá zaslat poškozená/nedoručená data
+			\item podmínkou existence zpětného kanálu (alespoň half-duplex)
+			\item jednotlivé vs. kontinuální
+			\item kladné (ACK) a záporné (NAK)
+			\item samostatné vs. nesamostatné (piggybacking)
+			\item metoda okénka
+			\item selektivní opakování vs. opakování s návratem 
+		\end{pitemize}
+	\item parita - příčná, podélná
+	\item kontrolní součty
+	\item cyklické redundantní součy (CRC)
+	\item druhy chyb: pozměněná data, shluky chyb, výpadky dat
+	\item při chybě nutno vyžádat si celý rámec znovu 
+\end{pitemize}

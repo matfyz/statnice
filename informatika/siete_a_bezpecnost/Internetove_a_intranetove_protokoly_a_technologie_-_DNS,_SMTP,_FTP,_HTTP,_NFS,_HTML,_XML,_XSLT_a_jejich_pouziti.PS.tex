@@ -1,0 +1,98 @@
+\subsection{Internetové a intranetové protokoly a technologie -- DNS, SMTP, FTP, HTTP, NFS, HTML, XML, XSLT a jejich použití}
+
+\subsubsection*{DNS (Domain Name System)}
+\begin{pitemize}
+	\item Řešení které umožňuje používat symbolická jména místo číselných adres realizované pomocí DNS serverů, distribuované řešení -- výpadek i více serverů nevyřadí službu z provozu
+	\item hierarchický (stromový) prostor jmen. Kořenem je tzv. kořenová doména –- tečka, pod ní se v hierarchii nachází domény nejvyšší úrovně (com, edu, cz, uk, \dots), strom je možné rozdělit do zón a její správu svěřit někomu dalšímu -- právě možnost delegování pravomocí a distribuovaná správa tvoří klíč. vlastnosti DNS a stojí za jeho úspěchem
+	\item DNS servery  
+	\begin{pitemize}
+		\item Primární -- zde data vznikají, zde se musí také provádět změny, každá doména obsahuje právě jeden
+		\item Sekundární -– automatická kopie primárního, průběžně si aktualizuje data, slouží jednak jako záloha pro případ výpadku prim. serveru a také pro rozkládání zátěže, každá doména musí mít alespoň jeden sekundární server
+		\item Pomocný (caching only) -– slouží jako vyrovnávací paměť pro snížení zátěže celého systému, uchovává si odpovědi a poskytuje je při opakování dotazů dokud jim nevyprší životnost
+	\end{pitemize}
+	\item Odpovědi z primárního a ze sekundárních serverů jsou autoritatvní – platné. Z pomocného serveru je odpověd neautoritativní -- klient může požádat o autoritativní odpověď.
+
+	\item soubor hosts
+	\item doména, zóna, delegace, TLD, ccTLD, gTLD
+	\item syntaxe jmen, FQDN (plně kvalifikované...)
+	\item IDN
+	\item iterativní dotaz, rekurzivní dotaz, cachování, resolvery, TTL, autoritativní odpověď
+	\item Resource Records (RR) -- jednotka informace v DNS
+		\begin{pitemize}
+			\item formát: \texttt{ [name type class TLL rdlength rdata] }
+			\item class -- dnes vždy IN (internet)
+			\item TTL -- time to live (doba platnosti záznamu)
+			\item types -- A (IPv4 adresa), NS (hostname nameserveru), MX (mailserver), PTR (domain name pointer -- reverse DNS), AAAA (IPv6 adresa), SPF, TXT, SRV, ... 
+			\item rdlength -- délka dat, rdata -- vlastní data
+		\end{pitemize}
+	\item DNS protokol -- TCP/UDP, truncation 
+\end{pitemize}
+
+\subsubsection*{SMTP (Simple Mail Transfer Protocol)}
+\begin{pitemize}
+	\item Internetový protokol určený pro přenos zpráv elektronickě pošty mezi stanicemi. Protokol zajišťuje doručení pošty pomocí přímého spojení mezi odesílatelem a adresátem; zpráva je doručena do tzv. poštovní schránky adresáta, ke které potom může uživatel kdykoli (offline) přistupovat a vybírat zpráva pomocí protokolů POP3 popř. IMAP.
+	\item Funguje nad protokolem TCP, používá port 25
+	\item Pro netextové přenosy je využíván standart MIME (řeší problém národních abeced, formátování, příloh \dots) -- rozšíření formátu zpráv -- Quoted-Printable, Base64, mime-type
+	\item SMTP -- protokol pro přenos zpráv
+	\item RFC822 -- formát zpráv -- 7-bitová data
+	\item POP3, IMAP -- stahování zpráv ze schránky
+	\item struktura zprávy -- hlavička + tělo + přílohy
+	\item e-mailové adresy, MX záznamy, priority 
+\end{pitemize}
+
+\subsubsection*{FTP (File Transfer Protocol)}
+\begin{pitemize}
+	\item Jeden ze sady protokolů TCP/IP, netransparetní řešení – uživatel si uvědomuje že se soubor nachází na vzdáleném počítači, typicky se vzdálený soubor celý přenese na místní počítač a zde se s ním pracuje ; v rámci TCP/IP  existuje zjednodušená verze -- TFTP
+	\item Dva režimy – textový a binární ; vychází z modelu klient/server, klient je typicky aplikační program, server je obvykle systémový proces (démon,\dots)
+	\item Jednotný formát pro potřeby přenosu dat, veškeré konverze provadí koncové uzly
+	\item Používají se 2 různá spojení – řídící (přenos příkazů – FTP má vlastní řídící jazyk) a datové(přenos souborů), řídící navazuje klient, datové navazuje server (okrem passive módu)
+	\item příkazy -- řízení přístupu, nastavení parametrů, výkonné příkazy
+	\item TFTP 
+\end{pitemize}
+
+\subsubsection*{NFS (Network File System)}
+\begin{pitemize}
+	\item Jeden ze sady protokolů TCP/IP, slouží pro transparetní sdílení souborů (uživatel/aplikace si neuvědomuje že se soubor nachází na vzdáleném počítači), typicky se vzdálený soubor chová \uv{tváří} jako místní soubor a také se s ním tak pracuje
+	\item Je použitelný na různých platformách
+	\item Bezestavový protokol (v4 už je ale stavový), díky tomu je velmi robustní – to je důvod jeho úspěšnosti
+	\item Využívá protokoly RPC (vzdálené volání procedur) a XDR (definuje jednotný způsob reprezentace přenášených dat nezávislý na konkrétní architektuře přijemce a odesílatele)
+	\item mount server
+\end{pitemize}
+
+\subsubsection*{HTTP (Hyper-Text Transfer Protocol)}
+\begin{pitemize}
+	\item Protokol původně určený pro výměnu hypertextových dokumentů ve formátu HTML, v současné době užíván i pro přenos dalších informací – pomocí rozšíření MIME umí přenášet jakýkoli soubor (podobně jako SMTP)
+	\item Existuje bezpečnejší verze HTTPS, umožňuje přenášená data šifrovat
+	\item Funguje systémem dotaz-odpověď, při zaslání více dotazů není možné rozpoznat zda spolu souvisí -- HTTP je bezestavový protokol (nepříjemná vlastnost pro implementaci složitejších procesů přes HTTP) – proto byl rozšířen o HTTP cookies (umožňují uchovávat info o stavu na počítači uživatele)
+	\item verze 0.9 -- bez hlaviček, minimální možnosti
+	\item verze 1.0 -- rozšiřující hlavičky, podpora MIME
+	\item verze 1.1 -- virtuální servery, jedno spojení pro více přenosů (keep-alive), komprimace dat
+	\item GET, HEAD, POST
+	\item cookies
+	\item cachování 
+\end{pitemize}
+
+\subsubsection*{HTML (Hyper-Text Markup Language)}
+\begin{pitemize}
+	\item značkovací jazyk pro hypertext, definuje obsah, nikoliv vzhled
+	\item CSS
+	\item statické a dynamické HTML dokumenty -- CGI, ISAPI, NSAPI, ASP, PHP
+	\item skripty, Java, ActiveX 
+\end{pitemize}
+
+\subsubsection*{XML (eXtensible Markup Language)}
+\begin{pitemize}
+	\item Značkovací jazyk vyvinut a standardizován konsorciem W3C, umožnuje snadné vytváření konkrétních značkovacíh jazyků pro různé účely
+	\item Určen především pro výměnu dat mezi aplikacemi a pro publikování dokumentů, umožňuje popsat strukturu dokumentu z hlediska věcného obsahu, nezabývá se sám o sobě vzhledem dokumentu, vzhled dokumentu se definuje připojeným stylem
+	\item Pomocí různých stylů je možné provést transformaci do jiného typu dokumentu, nebo jiné XML struktury (výsledkem může být např. HTML, PostScript,\dots)
+\end{pitemize}
+
+\subsubsection*{XSLT (eXtensible Style Sheet Language Transformations)}
+\begin{pitemize}
+	\item Transformace sloužící pro převod dat ve formátu XML do lib. jiného požadovaného formátu (nejčastěji HTML,jiného XML, ale také PDF,či RTF, \dots), struktura výstupu není definována přímo standardem – je závislá na procesoru XSLT (program který provede transformaci)
+	\item K provedení transformace jsou třeba 2 soubory: 
+	\begin{pitemize}
+		\item Soubor, který obsahuje zdrojová data, která budou transformována.\\Struktura tohoto souboru vyjma obecných vlastností XML není blíže specifikována.
+		\item Soubor, obsahující vzorec pro transformaci, napsaný v jazyce XSL
+	\end{pitemize}
+\end{pitemize}
