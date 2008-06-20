@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 DEVNULL=">/dev/null"
 
@@ -20,7 +20,7 @@ function RebuildIndex {
 	
 	#perform quick test (files' existence and date)
 	allok=1
-	for x in `seq 1 \`grep "\section" $idx_name.tex | wc -l\``; do
+	for x in `seq2 -s 1 -e \`grep "\section" $idx_name.tex | wc -l\``; do
 		idx_fn="${idx_name}_$x.tex"
 		if [ -f $idx_fn ]; then
 			if [ `stat "$idx_name.tex" -c '%Y'` -gt `stat $idx_fn -c '%Y'` ]; then
