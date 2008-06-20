@@ -71,32 +71,34 @@ function RebuildIndex {
 	#\enddocument is already in the $idx_name.tex :-)
 }
 
-RebuildIndex Programovani
-RebuildIndex Obecna_informatika
-RebuildIndex Sprava_pocitacovych_systemu
+# RebuildIndex Programovani
+# RebuildIndex Obecna_informatika
+# RebuildIndex Sprava_pocitacovych_systemu
 
 # pdfcslatex-ize tex files
 for f in `ls *.tex | grep '^[A-Z].*'`; do
 	tgt=`echo out/$f | sed "s%.tex$%.pdf%"`
 	tmp=`echo $f | sed "s%.tex$%.pdf%"`
 	
-	need_to_make=0
-
-	if [ ! -f $tgt ]; then
-		need_to_make=1
-	else
-		tgt_date=`stat $tgt -c '%Y'`
-		if [ `stat $f -c '%Y'` -gt $tgt_date ]; then
-			need_to_make=1
-		fi
-		
-		#check included (inputted) files
-		for inf in `grep '\input' $f | sed "s%.*{\(.*\)}.*%\1%"`; do
-			if [ `stat $inf -c '%Y'` -gt $tgt_date ]; then
-				need_to_make=1
-			fi
-		done
-	fi
+#	need_to_make=0
+#
+#	if [ ! -f $tgt ]; then
+#		need_to_make=1
+#	else
+#		tgt_date=`stat $tgt -c '%Y'`
+#		if [ `stat $f -c '%Y'` -gt $tgt_date ]; then
+#			need_to_make=1
+#		fi
+#		
+#		#check included (inputted) files
+#		for inf in `grep '\input' $f | sed "s%.*{\(.*\)}.*%\1%"`; do
+#			if [ `stat $inf -c '%Y'` -gt $tgt_date ]; then
+#				need_to_make=1
+#			fi
+#		done
+#	fi
+	
+	need_to_make=1
 
 	if [ $need_to_make -ge 1 ]; then
 		echo -n "Compiling" $f "."
