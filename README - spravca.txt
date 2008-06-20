@@ -10,4 +10,6 @@ spravca svn:
     Tibor
     tiborb@matfyz.cz
 
+svn umisteno na serveru firmy Sunnysoft
+
 (Zoznam prispievatelov je v subore uvod.tex)
