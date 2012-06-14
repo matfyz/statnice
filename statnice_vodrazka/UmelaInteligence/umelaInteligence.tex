@@ -1,0 +1,649 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+\usepackage{latexsym}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+\section{Reprezentace znalostí.}
+Co je obsahem znalostní báze agenta? To záleží na tom, nad čím potřebuje agent uvažovat:
+\begin{itemize}
+\item ontologie objektů - typicky hierarchické uspořádání kategorií
+\item reprezentace platných pravidel pro dané prostředí - logická pravidla
+\item reprezentace událostí a dostupných akcí - situační kalkulus
+\item intervalová algebra pro logickou manipulaci s tvrzeními o čase
+\end{itemize}
+Výše uvedené komponenty mohou tvořit bázi znalostí. Proces tvorby znalostní báze zkoumá odvětví zvané \emph{znalostní inženýrství}.
+Zpravidla probíhá v několika fázích:
+\begin{enumerate}
+\item identifikace úlohy - o co vlastně jde (jaké budou požadavky na výsledný systém)
+\item získání relevantních informací - třídy objektů, statické a dynamické vlastnosti systému
+\item vytvoření jazyka pro popis domény
+\item zakódování axiomů a invariantů
+\item zakódování konkrétní instance problému
+\item kladení dotazů a vyhodnocování odpovědí
+\item ladění báze znalostí (pokud něco nefunguje, je třeba to opravit)
+\end{enumerate}
+Příklad \emph{Wumpus world}. Typicky se celý proces opakuje několikrát - podobné postupy jako v softwarovém inženýrství. 
+
+\paragraph{Stavový prostor.}
+Typicky popis problému kóduje nějaký stavový prostor, ve kterém hledáme řešení (např. v automatickém plánování). 
+
+\paragraph{Produkční systémy.}
+Systémy, které disponují nějakou základní bází dat, ze které mohou odvozovat informace, které v této bázi přímo nejsou
+na základě odvozovacích pravidel.
+
+\paragraph{Reprezentace v predikátové logice.}
+Vzhledem k tomu, že existují algoritmy pro dokazování vět v logice prvního řádu,
+je výhodné kódovat některé problémy jako logické formule.
+
+%% --------------------------------------- %%
+\section{Prohledávací algoritmy}
+Na rozdíl od reaktivních agentů jsou agenti s cílem schopní plánovat dopředu.
+K tomu se hodí prohledávací algoritmus - problém/prostředí agenta se nějak popíše (počáteční stav, přechodová funkce, cílová podmínka)
+a z popisu problému se generuje prohledávací prostor.\\
+
+Základní dělení prohledávacích algoritmů je na \emph{neinformované} a \emph{informované} -
+podle toho jestli využívají nějaké problémově specifické informace.\\
+U prohledávacích algoritmů nás zajímá:
+\begin{itemize}
+\item úplnost - pokud řešení existuje, tak ho najde
+\item optimalita - najde nejlepší řešení
+\item časová složitost (počet vygenerovaných uzlů)
+\item paměťová složitost (počet uzlů v paměti) 
+\end{itemize}
+
+\subsection{Neinformované prohledávání}
+\paragraph{Stromové prohledávání.}
+Obecný stromový prohledávací agoritmus - expanduje uzly a přidává do fronty (hrana prohledávání).
+Podle toho, jestli je fronta FIFO, nebo LIFO dostaneme DFS nebo BFS.\\
+Uzel obsahuje:
+\begin{itemize}
+\item odkaz na rodiče
+\item akci kterou se do něj přišlo
+\item stav který reprezentuje
+\item cenu cesty
+\item hloubku v prohledávání (počet kroků) 
+\end{itemize}
+Složitost prohledávacích algoritmů zpravidla závisí na větvícím faktoru $\mathbf{b}$, hloubce zanoření $\mathbf{d}$ nejbližšího řešení nebo délce maximální cesty $\mathbf{m}$ ve stavovém prostoru.\\
+
+Algoritmy:
+\begin{itemize}
+\item BFS - přidává uzly podle hloubky zanoření. Vlastnosti: úplný, optimální (za předpokladu že cena cesty je neklesající funkce $d$), časová složitost $O(b^{d+1})$, paměťová taky (to je největší nevýhoda)
+\item Uniform-cost search - expanduje uzly podle \emph{nejnižší ceny cesty}.
+Vlastnosti: úplný (pokud mají všechny akce cenu $\epsilon > 0$), optimální (stejný předpoklad), časová složitost $O(b^{\lfloor O/\epsilon \rfloor)}$ (kde $O$ je cena optimální cesty), paměťová taky
+\item DFS - expanduje uzel v největší hloubce. Vlastnosti: neúplný, neoptimální, časová složitost $O(b^{m})$, paměťová $O(bm)$
+\item Depth-Limited-Search - DFS s omezenou hloubkou. Vlastnosti: stejně jako DFS - pouze místo $m$ je $l$
+(limit na hloubku, do které hledáme). Někdy se to může vyplatit, pokud dokážeme hloubku správně odhadnout.
+\item Iterating-Deepening-Search - prohledává do dané hloubky a když nenajde řešení, tak zvýší limit a jede od začátku.
+\item Bi-Directional-Search
+\end{itemize}
+
+\paragraph{Grafové prohledávání.} Všechny uvedené stromové prohledávací algoritmy lze přizpůsobit pro prohledávání grafů -
+v hašovací tabulce si můžeme ukládat navštívené uzly. Tím se změní paměťové nároky algoritmů.
+
+\subsection{Informované prohledávání}
+
+\paragraph{Lokální prohledávání.}
+Pokud nezáleží na cestě, která vede do cílového stavu. Pracuje se s jedním stavem, který se v krocích mění. Každý bod ve stavovém prostoru lze ohodnotit objektivní funkcí, podle které poznáme kvalitu řešení. Problémy: \emph{lokální optima}, \emph{plošiny}, \emph{hřebeny}.
+\begin{itemize}
+\item Hill climbing - nejlepší soused
+\item Simulované žíhání - kombinace náhodné procházky a hill climbingu
+\item Paprsky - víc horolezců (v každém kroku se vybírá nejslibnější parta), lépe využívá paměť
+\item Genetické algoritmy - stav se kóduje do řetězce, který se dá křížit a mutovat
+\end{itemize}
+
+\paragraph{Heuristiky.} Pokud budeme uzly pro expanzi vybírat chytře, můžeme dojít k cíli dřív. Využití heuristiky (je třeba dodat další informaci o problému). Použitelná heuristika by neměla být příliš složitá na výpočet.
+
+\begin{definition}[Přípustná heuristika]
+Heuristika $h(n)$ je \emph{přípustná}, pokud:\\
+$h(n) \leq$ "nejmenší cena z $n$ do cíle"
+\end{definition}
+
+\begin{definition}[Monotónní heuristika]
+Pro monotónní heuristiku musí platit, že přímá cesta dostane lepší, nebo stejnou hodnotu než cesta oklikou přes jiný uzel.
+\end{definition}
+
+\paragraph{Algoritmus $A^*$.}
+Grafový prohledávací algoritmus. Uzly pro expanzi jsou vybírány podle funkce $f$:
+\begin{itemize}
+\item $h(n)$ heuristika (odhad ceny z $n$ do cíle)
+\item $f(n)$ hodnotící funkce pro uzel $n$
+\item $g(n)$ cena cesty ze startu do $n$
+\end{itemize}
+Algoritmus $A^*$ definuje $f(n) = g(n) + h(n)$ (odhad nejlepší cesty \emph{přes} $n$).
+Pokud je $h(n)$ přípustná heuristika, je $A^*$ v rámci stromového prohledávání optimální. Pokud je navíc monotónní, je optimální i v rámci modifikace pro grafové prohledávání (kdy se zahazují nové cesty do uzavřených uzlů).\\
+
+\begin{proof}
+Důkaz optimality $A^{*}$ pro přípustnou heuristiku. Předpokládejme že $C^{*}$ je cena optimální cesty.
+\begin{enumerate}
+\item pokud se mezi otevřenými uzly objeví cílový uzel $G$ jako další krok \textbf{neoptimální cesty}, platí:
+\[
+f(G) = g(G) + h(G) = g(G) > C^{*}
+\]
+protože $h(X) = 0$ pro každý cílový uzel.
+\item pokud existuje \emph{optimální cesta}, musí být ve stejném okamžiku mezi otevřenými uzly i nějaký uzel $n$, který na ní leží. Platí:
+\[
+f(n) = g(n) + h(n) \leq C^{*}
+\]
+protože je heuristika přípustná (nikdy to s odhadem nepřehání).
+\item Takže dohromady máme:
+\[
+f(n) \leq C^{*} < f(G)
+\]
+což znamená, že uzel $n$ se bude vždycky expandovat dřív než $G$.
+\end{enumerate}
+\end{proof}
+
+Problém - prostorová složitost (všechny otevřené stavy jsou v paměti).\\
+Varianty: $IDA^*$ (iterativní prohlubování), $RBFS$ (Rekurzivní hledání s alternativou lepšího souseda), $SMA^*$ (Paměťově omezený $A^*$)\\
+Pro hledání cest: $PathRefinementA^*$ (hierarchie map - hledá v grafu kliky), $Hierarchical Path-finding A^*$ (hierarchie map - rozdělení na klastry)
+
+%% --------------------------------------- %%
+\section{Hry.} V hrách jde typicky o multiagentní kompetitivní prostředí - je zde víc agentů, kteří hrají proti nám.
+Charakteristiky:
+\begin{itemize}
+\item úplná informace $\times$ částečná informace
+\item hry s nulovým součtem (co jeden hráč prohraje, druhý vyhrál)
+\item determinismus $\times$ nedeterminismus
+\end{itemize}
+Obecně pracujeme s následujícími pojmy:
+\begin{itemize}
+\item počáteční stav (výchozí stav hry)
+\item funkce následníka (tah, stav)
+\item test ukončení (jak poznáme, že hra skončila)
+\item funkce zisku (ohodnocení stavu - každý hráč sleduje jiný cíl)
+\end{itemize}
+
+Algoritmy pro hru dvou hráčů s nulovým součtem a úplnou informací - umí nalézt \emph{optimální strategii}.
+
+\paragraph{Minimax} - dva hráči se střídají na tahu.
+Jeden minimalizuje, a druhý maximalizuje. Průběh hry lze reprezentovat \emph{stromem hry}.
+Listy jsou ohodnoceny užitkovou funkcí $utility(s)$ a větve odpovídají zvoleným tahům aktuálně hrajícího hráče.
+Oproti prohledávání je ten rozdíl, že každý druhý tah určuje soupeř.
+Hledáme tedy \emph{optimální strategii} - chceme mít odpověď na každý tah soupeře.
+\[
+minimax(S)= \left\{
+\begin{array}{lr}
+utility(S) & S - game over state\\
+min_{n \in succ(S)}(minimax(n)) & min moves\\
+max_{n \in succ(S)}(minimax(n)) & max moves\\
+\end{array}\right.
+\]
+Výhoda - vždy nalezneme optimální strategii.
+Nevýhoda minimaxu - musí prozkoumat všechny možné partie až do konce.
+
+\paragraph{Alpha-beta} - můžeme při prohledávání stromu hry vynechat větve,
+které jsou mimo optimální strategii a zmenšit tak prohledávaný prostor.
+Uděláme to tak, že si budeme pamatovat nejlepší dosaženou hodnotu pro oba hráče ($\alpha$ pro hráče \textbf{MAX} a $\beta$ pro hráče \textbf{MIN}). Pokud prozkoumáváme uzel, kde je na tahu \textbf{MAX}, tak můžeme vynechat z prohledávání uzly s hodnotou menší než $\alpha$ (\textbf{MAX} do nich nikdy nebude hrát). Obdobně pro hráče \textbf{MIN}.
+
+\paragraph{Nedokonalé strategie} se používají, když nelze prohledat celý strom hry (např. kvůli vysokým nárokům na paměť a čas).
+Lze použít místo $utility(S)$ nějakou \emph{heuristickou evaluační funkci}.
+
+%% --------------------------------------- %%
+\section{Splňování omezujících podmínek.}
+Řadu problémů lze charakterizovat prostřednictvím stanovení množiny \emph{proměnných} s nějakým \emph{oborem hodnot} a \emph{podmínkami}, které
+omezují hodnoty proměnných. Podmínka může být libovolná relace nad množinou proměnných.
+Jde o obecnou reprezentaci problému - vnitřní strukturu lze využít při řešení.\\
+
+\paragraph{Řešení CSP} je takové ohodnocení proměnných, které neporušuje žádnou z omezujících podmínek.
+Pokud máme navíc k dispozici objektivní funkce, která danému ohodnocení přiřadí číslo, můžeme mluvit o \emph{optimálním řešení} (maximalizuje/minimalizuje objektivní funkci).
+
+Přístupy:
+\begin{itemize}
+\item prohledávací techniky (systematicky/nesystematicky/lokálně)
+\item konzistenční filtrační techniky (AC, ...)
+\item kozistenční techniky v prohledávání (FC, ...)
+\end{itemize}
+
+\subsection{Prohledávací techniky}
+
+\paragraph{Lokální techniky} v každém kroku mění hodnotu jedné proměnné. Problémy s uvíznutím v lokálním optimu.
+\begin{itemize}
+\item Hill Climbing
+\item Minimalizace konfliktů
+\item Náhodná procházka + kombinace
+\item Simulované žíhání
+\end{itemize}
+
+\paragraph{Systematické techniky} prohledávají \emph{celý} stavový prostor
+
+\subsection{Konzistenční filtrační techniky}
+
+\subsection{Konzistenční techniky v prohledávání}
+
+%% --------------------------------------- %%
+\section{Strojové dokazování vět.}
+
+\subsection{Výroková logika}
+Dvě základní metody: pomocí ověřování modelů, pomocí odvozovacích pravidel.
+Při dokazování pomocí odvozovacích pravidel můžeme vynechat tvrzení znalostní báze, která nejsou relevantní - to může být velká výhoda oproti ověřování modelů (započítává všechna pravidla a tím ověřuje zbytečně moc modelů).
+
+Následující tři metody jsou založené na ověřování modelů:
+
+\paragraph{Enumerace pravdivostní tabulky} - je úplný algoritmus založený na prohledávání do hloubky - ověřuje postupně všechny modely aby rozhodl o splnitelnosti dané formule.
+
+\paragraph{Algoritmus DPLL}
+Úplný a korektní algoritmus.
+\begin{itemize}
+\item včasné ukončení - pokud se ukáže, že je nějaká klauzule nesplněná, nebo že jsou všechny splněné, tak skončí
+\item ohodnotí ryzí proměnné (všechny výskyty se stejnou "gací")
+\item ohodnotí jednotkové klauzule (musí být nastaveny na true)
+\item zbytek prohledává backtrackingem (přiřazuje hodnoty a pokud to nejde, zkusí jinak)
+\end{itemize} 
+
+\paragraph{WalkSAT} - Kombinace Hill Climbingu a Náhodné procházky
+Náhodně vybere klauzuli a hodí si mincí, jestli má prohodit náhodný bit, nebo nastavit hodnotu, která maximalizuje počet splněných klauzulí.
+Algoritmus není úplný.
+
+Další metody dokazují věty odvozováním ze znalostní báze:
+
+\paragraph{Prohledávání prostoru důkazů.} Jde o přístup, kdy prohledáváme prostor vymezený \emph{znalostní bází} a odvozovacími pravidly VL
+a snažíme se najít důkaz podporující dotaz $Q$.
+
+Pokud máme ve znalostní bázi pouze \emph{Hornovské klauzule} (mají max. jeden pozitivní literál), které odpovídají implikacím,
+můžeme použít \emph{dopředné} nebo \emph{zpětné řetězení}. 
+
+Čím menší znalostní báze, tím lépe - abychom udrželi $KB$ (v průběhu výpočtu vlastně rozšiřujeme $KB$) co nejmenší, používáme princip
+\emph{subsumpce}: nepřidáváme do báze formule, které jsou víc specifické než to co už v bázi je.
+Například nepřidáme $A \vee B$, pokud už máme v bázi $A$ (nezískali bychom tím žádnou novou informaci).
+
+\paragraph{Rezoluční metoda}
+Obecná metoda pro strojové dokazování. 
+Vstup: znalostní báze $KB$ a negace dotazu $\alpha$ v CNF.
+\[
+\underbrace{c_1\wedge c_2\wedge\ldots\wedge c_n}_{KB}\wedge \neg \alpha
+\]
+kde $c_1,\ldots,c_n$ jsou klauzule reprezentující znalostní bázi.\\
+Rezoluční metoda spojuje klauzule obsahující komplementární literály.
+Skončí pokud:
+\begin{itemize}
+\item nelze odvodit žádná nová fakta - nepodařilo se
+\item odvodí prázdnou disjunkci - podařilo se dokázat spor
+\end{itemize}
+Algoritmus je úplný a korektní.
+
+\paragraph{Strojové dokazování v predikátové logice.}
+\subparagraph{Převodem na výrokovou logiku} - zbavíme se kvantifikátorů a použijeme rezoluční metodu pro VL.
+\begin{itemize}
+\item skolemizace - zavedeme konstanty všude tam, kde je $\exists$
+\item univerzální instanciace - když se potřebujeme zbavit $\forall$, dosadíme za kvantifikovanou proměnnou všechny možné termy bez proměnných
+\end{itemize}
+Tento postup je neefektivní - generuje spoustu zbytečných výroků. Problém představují také funkční symboly, které generují nekonečné množství termů ($f(x), f(f(x)),\ldots$).
+
+\subparagraph{Přímo v predikátové logice}
+- použijeme následující mechanismy:
+\begin{itemize}
+\item unifikace - hledání substituce, díky které dostaneme dva identické výrazy. Potřebujeme aby byla co nejobecnější (MGU)
+\item standardizace stranou - abychom mohli v klidu unifikovat, nejdřív přejmenujeme v rámci každé formule všechny proměnné tak,
+aby při sjednocení byly různé (př. $A$ obsahuje $x,y$, $B$ obsahuje $x,z$ - provedeme tedy substituce: $x/a_1$ v $A$ a $x/b_1$ v $B$)
+\item skolemizace - pro odstranění $\exists$ přidáme \emph{skolemovy funkce} (nové funkční symboly), jejichž parametry budou všechny univerzálně kvantifikované proměnné v místě nahrazení.
+\end{itemize}
+Dále můžeme prohledávat prostor důkazů definovaný \emph{znalostní bází} a odvozovacími pravidly PL.
+
+\subparagraph{Rezolucí}
+Postupně upravíme libovolnou formuli predikátové logiky na formuli v CNF:
+\begin{enumerate}
+\item odstranění implikací
+\item přesun negací dovnitř závorek
+\item překlopení negovaných kvantifikátorů a odstranění dvojitých negací
+\item standardizace stranou
+\item zavedení skolemových funkcí
+\item vynechání univerzálních kvantifikátorů
+\item roznásobit konjunkce a disjunkce
+\end{enumerate}
+
+Na vzniklou formuli v CNF aplikujeme rezoluční pravidlo obohacené o unifikaci.
+
+%% --------------------------------------- %%
+\section{Automatické plánování}
+Plánování je proces při kterém hledáme posloupnost \emph{akcí} která vede k předem danému cíli.
+Pokud máme plánovat, je třeba mít k dispozici nějký model světa. V automatickém plánování se
+zavádí dynamický systém $\Sigma = (S,A,E,\gamma)$, kde:
+\begin{itemize}
+\item $S$ - množina stavů
+\item $A$ - množina akcí
+\item $E$ - množina událostí
+\item $\gamma: S \times A \times E \rightarrow S$ - přechodová funkce.
+\end{itemize}
+Lze zavést také prázdnou akci $\alpha$ a prázdnou událost $\epsilon$.
+
+V zájmu zjednodušení se často zavádějí
+následující restriktivní podmínky na cílový systém:
+\begin{enumerate}
+\item konečná množina stavů
+\item plná pozorovatelnost
+\item statické prostředí (během plánování se nic v systému nemění)
+\item $E = \emptyset$ (žádné události)
+\item diskrétní čas (akce jsou instantní)
+\item deterministické akce (akce má pouze 1 efekt)
+\item omezené cíle (specifikujeme pouze podmínky pro cílový stav)
+\end{enumerate} 
+
+\paragraph{STRIPS plánování} splňuje všechny výše uvedené omezující podmínky.
+
+\begin{definition}[Plánovací doména]
+představuje popis systému. Definuje se jako $\Sigma = (S,A,\gamma)$.
+\end{definition}
+
+\begin{definition}[Plánovací problém]
+pro plánovací doménu $\Sigma$ je definován jako $P = (\Sigma,I,G)$. Přitom $I \in S$ je počáteční stav a $G \subset S$ je množina stavů, které splňují cílové podmínky. 
+\end{definition}
+
+\begin{definition}[Plán] nazveme řešením plánovacího problému $P$, pokud
+$a_1,\ldots,a_n$ je posloupnost akcí pro kterou platí:
+\[
+s_0 = I, \forall i \in 1,\ldots,n-1: \gamma(s_{i-1},a_i) = s_{i}
+\]
+a přitom $s_n \in G$.
+\end{definition}
+
+Plánování lze chápat jako prohledávání grafu definovaného plánovací doménou a plánovacím problémem. Hlavní potíž je v tom, že takový graf bývá moc velký (i pro relativně jednoduché problémy). Nelze proto reprezentovat množinu $S$ explicitně.
+
+Pro STRIPS plánování existuje několik základních reprezentací:
+\begin{itemize}
+\item množinová reprezentace
+\item reprezentace pomocí stavových proměnných
+\item klasická reprezentace
+\end{itemize}
+
+\paragraph{Plánovací operátory} představují něco jako šablony pro akce.
+Používají se v reprezentaci pomocí stavových proměnných a v klasické reprezentaci.
+
+%% --------------------------------------- %%
+\section{Zpracování neurčité informace.}
+Pro práci s neurčitou informací potřebujeme pravděpodobnostní počet. Ten pracuje s \emph{náhodnými proměnnými}.
+Rozlišujeme tři typy:
+\begin{enumerate}
+\item \textbf{booleovská} - $X \in \lbrace 0,1 \rbrace$
+\item \textbf{diskrétní} - $X \in \lbrace 0,1,\ldots,n\rbrace$ pro nějaké $n \in \mathcal{N}$
+\item \textbf{spojitá} - $X \in D$ pro nějaké $D \subset \mathcal{R}$
+\end{enumerate}
+
+\begin{definition}[Základy pravděpodobnosti]
+Kolmogorovovy axiomy:
+\begin{itemize}
+\item $\forall a:\ 0 \leq P(a) \leq 1$
+\item $P(true) = 1,\ P(false) = 0$
+\item $P(a \vee b) = P(a) + P(b) - P(a \wedge b)$
+\end{itemize}
+Podmíněná pravděpodobnost:
+\[
+P(a|b) = \frac{P(a \wedge b)}{P(b)}
+\]
+Bayesovo pravidlo:
+\[
+P(a|b)= \frac{P(b|a)P(a)}{P(b)}
+\]
+\end{definition}
+
+\paragraph{Pravděpodobnostní tabulka.}
+Máme-li doménu popsanou množinou proměnných, každá kombinace hodnot těchto proměnných určuje stav systému, který nastane s nějakou pravděpodobností. Můžeme všechno zapsat do tabulky (součet všech buněk bude roven 1). Na základě tabulky lze zodpovídat nejrůznější dotazy.
+
+\paragraph{Bayesovská síť} představuje kompaktnější alternativu k pravděpodobnostní tabulce.
+Bayesovská síť je orientovaný acyklický graf složený z:
+\begin{itemize}
+\item Množiny náhodných proměnných - jedna pro každý uzel
+\item Množiny orientovaných hran mezi uzly - vždy vede hrana z rodiče do potomka
+(hrana z $X \rightarrow Y$ znamená, že proměnná $Y$ závisí na $X$)
+\item Každý uzel má definovánu pravděpodobnostní tabulku, která definuje podmíněnou pravděpodobnost v závislosti na všech rodičích.
+\end{itemize}
+
+Značení:
+\begin{itemize}
+\item výraz $P(x_1,\ldots,x_n)$ je zkratka za $P(X_1 = x_1 \wedge \ldots \wedge X_n = x_n)$
+\item výraz $parents(X_i)$ znamená konkrétní hodnoty proměnných v $Parents(X_i)$
+\end{itemize}
+
+\paragraph{Dotazování v Bayesovské síti.}
+\begin{itemize}
+\item \textbf{známe hodnoty všech proměnných} - ptáme se, jaká je pst. že daná kombinace nastane.
+Pravděpodobnost kombinace hodnot $x_1,\ldots,x_n$ spočteme jako:
+\[
+P(x_1,\ldots,x_n) = \Pi_{i=1}^{n} P(x_i|parents(X_i))
+\]
+\item \textbf{známe hodnoty některých proměnných}
+- pozorujeme nějaký jev $e$ a ptáme se na rozložení pravděpodobnosti pro proměnnou $B$ při daných podmínkách:
+\[
+P(B|e)= \alpha P(B,e) = \alpha \Sigma_{y} P(B,e,y)
+\]
+kde $y$ jsou tzv. skryté proměnné a $\alpha$ je normalizační konstanta (aby byl součet 1).
+Pokud je $B$ booleovská náhodná proměnná, potom výsledkem bude něco jako (příklad):
+\[
+P(B|e) = <0.284,0.716>
+\]
+A znamená to, že $P(B=false|e) = 0.284$ a $P(B=true|e) = 0.716$.
+\end{itemize}
+
+\begin{example}
+Síť:
+\[
+\begin{array}{c}
+B \rightarrow A\\
+E \rightarrow A\\
+A \rightarrow J\\
+A \rightarrow M\\
+\end{array}
+\]
+Probability of burglary, when John and Mary calls:
+\[
+P(B|j,m) = \alpha P(B,j,m) = \alpha \Sigma_{a} \Sigma_{e} P(a|b,e)P(j|a)P(m|a)P(b)P(e)
+\]
+\end{example}
+
+\paragraph{Nezávislost.} Pokud jsou náhodné proměnné $A$ a $B$ vzájemně \emph{nezávislé}, tak platí:
+\begin{itemize}
+\item $P(A,B) = P(A)*P(B)$
+\item $P(A|B) = P(A)$
+\item $P(B|A) = P(B)$
+\end{itemize}
+
+\paragraph{Podmíněná nezávislost.} Pokud je náhodná proměnná $A$ \emph{podmíněně nezávislá} na náhodné proměnné $B$, při dané hodnotě $C$, tak platí:
+\begin{itemize}
+\item $P(A,B|C) = P(A|C)*P(B|C)$
+\item $P(A|B,C) = P(A|C)$
+\item $P(B|A,C) = P(B|C)$
+\end{itemize}
+
+\paragraph{d-separace.} Písmeno \textbf{d} je zde zkratka pro \emph{dependence}.
+Máme-li danou Bayesovskou síť, a množinu proměnných $Z$, jejichž hodnotu známe, tak můžeme z grafu určit,
+mezi libovolnými dvěma proměnnými $x$ a $y$, zda na sobě závisí nebo ne.
+
+\paragraph{Markovova deka} daného uzlu $A$ v Bayesovské síti je množina všech uzlů které se počítají do nejbližšího příbuzenstva $A$:
+\begin{itemize}
+\item rodiče
+\item děti
+\item rodiče dětí
+\end{itemize}
+Značí se jako $MB(A)$ a platí, že pro libovolný uzel $B$ takový, že $B \neq A \wedge B\notin MB(A)$ platí:
+\[
+P(A|MB(A),B) = P(A|MB(A)) 
+\]
+Takže $B$ nemá na pravděpodobnost $A$ vliv. Markovova deka je vlastně minimální množina uzlů, která \emph{d-separuje} $A$ od zbytku sítě. 
+
+\subsection{Konstrukce Bayesovské sítě}
+Při konstrukci je třeba zachovat \emph{podmíněnou nezávislost}.
+Je vhodné postupovat od příčin k důsledkům (uspořádat uzly tak aby z uzlů příčin vedly hrany jenom ven).
+
+\subsection{Odvozování v Bayesovské síti}
+\paragraph{Exaktní metody}
+\paragraph{Vzorkovací metody}
+
+\section{Markovské modely}
+V dynamickém prostředí je třeba reagovat na změny.
+Markovovy řetězce umožňují odhadovat pravděpodobnosti jevů na základě minulých pozorování.
+Jde vlastně o bayesovskou síť, kde hraje roli také čas.
+Předpokládáme, že pozorování jsou prováděna v pravidelných intervalech. Interval od kroku $a$ do kroku $b$ (včetně) značíme $a:b$.
+
+\begin{definition}[Markovův předpoklad]
+Součastný stav závisí pouze na \emph{konečném} počtu předchozích stavů:
+\[
+\exists n:\ P(X_t | X_{0:t}) = P(X_t | X_{(t-n):t})
+\]
+\end{definition}
+
+\paragraph{Markovské řetězce} mají \emph{řád} - ten určuje jak daleko v čase sahá závislost.
+
+\paragraph{Proměnné} v markovských modelech jsou dvojího druhu:
+\begin{itemize}
+\item \emph{nepozorovatelné} - na ty se ptáme a chceme je predikovat (př. jestli prší); značíme $X$\\
+Pro ně potřebujeme specifikovat \emph{přenosový model}. Například pro markovské řetězce prvního řádu:
+\[
+P(X_t | X_{0:t}) = \mathbf{P(X_t | X_{t-1})}
+\]
+\item \emph{pozorovatelné} - ty v každém kroku můžeme zjistit (př. šéf má deštník); značíme $E$\\
+Pro tyto proměnné specifikujeme \emph{senzorový model}:
+\[
+P(E_t | X_{0:t}, E_{0:t-1}) = \mathbf{P(E_t | X_t)}
+\] 
+\end{itemize}
+
+\paragraph{Výpočet pomocí Markovových řetězců} lze provést, pokud máme specifikovaný \emph{přenosový model}, \emph{senzorový model}
+a počáteční pravděpodobnost $P(X_0)$. Poté lze pro libovolný čas $t$ počítat:
+\[
+P(X_0,X_1,\ldots,X_t,E_1,\ldots,E_t) = P(X_0)\Pi_{i=1}^{t} P(X_i|X_{i-1})P(E_i|X_i)
+\]
+
+\paragraph{K čemu je to dobré?} Markovské řetězce lze použít na řešení různých úloh:
+\begin{itemize}
+\item \emph{monitorování} aktuálního stavu. V příkladu s deštníkem jde o otázku jestli dneska pršelo.
+\item \emph{předpověď} následujícího stavu. Bude pršet zítra?
+\item \emph{uhlazování} neboli upřesňování minulých měření. Pršelo před 2 dny?
+\item \emph{nejpravděpodobnější vysvětlení} sekvence pozorování.
+Pokud si šéf nosí deštník každý třetí den, jaké bylo asi počasí v uplynulých 14 dnech?  
+\end{itemize}
+
+\paragraph{Kalmanovy filtry} představují metodu pro modelování dynamických systémů se \emph{spojitými} náhodnými proměnnými.
+Jde o dynamickou Bayesovskou síť se spojitými proměnnými, ve které předpokládáme následující: 
+\begin{itemize}
+\item \emph{přenosový model} je lineárně Gaussovský
+\item \emph{senzorový model} je lineárně Gaussovský
+\item \emph{počáteční rozdělení} je Gaussovo
+\end{itemize}
+
+%% --------------------------------------- %%
+\section{Strojové učení}
+To co inteligentní agent vnímá, lze použít ke zlepšení rozhodovacích schopností agenta do budoucna.
+Učící se agent obsahuje dvě složky:
+\begin{itemize}
+\item \emph{rozhodovací} - rozhoduje o následující vykonané akci
+\item \emph{učící} - upravuje rozhodovací složku na základě předchozích zkušeností
+\end{itemize}
+Otázky:
+\begin{itemize}
+\item Co se přesně agent učí ? - jaké části rozhodovací složky učení ovlivňuje ?
+\item Na základě čeho se učí ? - jaká data má učící složka k dispozici ?
+\item Jak jsou reprezentovány naučené znalosti ?
+\end{itemize}
+Barták - AI2 - slajdy 9,10,..
+
+%% zalozeno na logice
+\subsection{Prohledávání prostoru verzí}
+Metoda strojového učení založená na reprezentaci pomocí predikátové logiky. K dispozici máme tabulku příkladů a snažíme se zkonstruovat
+formuli, která nám dá rozhodnutí pro dané hodnoty atributů a bude při tom konzistentní s příklady.
+
+Pracujeme přitom s formulemi, kterým říkáme \emph{hypotézy}. Máme k dispozici prostor hypotéz $H = \lbrace H_1, H_2, \ldots ,H_n\rbrace$ a předpokádáme, že některá z nich je správná - tedy: $H_1 \vee H_2 \vee \ldots H_n$.
+
+\paragraph{Konzistence.} Předpokládejme, že v tabulce příkladů je $k$ sloupců pro atributy ($A_i$ - atribut $i$-tého sloupce)
+Hypotéza $H_q$ je \emph{konzistentní} s příkladem $X_r = v_1,\ldots,v_k$, pokud po dosazení příslušných hodnot do $H_q$ (do proměnné $A_i$ uvnitř hypotézy dosadíme hodnotu $v_i$ pro každé $i \in 1,\ldots,k$), se odpověď hypotézy shoduje s příkladem:
+\[
+(X_r = true \wedge H_q = true) \vee (X_r = false \wedge H_q = false)
+\]
+Mohou nastat dva případy nekonzistence:
+\begin{itemize}
+\item \textbf{false positive} - $X_r = false \wedge H_q = true$ 
+\item \textbf{false negative} - $X_r = true \wedge H_q = false$
+\end{itemize}
+
+\paragraph{Reprezentace prostoru hypotéz.} Protože prostor všech možných hypotéz může být obrovský (jde vlastně o všechny možné formule PL nad jazykem problému), nelze množinu hypotéz reprezentovat explicitně. Protože je ale možné hypotézy uspořádat od \emph{nejobecnější} k \emph{nejspecifičtější}, stačí reprezentovat interval daný dvěma množinami formulí.
+\begin{itemize}
+\item \emph{generalizace} hypotézy $h$ znamená vypuštění nějakých podmínek z odpovídající formule
+\item \emph{specializace} hypotézy $h$ znamená přidání podmínek do odpovídající formule
+\end{itemize}
+
+\subsection{Rozhodovací stromy}
+Při učení rozhodovacích stromů jde o učení s učitelem. Rozhodovací strom reprezentuje funkci, která převádí vektor vstupních atributů na rozhodnutí Ano/Ne.
+
+Uvažujeme-li \emph{booleovské} rozhodovací stromy (atributy mají hodnoty 0 nebo 1). Potom pro $n$ atributů může mít celková tabulka reprezentující booleovskou funkci $2^{n}$ řádků a lze pro ní vymyslet $2^{2^{n}}$ různých funkcí. Každá taková funkce může být reprezentována rozhodovacím stromem hloubky $n$. Obecně může mít atribut libovolné konečné množství hodnot.
+
+Cílem učení je najít co nejmenší rozhodovací strom který je konzistentní s danou tabulkou příkladů.\\
+Algoritmus \textbf{DecisionTreeLearn}(množina atributů $A=\lbrace a_1,\ldots,a_n\rbrace$, tabulka příkladů $E$, defaultní hodnota $default$)
+postupuje rekurzivně podle \emph{nejlepšího atributu}. Při rekurzi mohou nastat možnosti:
+\begin{enumerate}
+\item dojdou příklady v tabulce $E$ - vrátí se hodnota $default$ (většinová hodnota rodiče) jako uzel.
+\item všechny příklady v $E$ jsou stejně klasifikované jako $C$. Vrátíme uzel s odpovědí $C$
+\item dojdou argumenty v $A$ - vrátí se většinová hodnota z aktuální tabulky jako uzel.
+\item v množině $E$ jsou různě klasifikované příklady - vybereme nový atribut a pro každou jeho možnou hodnotu rekurzivně zavoláme \textbf{DecisionTreeLearn}
+\end{enumerate} 
+
+\paragraph{Jak najít nejlepší atribut?} Podle míry informace kterou přináší.
+\begin{itemize}
+\item \emph{informační hodnota proměnné}:
+\[
+I(V) = - \Sigma_{v \in domain(V)} P(v)*log_{2}(P(v))
+\]
+kde $P(v)$ je pravděpodobnost hodnoty $v$ spočítaná z tabulky příkladů
+\item \emph{informační hodnota celé tabulky} je $I(Ans)$ kde $Ans$ je odpověď (Ano/Ne - záleží na zadání) 
+\item \emph{informační hodnota při jednom známém atributu}
+\end{itemize}
+
+%% zalozeno na statistice
+\subsection{Bayesovské učení}
+Máme Bayesovskou síť a potřebujeme vyplnit pravděpodobnostní tabulky tak, aby rozumně zodpovídala kladené dotazy.
+Hledáme tedy \emph{pravděpodobnostní model}.
+
+\paragraph{Bayesovské učení jedné náhodné proměnné.} (příklad s bombóny v pytli z AIMA)
+Máme nějakou množinu hypotéz $H = \lbrace h_{1},\ldots,h_{n} \rbrace$, z nichž každá říká, jak se věci mají (právě jedna z nich je správná).
+Snažíme se ze \emph{vstupních dat} $d_1,\ldots,d_n$ rozhodnout jaká budou další data - náhodná proměnná $X$.
+
+\paragraph{Terminologie:}
+\begin{itemize}
+\item $P(h_i)$ - \emph{apriorní pravděpodobnost} $i$-té hypotézy (počáteční pravděpodobnost že platí $h_i$)
+\item $P(h_i|\mathbf{d})$ - \emph{aposteriorní pravděpodobnost} $i$-té hypotézy (jak moc věříme hypotéze $h_i$ poté, co pozorujeme nějaká data)
+\item $P(\mathbf{d}|h_{i})$ - \emph{věrohodnost dat} podle $i$-té hypotézy (jaká je pravděpodobnost toho co pozorujeme jestliže platí hypotéza $h_i$)
+\end{itemize}
+
+\begin{enumerate}
+\item známe \emph{apriorní pravděpodobnost} jednotlivých hypotéz (ze zadání problému)
+\item pozorujeme nějaká data $\textbf{d}$
+\item na základě dat spočteme pro každou hypotézu \emph{aposteriorní pravděpodobnost} - $P(h_{i}|\mathbf{d}) = \alpha P(\mathbf{d}|h_i)P(h_i)$
+Přitom $P(\mathbf{d}|h_i) = \Pi_{j} P(d_j|h_i)$ (za předpokladu \textbf{nezávislosti jednotlivých pozorování}). 
+\item potom můžeme spočítat předpověď pro $X$ jako váženou sumu (při použití všech hypotéz):
+\[
+P(X|\mathbf{d}) = \Sigma_{i \in 1,\ldots,n} P(X|h_{i})P(h_i|\mathbf{d})
+\]
+\end{enumerate}
+
+Čím víc dat máme, tím \emph{větší váhu} má při předpovědi správná hypotéza - časem ji tedy najdeme.
+
+\subsection{Maximálně věrohodná hypotéza.}
+Když neznáme \emph{apriorní pravděpodobnosti} hypotéz, tak jsou všechny hypotézy stejně pravděpodobné
+(napřiklad pst. rozdělení bombónů v pytli je dané číslem $\theta$, které určuje poměr) a máme \emph{spojitý prostor hypotéz} (př. $H=\lbrace h_{\theta}\ |\ \theta \in <0,1> \rbrace$). Hledáme \emph{maximálně věrohodnou hypotézu}. To je taková, která maximalizuje:
+\[
+P(\mathbf{d}|h_{\theta}) = \Pi_{j = 1}^{N} P(d_j|h_{\theta})
+\]
+
+\subsection{EM algoritmus}
+Řeší případ, kdy se učíme pravděpodobnostní rozdělení v Bayesovské síti, která obsahuje \emph{skryté proměnné} (nemůžeme je pozorovat, ale necháváme je tam, protože snižují složitost výpočtu - příklad z AIMA: heart disease). 
+
+\subsection{Zpětnovazební učení}
+
+\end{document}
+

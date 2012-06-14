@@ -1,0 +1,406 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{listings}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+\section{Architektura autonomního agenta}
+Autonomní agent je cokoliv, co vnímá svoje prostředí pomocí senzorů a koná akce ovlivňující toto prostředí.
+Agenta určuje jeho funkce - na základě posloupnosti vjemů rozhodne o nějaké akci.
+\begin{itemize}
+\item Inteligentní agent - autonomní jednání
+\item Virtuální člověk - jako ve hře SIMS, vypadá a chová se "jako člověk"
+\item Animat - umělá bytost ve virtuálním prostředí, je plausibilní (umožňuje provádět simulace)
+\item Bot - simulace hráče v počítačové hře
+\end{itemize}
+
+\paragraph{Percepce.} Agent vnímá svoje prostředí skrze senzory. To může být kamera, nárazník, detektor reagující na světlo, nebo třeba
+jen proměnná ve které si něco přečte. Skrze vjemy si agent může updatovat svůj vnitřní model světa.
+
+\paragraph{Mechanismus výběru akcí.} Agentova funkce - nejjednodušší reprezentace je pomocí tabulky,
+ta ale není v mnoha případech možná (příliš mnoho položek).
+
+\paragraph{Paměť}
+
+\paragraph{Psychologické inspirace}
+ve vývoji autonomních agentů lze nalézt za pojmy jako například:
+\begin{itemize}
+\item Zpětnovazební učení (behaviorální psychologie)
+\end{itemize}
+
+% ---------------------------- %
+
+\section{Metody řízení agentů}
+
+\paragraph{Řídící architektury - Wooldridge}
+\begin{enumerate}
+\item \emph{Symbolická AI}. Agent jako knowledge-based symbolic system. Agent má k dispozici symbolickou reprezentaci světa.
+Provádí logické operace, symbolickou manipulaci a pattern matching aby zjistil co má udělat. Hlavní problém je tvorba přesného popisu světa a realtime rozhodovací mechanismy - svět je příliš komplikovaný.
+
+\item \emph{Reaktivní AI}. Agent s reaktivní architekturou nemá žádný komplikovaný vnitřní stav světa a nevyužívá symbolickou manipulaci. 
+Jde o \emph{subsumční architekturu} - agent má zakódovánu sadu chování ve tvaru (podmínky,chování).
+Tato sada je i hierarchicky uspořádaná (tedy něco jako POSH). Různá chování si mohou navzájem konkurovat.  
+
+\item \emph{Hybridní AI}. Využití postupů z reaktivní i symbolické větve.
+\end{enumerate}
+
+\paragraph{Symbolické reaktivní plánování}
+
+\paragraph{Konekcionistické reaktivní plánování.}
+
+\paragraph{Hybridní přístupy}
+Kombinace přístupu reaktivní AI a symbolické AI. Agent sestává z komponent.
+\subparagraph{BDI}
+Plánování není součástí architektury (záleží na programátorovi).
+Agent může rozhodovat o tom, kolik času stráví \emph{plánováním} a kolik \emph{prováděním} plánů.
+\begin{itemize}
+\item \emph{Belief} - jaké má agent představy o světě (něco jako báze znalostí, včetně inferenčních pravidel)
+\item \emph{Desire} - to co by agent rád dosáhl (může toho chtít víc a zvažovat pro a proti).
+\item \emph{Intention} - to co se agent rozhodl udělat
+\end{itemize}
+Základní princip fungování BDI agenta:
+\begin{enumerate}
+\item initialize-state
+\item repeat
+	\begin{enumerate}
+	\item options: option-generator(event-queue)
+	\item selected-options: deliberate(options)
+	\item update-intentions(selected-options)
+	\item execute()
+	\item get-new-external-events()
+	\item drop-unsuccessful-attitudes()
+	\item drop-impossible-attitudes()
+	\end{enumerate}
+\item end repeat
+\end{enumerate}
+
+\subparagraph{Soar}
+State Operator And Result. Framework/architektura pro výstavbu kognitivních modelů.
+V zásadě jde o produkční systém, který své konání zakládá na bázi znalostí.
+\begin{itemize}
+\item reprezentace stavového prostoru
+\item reprezentace znalostí (odvozovací pravidla + univerzální fakta)
+\item dočasná paměť pro objekty a jejich vlastnosti
+\item mechanismus pro automatickou dekompozici cílů, učení a generování nových cílů
+\end{itemize}
+\verb+http://www.it.bton.ac.uk/staff/rng/teaching/notes/Soar.html+
+
+Fáze v systému Soar:
+\begin{enumerate}
+\item uložení vstupů do pracovní paměti
+\item aplikace if-then pravidel pro návrh vhodných akcí
+\item výběr jedné akce na základě preferencí
+\item na základě vybrané akce je vytvořen symbolický výstup pro zpracování v aktuátorech
+\item aplikace akce (výstup z předchozí fáze se pošle na aktuátory)
+\end{enumerate}
+
+\paragraph{Srovnání s plánovacími technikami}
+V BDI se nehledají detailní plány - každou chvíli se může něco změnit.
+
+% ---------------------------- %
+
+\section{Problém hledání cesty}
+Pokud máme agenta, který se má pohybovat v nějakém prostředí, je třeba řešit problém
+navigace. Různá řešení závisí na tom, jaké informace máme k dispozici:
+\begin{itemize}
+\item Známe mapu prostředí?
+\item Známe svou pozici na mapě?
+\item Známe pozici cíle/směr k cíli?
+\end{itemize}
+
+\paragraph{Navigační pravidla}
+Pokud neznáme mapu prostředí, musíme se řídit podle jednoduchých navigačních pravidel.
+Příkladem jsou \verb+Bug+ algoritmy, které předpokládají, že agent zná pouze směr k cíli a dovede v každém okamžiku zjistit,
+jak je od cíle daleko.
+\begin{itemize}
+\item \verb+Bug1+ - označí si \emph{hitpoint} a \emph{leavepoint} pokud narazí na překážku. Musí ji objet celou.
+\item \verb+Bug2+ - označí si \emph{hitpoint} a objíždí, dokud nenarazí na průsečík s přímkou k cíli, který je blíž než \emph{hitpoint}.
+\end{itemize} 
+
+\paragraph{Reprezentace terénu}
+Vytvoření mapy navigačních bodů nebo oblastí. Poté se problém převede na hledání cesty v grafu. 
+Přístupy:
+\begin{itemize}
+\item graf viditelnosti
+\item Voronoi diagramy
+\item lichoběžníková dekompozice
+\end{itemize}
+
+% ---------------------------- %
+
+\section{Komunikace a znalosti v multiagentních systémech}
+Jeden ze způsobů změny stavu světa v multiagentních systémech je i změna vnitřního stavu jiného agenta.
+To se dá udělat \emph{přímo} (komunikace), nebo \emph{nepřímo} (změna stavu světa v okolí jiného agenta).
+
+\paragraph{Komunikace} je proces, během kterého si agenti vyměňují informace formou \emph{řečových aktů} (elementární řečová zpráva).
+Řečový akt je čtveřice (\textbf{odesilatel},\textbf{prijemce},\textbf{obsah},\textbf{typ}). Základní typy řečových aktů jsou:
+\begin{itemize}
+\item \emph{otázka}
+\item \emph{nabídka}
+\item \emph{zamítnutí}
+\item \emph{informování}
+\end{itemize}
+
+\paragraph{Ontologie} je formální definice nějakého souboru znalostí. Typicky hierarchicky strukturovaná. Definuje nejenom \emph{třídy} objektů, ale i \emph{vlastnosti} těchto tříd a \emph{vztahy} mezi nimi.
+
+Příkladem ontologie může být například hierarchie tříd nějakého programovacího jazyka.
+
+Pro ontologie se používají nejrůznější jazyky - například XML.
+
+\paragraph{Problém omezené racionality.} Každý agent, který se má racionálně rozhodovat v komplexním prostředí podléhá následujícím omezením:
+\begin{enumerate}
+\item v daném okamžiku disponuje pouze \emph{omezenou informací} o světě (např. vidí jenom na omezenou vzdálenost)
+\item má pouze \emph{omezené prostředky} ke zpracování informací (např. RAM,CPU)
+\item musí se rozhodovat v \emph{omezeném čase} (pokud jde o real-time agenta)
+\end{enumerate}
+V konečném důsledku je pro takového agenta nemožné se rozhodovat racionálně (tzn. volit vždy optimální akce).
+Musí se tedy spolehnout na heuristiky a omezenou znalost prostředí.
+
+\paragraph{Kripkeho sémantika možných světů}
+
+% ---------------------------- %
+
+\section{Etologické motivace}
+
+\paragraph{Modely populační dynamiky}
+
+\subparagraph{Analytické modely} představují nástroj matematické biologie ke zkoumání vývoje populací nejrůznějších živých organismů.
+Sestavují se na základě \emph{empirických dat} (z pozorování). Analytický model je zpravidla tvořen diferenciálními rovnicemi, které popisují chování systému. Jejich nevýhodou je, že bývají příliš obecné.
+
+Příklad: jednoduchá rovnice pro jednu populaci ($t$ - čas, $b$ - birth rate, $d$ - death rate):
+\[
+N(t+\Delta t) = N(t) + b*N(t)*\Delta t - d*N(t)*\Delta t
+\]
+
+Existují složitější modely, které lépe modelují konkrétní prostředí a pomáhají zodpovědět otázky jako např. \emph{Za jak dlouho dojde k vyhubení chráněného živočicha XY?}
+
+Existují také modely pro chování více populací (model \emph{predátor-kořist}, \emph{hostitel-parazit} apod.).
+
+\subparagraph{Simulační modely} jsou založeny na umělých agentech zvaných \emph{animati}, kteří jsou plausibilní - chovají se realisticky.
+Hlavní nevýhodou simulačních modelů je vysoký počet parametrů.
+
+% ---------------------------- %
+
+\section{Metody pro učení agentů}
+Předpokládejme agenta, který se má naučit nějakou funkci $f: Input \rightarrow Output$.
+Učení agentů se využívá především tam, kde nelze pokrýt všechny možné eventuality tím, že je do agenta naprogramujeme předem.
+
+Při strojovém učení potřebujeme vědět:
+\begin{enumerate}
+\item \emph{Jakou část agenta zlepšujeme?} (př. rozhodovací mechanismus pro výběr akcí)
+\item \emph{Jakou odezvu má agent k dispozici?} (př. žádnou, otagovanou trénovací množinu)
+\item \emph{V jaké podobě ukládáme naučená data?} (př. rozhodovací strom, pravděpodobnostní rozdělení, sada pravidel)
+\end{enumerate}
+
+Základní dělení metod strojového učení:
+\begin{itemize}
+\item \textbf{S učitelem} - máme: $(x_1,y_1),\ldots,(x_n,y_n)$ a chceme: $f(x_i)=y_i$ 
+\item \textbf{Bez učitele} - máme: $\vec{x_1},\vec{x_2},\ldots,\vec{x_n}$ a chceme: $P(X=\vec{x})$ 
+\item \textbf{Zpětnovazební učení} - máme: $s_0,a_1,s_1,a_2,\ldots$ kde některé stavy mohou být odměněny a chceme $\Pi(s_i)$ - nějakou sadu pravidel co dělat ve kterém stavu abychom posbírali co nejvíc odměn.
+\end{itemize}
+
+\paragraph{Učení s učitelem (supervised learning).} Je metoda, při které se používá následující schéma:
+\begin{enumerate}
+\item Vezmeme data (množina dvojic \textbf{(vstup,výstup)} - $\lbrace(x_1,y_1),(x_2,y_2),\ldots,(x_n,y_n)\rbrace$) a rozdělíme je na
+dvě disjunktní množiny: \emph{trénovací} ($T$) a \emph{testovací} ($E$). Pro hledanou funkci $f$ platí: $\forall i:\ f(x_i)=y_i$
+\item Použijeme nějaký \emph{učící algoritmus}, pro nalezení \emph{hypotézy} $h$, která aproximuje trénovací data.
+O hypotéze řekneme, že je \emph{konzistentní} s množinou trénovacích dat $T$, pokud platí:
+\[
+\forall (x_i,y_i)\in T:\ h(x_i)=y_i
+\]
+\item kvalitu řešení (tj. nalezenou hypotézu $h$) otestujeme na množině testovacích dat $E$. Čím menší je suma $\Sigma_{(x_i,y_i)\in E}|h(x_i)-y_i|$ tím lepší hypotézu jsme našli.
+\end{enumerate}
+Pokud je obor hodnot hledané funkce diskrétní, jde o \emph{klasifikaci}. Je-li obor hodnot spojitý, jde o \emph{regresi}.
+
+\paragraph{Učení bez učitele (unsupervised learning).} Je metoda, při které se agent snaží ze vstupních dat odvodit nějaké zákonitosti
+(nemá při tom k dispozici správné výstupy a tímpádem ani zpětnou vazbu). To co se agent učí je pravděpodobnostní model vstupních dat, na základě kterého potom může klasifikovat nová data. Př. \emph{Bayesovské učení},\emph{EM algoritmus}
+
+\paragraph{Zpětnovazební učení} je metoda, při které se agent učí, jak má volit akce, aby našel optimální strategii pro dané prostředí.
+Jde o učení bez učitele. Agent sice dostává odezvu, ale přímo z prostředí, takže musí experimentovat, a zjišťovat, které stavy jsou \emph{dobré} a které \emph{špatné}. Něco jako, když hrajete hru, jejíž pravidla neznáte a po cca. 100 tazích Váš oponent řekne: "Prohráls saláte!".
+Řeší se zde problém \emph{explorace} vs. \emph{exploatace}. Pokud agent zkouší nové akce, jejichž výsledek nezná, jde o \emph{exploraci}, pokud provádí akce, o kterých ví, že mu přinášejí užitek, jde o \emph{exploataci}. Problém je, že optimální strategie nemůže být ani čistě \emph{explorační} ani čistě \emph{exploatační} - hledá se vyvážený kompromis.
+
+\begin{itemize}
+\item \textbf{Pasivní učení} - agent má pevně danou strategii a učí se, jak jsou ohodnocené jednotlivé stavy, do kterých se dostane.
+\item \textbf{Aktivní učení} - agent se učí jaké akce má volit a zároveň jak jsou ohodnocené.
+\end{itemize}
+
+\paragraph{Základní formy učení zvířat.}
+\begin{itemize}
+\item Habituace - úbytek reakce na opakování téhož podnětu (přitom je reakce na jiné podněty zachována - nejde tedy o únavu)
+\item Senzitizace - nárůst reakce na určitý podnět (opak habituace)
+\item Imprinting - proces učení vázaný k určité fázi vývoje jedince, který vede k trvalým a nezvratným změnám chování (kachny a Konrad Lorenz)
+\item Klasické podmiňování - Pavlov a jeho psi. \emph{Nepodmíněný podnět} - sám vyvolává reakci, \emph{podmíněný podnět} - vyvolává reakci až když je spojen s nepodmíněným podnětem.
+\item Operantní podmiňování - každá akce je tzv. \emph{operant}. Když dostane zvíře za provedení nějakého operantu odměnu, tak se upevní. Postupně se tak dá natrénovat komplikované chování složené z postupně podmíněných operantů.
+\end{itemize}
+
+% ---------------------------- %
+\section{Umělá evoluce}
+Hlavní myšlenka je využití myšlenky evoluce, která funguje v přírodě pro řešení problémů.
+Často se používá tam, kde není známý žádný "rozumný" způsob řešení.
+
+\paragraph{Genetické algoritmy}
+Instance řešení problému se zakóduje do řetězce. Předem stanovený počet takových řetězců tvoří populaci.
+Dále potřebujeme nějakou fitness funkci, pomocí které ohodnotíme řešení.
+
+\paragraph{Jednoduchý GA:}
+Základní varianta genetického algoritmu - lze přidat \emph{elitismus} a modifikovat jednotlivé kroky; tj. mechanismus výběru jedinců (\verb+Select+), nebo použité genetické operátory(\verb+Crossover+ a \verb+Mutate+).
+
+\begin{lstlisting}{frame=single}
+t := 0
+Initialize G(0)		// inicializuj populaci 
+do while not Done
+      Evaluate G(t)		// vypocet fitness aktualni generace
+      t := t + 1
+      Select G(t) from G(t-1)	// vyber jedincu do dalsi populace
+      Crossover G(t)		// krizeni
+      Mutate G(t)		// mutace
+loop
+
+return best G(t)		// nejlepsi jedinec z posledni populace
+\end{lstlisting}
+
+Výhody GA:
+\begin{itemize}
+	\item nevyžadují žádné speciální znalosti o cílové funkci
+	\item jsou odolné vůči sklouznutí do lokálního optima
+	\item vykazují velmi dobré výsledky u problémů s rozsáhlými množinami přípustných řešení
+	\item mohou být využity pro nejrozmanitější optimalizační problémy
+\end{itemize}
+
+Nevýhody GA:
+\begin{itemize}
+	\item mají problém s nalezením přesného optima
+	\item vyžadují velké množství vyhodnocování cílové funkce
+	\item jejich implementace není vždy přímočará 
+\end{itemize}
+
+\paragraph{Genetické a evoluční programování}
+\begin{itemize}
+\item Genetické programování - jedinec v populaci kóduje strukturu programu (strom)
+\item Evoluční programování - struktura programu je dána. Evolučně se hledají číselné parametry programu.
+\end{itemize}
+% ---------------------------- %
+\section{Základní přístupy a pojmy}
+Předpokládejme, že řešení problému umíme zakódovat do nějakého řetězce.
+
+\begin{itemize}
+\item \emph{populace} - množina řetězců se zakódovaným řešením problému
+\item \emph{fitness} - funkce, která každému jedinci z populace přiřadí číslo (kvalita řešení)
+\item \emph{rekombinace} - uplatnění genetických operátorů: křížení, mutace
+\item \emph{statická selekce} - ruleta, pořadová selekce, turnajová selekce
+\item \emph{dynamická selekce} - mění se v průběhu algoritmu (něco na způsob Simulovaného žíhání)
+\item \emph{ruletová selekce} - mechanismus výběru jedinců do další populace (rozložení na kole rulety podle fitness funkce)
+\item \emph{turnaje} - mechanismus výběru jedinců (z náhodně vybrané dvojice postupuje lepší)
+\item \emph{elitismus} - prevence proti odumírání nejlepších jedinců vlivem náhody
+\end{itemize}
+
+% ---------------------------- %
+
+\section{Reprezentační schémata}
+Předpokládejme, že máme binárně kódované řetězce délky $n$ jako jedince v populaci.
+
+\begin{definition}[Schemata]
+Schema je řetězec $s$ délky $m$ nad abecedou $\lbrace 1,0,* \rbrace$.\\
+$o(s)$ je \emph{řád schematu} - počet pevných pozic (ne $*$) ve schematu\\
+$d(s)$ je \emph{definiční délka schematu} - vzdálenost mezi první a poslední pevnou pozicí\\
+$C(s,t)$ - četnost schematu $s$ v populaci $t$\\
+$P_{s}(t)$ - množina jedinců pokrytých schematem $s$ v populaci $t$
+$F(s)$ - fitness schématu (průměrná fitness všech pokrytých řetězců)
+\end{definition}
+
+\paragraph{Věta o schématech:} krátká nadprůměrná s malým řádem schémata v populaci GA se exponenciálně množí.\\
+Ukáže se to postupnou analýzou toho co se se schématy děje během GA:
+\begin{itemize}
+\item \emph{selekce}: pravděpodobnost výběru jedince $x$ do nové populace:
+\[
+p^{sel}(x) = \frac{F(x)}{\Sigma_{u \in P(t)} F(u)}
+\]
+Pravděpodobnost vybrání schematu $s$ je potom: $p^{sel}(s)\frac{F(s)}{F(P(t))}$ (průměrná fitness schematu/fitnes celé populace)
+\item \emph{křížení}: pravděpodobnost že schema bude zničeno křížením $p^{cro}(s)$. Pst. že se křížení trefí do schematu - $\frac{d(s)}{m-1}$, pst. že se vůbec bude křížit - $p_c$. Dohromady tedy:
+\[
+p^{cro}(s)=p_c*\frac{d(s)}{m-1}
+\]
+\item \emph{mutace}: pravděpodobnost, že schema nebude zničeno mutací $p^{mut}(s)$. Pst. že 1 bit \textbf{ne}bude zmutován: $1-p_m$ (kde $p_m$ je pst. mutace), pst. že nebude zmutován žádný bit schematu: $(1-p_m)^{o(s)} \sim 1 - p_{m}*o(s)$
+(pravděpodobnost mutace totiž bývá hodně malá).
+\end{itemize}
+Dohromady se to všechno poskládá nějak takhle:
+\[
+C(s,t+1) = C(s,t)*p^{sel}(s)*(1-p^{cro}-p^{mut})
+\]
+
+\paragraph{Hypotéza o stavebních blocích} GA staví řešení z funkčních bloků reprezentovaných krátkými nadprůměrnými schématy.
+
+% ---------------------------- %
+
+\section{Pravděpodobnostní modely jednoduchého genetického algoritmu}
+\begin{itemize}
+\item \emph{konečná populace} - modelujeme pomocí Markovských řetězců
+\item \emph{nekonečná populace} - ??
+\end{itemize}
+
+% ---------------------------- %
+
+\section{Koevoluce, otevřená evoluce.} O \emph{otevřené evoluci} mluvíme, když fitness funkce nesměřuje k žádnému předem známému optimu.
+Fitness funkce je definována jako relativní k evolvujícímu se systému, takže se s vývojem populace mění i nároky, které fitness funkce představuje.
+
+\paragraph{Botstrap problem} - jak inicializovat výchozí populaci pro evoluční algoritmus?
+Náhodně vygenerovaní jedinci jsou zpravidla všichni stejně "špatní".
+
+\subsection{Koevoluce} je biologicky motivovaná samoorganizační metoda využívaná v evolučních algoritmech.
+Příklady \emph{kompetitivních} modelů:
+\begin{itemize}
+\item \textbf{dravec vs. kořist}
+\item \textbf{hostitel vs. parazit}
+\end{itemize}
+I při nezměněné fitness funkci je zajištěno zvyšování obtížnosti adaptace.
+
+Může pomoci vyřešit \emph{bootstrap problem}.
+
+Člověkem navržená fitness nehraje takovou roli - systém je do určité míry autonomní.
+
+Nastavuje podmínky pro vznik evolučního soupeření mezi populacemi.
+
+Kromě kompetitivních modelů je možné využít i kooperaci. Příklad s roboty co strkají objekty do určeného prostoru (definice fitness):
+\begin{itemize}
+\item individuální - každý robot dostane bod za malý objekt
+\item kooperativní - jeden bod pro všechny za velký objekt (musí ho strkat minimálně 2)
+\item altruistická - jeden bod pro robota za malý objekt, 1 bod pro všechny za velký objekt
+\end{itemize}
+Kooperativní evoluci je možné použít při řešení komplexních problémů, které lze rozdělit na podproblémy.
+Evolucí se vyvíjí subpopulace pro každý podproblém a jednotlivé subpopulace spolu musí spolupracovat.
+Dekompozice na subkomponenty je emergentní.
+
+% ---------------------------- %
+
+\section{Aplikace evolučních algoritmů}
+
+\begin{itemize}
+\item Genetické programování
+\item Kreslení grafů
+\item Koevoluce
+\item Evoluce neuronových sítí (nastavení vah nebo i topologie)
+\item Rozvrhování
+\item Evoluční umění (hudba, obrazy, generování map do počítačových her)
+\end{itemize}
+
+\end{document}
+

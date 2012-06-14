@@ -1,0 +1,519 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+
+
+\section*{Důležité poznatky}
+
+\begin{definition} \emph{Kleeneho predikát} je definován takto:
+\[T_1(e,x,y)\]
+kde $e$ je kód funkce jedné proměnné. Když budeme simulovat výpočet této funkce při vstupu $x$ na TS, zastaví se přesně po $y_0$ krocích s výsledkem $y_1$
+(kde $<y_0,y_1> = y$ je zakódovaná dvojice čísel).\\
+Predikát lze obecně definovat i pro funkce $n$ proměnných:
+\[T_1(e,x_1,\ldots,x_n,y)\]     
+\end{definition}
+
+\begin{definition} \emph{Operátor minimalizace pro predikáty}\\
+Mějme predikát $P(x_1,\ldots,x_n,y)$ s charakteristickou funkcí $c_P(x_1,\ldots,x_n,y)$.
+Potom definujeme funkci:
+\[\mu_y P(x_1,\ldots,x_n,y) =
+\left\{
+\begin{array}{l}
+y\quad pokud\quad c_P(x_1,\ldots,x_n,y)\downarrow = 0\quad \wedge\\
+\forall z < y: \quad c_P(x_1,\ldots,x_n,z)\downarrow \neq 0\\
+\\
+nedef.
+\end{array}
+\right.
+\]
+Jde vlastně o odvození nové funkce z charakteristické funkce daného predikátu pomocí operátoru
+minimalizace.
+\end{definition}
+
+\begin{remark} \emph{Minimalizace Kleeneho predikátu}\\
+\[\mu_y T_1(e,x,y) = y = <y_0,y_1>\]
+V tomto výrazu odpovídá $y$ první nalezené dvojici $<$ počet kroků,výsledek$>$, ke které dospěje TS simulující výpočet funkce s číslem $e$ nad vstupem $x$.       
+\end{remark}
+
+\begin{definition} \emph{Funkce U a její ekvivalentní značení}\\
+\[U(\mu_y T_1(e,x,y))\]
+je \emph{univerzální funkce pro ČRF jedné proměnné}. Jako svůj výsledek vrací výstup
+funkce s číslem $e$ pro vstup $x$. Spočte ho tak, že rozkóduje dvojici $y = <y_0,y_1>$
+(výsledek $\mu_y T_1(e,x,y)$)
+a vrátí $y_1$. Lze zapsat jako:
+\begin{itemize}
+\item $\Psi_1(e,x)$
+\item $\varphi_e(x)$
+\end{itemize}
+Zobecněné verze pro $n$ proměnných:
+\begin{itemize}
+\item $U(\mu_y T_n(e,x_1,\ldots,x_n,y))$
+\item $\Psi_n(e,x_1,\ldots,x_n)$
+\item $\varphi_e(x_1,\ldots,x_n)$
+\end{itemize}
+\end{definition}
+
+\begin{theorem} \emph{Kleene}
+Existuje PRF U, a platí $\forall k \geq 1$:
+\begin{itemize}
+\item $\exists\quad PRF\quad s_k$ pro $k+1$ proměnných (fixace prvních $k$ proměnných)
+\item $\exists\quad PRP\quad T_k$ pro $k+2$ proměnných (Kleeneho predikát)
+\item $\exists\quad CRF\quad \Psi_k$ pro $k+1$ proměnných (univerzální funkce)             
+\end{itemize}
+takové, že:
+\begin{enumerate}
+\item $\Psi_k$ je univerzální ČRF pro třídu ČRF $k$ proměnných. Z odvození dané ČRF lze efektivně zjistit číslo $e$ a z $e$ lze získat nazpět odvození (Gödelovská enumerace).
+\item $\Psi_k (e,x_1,\ldots,x_k) \simeq U(\mu_y(T_k(e,x_1,\ldots,x_k,y)))$
+\item $s_k$ jsou prosté funkce rostoucí ve všech proměnných
+\item $T_k(e,x_1,\ldots,x_k,y)\wedge T_k(e,x_1,\ldots,x_k,z) \Rightarrow (y=z)$
+\item $\Psi_{m+n} (e,y_1,\ldots,y_m,x_1,\ldots,x_n) \simeq
+\Psi_n (s_m(e,y_1,\ldots,y_m),x_1,\ldots,x_n)$ (s-m-n věta)   
+\end{enumerate}
+\end{theorem}
+
+\begin{definition} \emph{Ackermannova funkce}
+\begin{eqnarray*}
+A(0,x) & = &
+\left\{
+\begin{array}{ll}
+1 & (x = 0)\\
+2 & (x = 1)\\
+x+2 & (x > 1)
+\end{array}
+\right.\\
+A(y+1,0) & = & 1\\
+A(y+1,x+1) & = & A(y,A(y+1,x))
+\end{eqnarray*}
+\end{definition}
+
+\section{První část}
+
+\subsection{Algoritmicky vyčíslitelné funkce}
+Abychom mohli zkoumat co všechno lze spočítat, je třeba nejdřív zvolit výpočetní model.
+Existuje více výpočetních modelů, o kterých lze ukázat, že jsou stejně silné. Podle Church-Turingovy teze následující modely nějakým způsobem formalizují pojem \emph{algoritmu}:
+\begin{itemize}
+	\item Turingův stroj
+	\item Částečně rekurzivní funkce
+	\item (Lambda kalkulus)
+	\item (Postovy produkční systémy)
+\end{itemize}
+
+\paragraph{Church-Turingova teze} říká, že ke každému algoritmu existuje ekvivalentní turingův stroj.
+
+Použijeme-li formalizaci využívající turingův stroj, můžem říct, že funkce $f: N \rightarrow N$ je \emph{algoritmicky vyčíslitelná}, pokud existuje turingův stroj, který ji vyčísluje.  
+
+Formalizace pomocí ČRF se zavádí pomocí primitivních funkcí (nulová, následník, vydělení $i$-té složky) a operátorů (substituce, primitivní rekurze, minimalizace). V rámci této formalizace se zavádí třídy PRF, ORF a ČRF (viz. níže). Třída ČRF je nejobecnější z nich a lze ukázat, že je ekvivalentní s třídou všech \emph{algoritmicky vyčíslitelných funkcí}.
+
+Neformálně lze říct že:
+\begin{itemize}
+\item PRF jsou ekvivalentní programům, které nepoužívají \verb+while+ cyklus.
+\item ORF jsou ekvivalentní programům, které pro každý vstup skončí svůj výpočet.
+\item ČRF jsou ekvivalentní programům, které používají i \verb+while+ cyklus a může se tedy stát, že nikdy neskončí svůj výpočet.
+\end{itemize}
+
+\subsection{Ekvivalence definic pro algoritmicky vyčíslitelné funkce}
+Využíváme faktu, že všechny TS lze efektivně očíslovat pomocí \emph{G\"{o}delovy enumerace}. Abychom to mohli udělat, je třeba nejdřív
+zakódovat TS do binárního řetězce. Binární řetězce, které nekódují žádný TS bereme jako stroj který nic neudělá a hned skončí.
+
+\paragraph{Ekvivalence ČRF a TS}
+\begin{itemize}
+	\item $\Rightarrow$: sestavíme TS pro primitivní funkce a ukážeme, že podle odvozovacích pravidel vytvoříme z více malých TS zase TS.
+	Existuje-li odvození pro ČRF $f$, umíme podle něj sestavit TS.
+	\item $\Leftarrow$:
+		\begin{itemize}
+			\item Pokud je funkce turingovsky vyčíslitelná, existuje TS $M_{e}$, který ji vyčísluje.
+			\item Výpočet $M_{e}$ je posloupnost konfigurací. Každou z nich umíme zakódovat do binárního řetězce.
+			\item Přechod mezi konfiguracemi představuje lokální změnu, která jde vyjádřit pomocí PRF.
+			Tím se v PRF zachytí rozhodovací strom výpočtu $M_{e}$. 
+			\item Použijeme primitivní rekurzi k sestavení ORF $Comp(s,k)$ která vydá kód stavu stroje,
+			který začne ve stavu $s$ a skončí po $k$ krocích. 
+			\item Pro dané slovo $x$ a stroj $M_{e}$ umíme pomocí operátoru minimalizace zjistit po kolika krocích se
+			$M_{e}$ dostane do nějaké koncové konfigurace.
+			\item Dohromady potom můžeme sestavit ČRF, která vyčísluje totéž co stroj $M_{e}$. Uděláme to tak, že z výsledku
+			$Comp(s_{x},k_{f})$, kde $s_{x}$ je stav stroje na počátku výpočtu nad slovem $x$ a
+			$k_{f}$ je počet kroků vedoucích do koncového stavu získaný operátorem minimalizace pro výpočet nad slovem $x$,
+			vytáhneme koncové slovo z poslední konfigurace.  
+		\end{itemize}
+\end{itemize}
+
+\section{Druhá část}
+
+\subsection{Primitivní funkce}
+\begin{enumerate}
+\item Nulová funkce:\\
+$\forall x \in \mathbf{N}: \quad \mathbf{o}(x) = 0$
+\item Funkce následníka:\\
+$\forall x \in \mathbf{N}: \quad \mathbf{s}(x) = x + 1$
+\item Vybrání $j$-tého prvku:\\
+$n,j \in \mathbf{N}, 1 \leq j \leq n, x_{1},\ldots,x_{n}\in \mathbf{N}: \mathbf{I}_{n}^{j}(x_{1},\ldots,x_{n}) = x_{j}$
+\end{enumerate}
+
+\subsection{Operátory}
+\begin{enumerate}
+\item Substituce:
+\[m,n \in \mathbf{N}, f:\mathbf{N}^{m}\rightarrow \mathbf{N}, g_{i}: \mathbf{N}^{n} \rightarrow \mathbf{N}, i = 1,\ldots,m:\]
+\[\mathbf{S}_{n}^{m}(f,g_{1},\ldots,g_{m}) = f(g_{1}(\vec{x}),\ldots,g_{m}(\vec{x}))\]
+Jde o analogii složení velkého programu z podprogramů.
+\item Primitivní rekurze:
+\[\forall n \in \mathbf{N}, f: \mathbf{N}^{n-1} \rightarrow \mathbf{N}, g: \mathbf{N}^{n+1}\rightarrow \mathbf{N}, h:\mathbf{N}^{n}\rightarrow \mathbf{N}, \vec{x} \in \mathbf{N}^{n-1}\]
+\[\mathbf{R}_{n}(f,g) = h\]
+funkce $h$ je přitom definována rekurzivně:\\ 
+\[h(0,\vec{x}) = f(\vec{x})\]
+\[h(i+1,\vec{x}) = g(i,h(i,\vec{x}),\vec{x})\]
+Jde o analogii \emph{for} cyklu. Kdybychom $for$ cyklus definovali rekurzí, tak by funkce $f$
+sloužila jako ukončovací podmínka rekurze a $g$ by se prováděla při každém novém rekurzivním volání.
+\item Minimalizace:
+\[\forall n \in \mathbf{N}, f:\mathbf{N}^{n+1} \rightarrow \mathbf{N}, h:\mathbf{N}^{n} \rightarrow \mathbf{N}\]
+\[\mathbf{M}_{n}(f) = h\]
+kde pro funkci $h$ platí:\\
+\[h(x_{1},\ldots,x_{n})\downarrow = z, z \in \mathbf{N}\]
+\[\Leftrightarrow\]
+\[f(x_{1},\ldots,x_{n},z)\downarrow = 0 \wedge \forall j < z : f(x_{1},\ldots,x_{n},j)\downarrow \neq 0\]
+Jde o analogii \emph{while} cyklu. Kód v \verb#C++# pro funkci $f$ se dvěma proměnnými by mohl vypadat takto:
+\begin{verbatim}
+int f(x1,y);
+
+int h(x1)
+{
+   int z = 0;
+
+   while(f(x1,z) != 0)
+        ++z;
+	
+   return z;
+}
+\end{verbatim}
+\end{enumerate}
+
+\begin{definition} \emph{PRF,ORF,ČRF}
+\begin{itemize}
+\item \emph{Částečně rekurzivní funkce} jsou odvozeny ze základních funkcí pomocí operátorů.
+\item \emph{Obecně rekurzivní funkce} jsou ty ČRF, které jsou všude definované.
+\item \emph{Primitivně rekurzivní funkce} jsou takové ORF, při jejichž odvození nebylo použito odvozovací pravidlo minimalizace.
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Hierarchie ČRF] pro třídy ČRF, ORF a PRF platí:
+\[
+PRF \subsetneq ORF \subsetneq CRF
+\]
+\end{theorem}
+
+\begin{proof}
+První ostrá inkluze $PRF \subsetneq ORF$:\\
+Ukážeme, že Ackermanovu funkci nelze odvodit bez operátoru minimalizace.
+V důkazu se zavádí hloubka funkcí podle počtu vnořených \verb+for+-cyklů a ukáže se,
+že žádný konečný počet vnoření pro ackermanovu funkci nestačí.
+Druhá ostrá inkluze $ORF \subsetneq CRF$:\\
+Ukážeme existenci funkce, která je ČRF ale není ORF. Provedeme minimalizaci funkce $g(x,y)=y+1$, která \emph{nikdy nevrací 0}:
+\[
+M(g(x,y)) = h(x): h(x)\downarrow = z \Leftrightarrow g(x,z)\downarrow = 0 \wedge \forall y \leq z g(x,y)\downarrow \neq 0
+\]
+Hledaná funkce (ČRF co není ORF) je potom $h$.
+\end{proof}
+
+\section{Třetí část}
+
+\begin{definition}[Rekurzivní predikát]
+je každý predikát $P(x)$, pro který existuje nějaká \textbf{ORF} $c_{P}$ (tzv. charakteristická funkce), že platí:
+\[
+c_{P}(x)= \left\{
+\begin{array}{l}
+1 \Leftrightarrow P(x) = true\\
+0 \Leftrightarrow P(x) = false
+\end{array}
+\right.
+\]
+\end{definition}
+
+\begin{definition}[Rekurzivně spočetný predikát]
+je každý predikát $P(x)$, pro který existuje nějaká \textbf{ČRF} $c_{P}$ (tzv. charakteristická funkce), že platí:
+\[
+c_{P}(x)\downarrow = \left\{
+\begin{array}{l}
+1 \Leftrightarrow P(x) = true\\
+0 \Leftrightarrow P(x) = false
+\end{array}
+\right.
+\]
+Pokud $f(x)\uparrow$, tak nevíme o pravdivosti predikátu nic.
+\end{definition}
+
+\begin{definition}[Rekurzivní množina]
+je každá množina $M$, ke které existuje \emph{rekurzivní predikát} $P_{M}(x)$ definovaný následovně:
+\[
+\forall x: x\in M \Leftrightarrow P_{M}(x)
+\]
+Každá rekurzivní množina je také definičním oborem nějaké ORF.
+\end{definition}
+
+\begin{definition}[Rekurzivně spočetná množina]
+je každá množina $M$, ke které existuje \emph{rekurzivně spočetný predikát} $P_{M}(x)$ splňující:
+\[
+\forall x: x\in M \Leftrightarrow P_{M}(x)
+\]
+\end{definition}
+
+\begin{definition}[Graf funkce.] Pro funkci $f$ definujeme její graf jako množinu:
+\[
+\lbrace <x,y>\ |\ f(x)\downarrow = y \rbrace
+\]
+Kde $<x,y>$ je zakódovaná dvojice čísel $x$ a $y$.
+\end{definition}
+
+\begin{theorem}[O množinových operacích a RSM.]
+Konjunkce a disjunkce zachovávají rekurzivní spočetnost. Mějme RSM $A$ a $B$. Potom platí:
+\begin{itemize}
+\item $A \cup B$ je \emph{rekurzivně spočetná množina}
+\item $A \cap B$ je \emph{rekurzivně spočetná množina}
+\end{itemize}
+\end{theorem}
+
+\paragraph{Ekvivalentní definice} pro rekurzivně spočetnou množinu $M$:\\
+$M$ je rekurzivně spočetná právě když:
+\begin{itemize}
+\item $M$ je definičním oborem nějaké ČRF
+\item existuje primitivně rekurzivní predikát $P(x,y)$, pro který platí:
+\[
+M = \lbrace x\ |\ (\exists y)P(x,y)\rbrace
+\]
+\item $M$ je grafem nějaké ČRF
+\end{itemize}
+
+\paragraph{Očíslování rekurzivně spočetných množin.} Jestliže $e$ je G\"{o}delovo číslo nějakého TS (nějaké ČRF), potom
+\[
+W_{e} = \lbrace x | \varphi_{e}(x)\downarrow \rbrace
+\] 
+je $e$-tá rekurzivně spočetná množina.
+
+\begin{theorem}[Post]
+Množina $M$ je \emph{rekurzivní} právě když $M$ i její doplněk $\bar{M}$ jsou \emph{rekurzivně spočetné}.
+\end{theorem}
+
+\begin{theorem}[Věta o selektoru]
+Pro každý rekurzivně spočetný predikát $R(x,y)$ existuje taková ČRF $f$, že platí:
+\[
+\exists y:\ R(x,y) \Leftrightarrow f(x)\downarrow = y
+\]
+\end{theorem}
+
+\begin{definition}[Převoditelnost.]
+\begin{itemize}
+\item Množina $A$ je \emph{1-převoditelná} na $B$ právě když existuje \emph{prostá} ORF $f$ tak že:
+\[
+\forall x \in A \Leftrightarrow f(x) \in B
+\]
+Značení: $A \leq_{1} B$ 
+\item Množina $A$ je \emph{m-převoditelná} na $B$ právě když existuje nějaká ORF $f$ tak, že platí výše uvedená podmínka.
+Značení: $A \leq_{m} B$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Úseková funkce]
+je taková funkce, jejímž definičním oborem je počáteční úsek (nebo celé) $\mathcal{N}$.
+\end{definition}
+
+\begin{theorem}[Rekurzivní množiny]
+jsou právě obory hodnot rostoucích úsekových ČRF.
+\end{theorem}
+
+\begin{theorem}[Rekurzivně spočetné množiny]
+jsou právě obory hodnot prostých úsekových ČRF.
+\end{theorem}
+
+\section{Čtvrtá část}
+
+\subsection{Algoritmicky nerozhodnutelné problémy}
+
+\begin{theorem} \emph{Halting problem}\\
+Neexistuje algoritmus, který by pro daný turingův stroj $T$ a data $S$ rozhodnul, jestli $T(S)$ konverguje (skončí výpočet), nebo diverguje (neskončí výpočet).
+\end{theorem}
+
+\begin{proof}
+Pro spor předpokládejme že takový algoritmus existuje. Označme ho $H$. Platí, že $\forall (T,S)$, kde $T$ je kód turingova stroje a $S$ jsou vstupní data, algoritmus $H$ skončí a dá odpověď:
+\begin{equation}
+H(T,S) =
+\left\{
+	\begin{array}{ll}
+	1 & pokud\qquad T(S)\downarrow\\
+	0 & pokud\qquad T(S)\uparrow\\
+	\end{array}
+\right.
+\end{equation}
+Pomocí algoritmu $H$ sestrojíme turingův stroj $A$ (který vždy zastaví, protože je odvozen od $H$).
+Pokud $K$ je kód nějakého TS, chování stroje $A$ je definováno následovně:
+\begin{eqnarray}
+A(K) = 1\quad \Leftrightarrow\quad H(K,K) = 0\\
+A(K) = 0\quad \Leftrightarrow\quad H(K,K) = 1 
+\end{eqnarray}
+Je-li $Q$ kód stroje $A$, snadno dojdeme ke sporu:
+\[
+A(Q) = 0 \Leftrightarrow H(Q,Q) = 1 \Leftrightarrow A(Q) = 1
+\] 
+\end{proof}
+
+\paragraph{Halting problém jako množina:}
+\[
+K_0 = \lbrace <x,y>\ |\ \varphi_{x}(y)\downarrow \rbrace
+\]
+Jde o množinu dvojic $<x,y>$, takovou, že stroj s kódem $x$ se zastaví na datech $y$. Tato množina je rekurzivně spočetná, ale není rekurzivní.
+Diagonálu problému zastavení lze zapsat jako:
+\[
+K = \lbrace x\ |\ \varphi_{x}(x)\downarrow \rbrace 
+\]
+
+Důkaz nerozhodnutelnosti (tedy částečné rekurzivity) $K_0$ lze provést převodem na $K$ o které předtím dokážeme, že je částečně rekurzivní.
+
+\begin{theorem} \emph{Cantorova diagonální metoda}\\
+Mějme posloupnost množin $\lbrace A_n \rbrace_n$.
+Potom pro množinu $B = \lbrace x_n \| x_n \notin A\rbrace$ platí: $\forall n:\quad B\neq A_n$.
+\end{theorem}
+
+\section{Pátá část}
+
+\subsection{Věty o rekurzi}
+\paragraph{Co říká věta o rekurzi?} funkce $f$ ve větě o rekurzi dělá to, že vezme číslo programu a přepíše ho na jiné číslo tak,
+že program s tím novým číslem počítá totéž. No a to je přeci super ne? Teď víme, že lze "portovat" programy mezi různými jazyky a že
+může existovat víc implementací, které dělají totéž.
+
+\begin{theorem}[Věta o rekurzi]
+Pro libovolnou ČRF $f$ existuje číslo $a$ tak, že pro každý vstup $x$ platí:
+\[
+\varphi_{f(a)}(x) \simeq \varphi_{a}(x)
+\]
+\end{theorem}
+
+\begin{proof}
+Sestavíme TS s číslem $e$, který poté, co dostane na vstupu $z$ a $x$ pracuje následovně:
+\begin{enumerate}
+\item spočítá $s(z,z)$ (funkce $s$ je z Kleeneho věty)
+\item spustí $f$ na to  co vzešlo z $s(z,z)$ (tedy $f(s(z,z))$) a čeká...
+\item pokud se dočká, tak zavolá univerzální stroj s číslem $f(s(z,z))$ na vstup $x$
+\end{enumerate}
+Platí:
+\[
+\varphi_{f(s(z,z))}(x) \simeq \psi_{2}(e,z,x) \simeq^{s-m-n} \psi_{1}(s(e,z),x) \simeq \varphi_{s(e,z)}(x)
+\]
+No a teď stačí vytáhnout trumfy: $a=s(e,e)$ a $e=z$. Takže věta platí.
+\end{proof}
+
+\begin{remark}
+Program s číslem $a$ počítá déle:
+\begin{enumerate}
+\item vezme $e$, a spočítá $s(e,e)$ (tedy svoje vlastní číslo $a$)
+\item zavolá $f(a)$ aby věděl jaký program má zavolat pro výpočet nad vstupem $x$
+\item zavolá $\varphi_{f(a)}(x)$
+\end{enumerate}
+Program s číslem $f(a)$ už rovnou volá UTS na vstup $x$.
+\end{remark}
+
+\begin{definition}[Produktivní množina]
+\end{definition}
+
+\subsection{Aplikace vět o rekurzi}
+
+\begin{theorem}[Rice]
+Buď $\mathcal{A}$ \emph{netriviální}(není prázdná, ani neobsahuje všecny ČRF) třída částečně rekurzivních funkcí. Dále buď
+\[
+A_{\mathcal{A}}= \lbrace x\ |\ \varphi_{x} \in \mathcal{A}\rbrace
+\]
+množina jejich čísel. Platí tvrzení: $A_{\mathcal{A}}$ není rekurzivní množina. 
+\end{theorem}
+
+\begin{proof}
+Sporem: předpokládejme, že je $A_{\mathcal{A}}$ rekurzivní.
+Potom existuje ORF $f$, která je charakteristickou funkcí množiny $A_{\mathcal{A}}$.
+Dále mějme čísla $a \in A_{\mathcal{A}}$ a $b \notin A_{\mathcal{A}}$ (nějaké takové existují, protože je $\mathcal{A}$ netriviální).
+
+Nyní zkonstruujeme ORF $h$:
+\[
+h(x) = \left\{
+\begin{array}{lcl}
+a & \Leftrightarrow & f(x) = 0\\
+b & \Leftrightarrow & f(x) = 1\\
+\end{array}
+\right.
+\]
+
+Podle \textbf{věty o rekurzi} má ale funkce $h$ pevný bod $p$ takový, že:
+\[
+\varphi_{p}(x) \simeq \varphi_{h(p)}(x)
+\]
+takže funkce s čísly $p$ a $h(p)$ vyčíslují totéž a měly by obě být uvnitř $\mathcal{A}$ nebo mimo. Což je ve sporu s tím, že
+pokud je $p$ uvnitř $A_{\mathcal{A}}$ tak $h(p)$ je mimo a naopak.
+\end{proof}
+
+\paragraph{Co říká Riceova věta?} O tom, jestli \emph{dva programy počítají totéž} nelze rozhodnout algoritmicky.
+Třída $\mathcal{A}$ je zde třída programů které počítají totéž a množina $A_{\mathcal{A}}$ je množinou jejich kódů.
+Pokud by byla tato množina rekurzivní, dokázali bychom efektivně rozhodnout pro dané dva programy, jestli počítají totéž.
+Pan Rice říká, že to nejde.  
+
+\section{Šestá část}
+
+\subsection{Gödelovy věty}
+
+\begin{definition}[Rekurzivní neoddělitelnost]
+dvojice množin $A,B: A \cap B = \emptyset$ je \emph{rekurzivně neoddělitelná}, pokud neexistuje žádná rekurzivní množina $M: A\subseteq M$ pro kterou: $M \cap B = \emptyset$ 
+\end{definition}
+
+\begin{definition}[Efektivní neoddělitelnost]
+dvojice množin $A,B: A \cap B = \emptyset$ je \emph{efektivně neoddělitelná}, pokud exisuje ČRF $\varphi$ taková, že:
+\[
+\left.
+\begin{array}{r}
+\exists x: A\subseteq W_{x}\\
+\exists y: B\subseteq W_{y}\\
+W_{x} \cap W_{y} = \emptyset
+\end{array}
+\right\} \Rightarrow \varphi(x,y)\downarrow\ \wedge\ \varphi(x,y) \notin W_{x} \cup W_{y}
+\] 
+\end{definition}
+
+\begin{definition}[Základní aritmetická síla]
+Jazyk prvního řádu má \emph{základní aritmetickou sílu} pokud obsahuje:
+\begin{itemize}
+\item $\bar{0}$ - literál pro 0
+\item $\bar{1}$ - literál pro 1
+\item $+,\times$ - funkční symboly
+\item konečně mnoho axiomů
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Axiomatizovatelnost]
+Teorie $T$ je axiomatizovatelná, pokud množina všech dokazatelných formulí je rekurzivně spočetná.
+\end{definition}
+
+\begin{theorem}[Gödelovy věty o neúplnosti]
+Jestliže má $T$ základní aritmetickou sílu a je bezesporná, potom:
+\begin{enumerate}
+\item množina formulí dokazatelných v $T$ není rekurzivní
+\item Pokud je $T$ axiomatizovatelná, potom navíc:
+	\begin{enumerate}
+		\item existuje formule $F$, kterou v $T$ nelze rozhodnout
+		\item v $T$ nelze dokázat vlastní bezespornost 
+	\end{enumerate}
+\end{enumerate}
+\end{theorem}
+
+\end{document}
+

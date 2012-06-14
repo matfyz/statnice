@@ -1,0 +1,893 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{listings}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+
+\section*{Porovnávání funkcí}
+Výrok $P(n)$ platí pro dostatečně velké $n$, pokud existuje $n_{0}$ tak, že $\forall n > n_{0}:\ P(n)$.
+
+Mějme dvě funkce $f(n)$ a $g(n)$. Potom říkáme:
+\begin{itemize}
+\item $f(n) = O(g(n))$, pokud $\exists c>0$ tak, že pro dostatečně velké $n$ platí:
+\[
+f(n) \leq c.g(n)
+\]
+
+\item $f(n) = \Omega(g(n))$, pokud $g(n) = O(f(n))$
+
+\item $f(n) = \Theta(g(n))$, pokud $f(n) = O(g(n))$ a zároveň $g(n) = O(f(n))$
+
+\item $f(n) = o(g(n))$, pokud $\forall \varepsilon > 0$ a pro dostatečně velké $n$ platí:
+\[
+f(n) \leq \varepsilon . g(n)
+\]
+
+\item $f(n) = \omega(g(n))$, pokud $g(n) = o(f(n))$
+\end{itemize}
+
+\section*{Pojmy}
+
+\begin{definition}[Turingův stroj]
+$M$ je definován jako pětice:
+\[
+M = (\Sigma,Q,q_{0},F,\delta)
+\]
+kde:
+\begin{itemize}
+\item $\Sigma$ je neprázdná množina symbolů
+\item $Q$ je neprázdná množina stavů
+\item $q_{0} \in Q$ je počáteční stav
+\item $F \subseteq Q$ je množina koncových stavů (pokud je stroj v koncovém stavu, tak končí výpočet)
+\item pro stroj s 1 páskou:
+\[
+\delta: Q \times \Sigma \rightarrow Q \times \Sigma \times \lbrace \blacktriangleleft, \bullet, \blacktriangleright \rbrace
+\]
+\end{itemize}
+\textbf{Akceptor} je TS, který daný vstup buď přijme, nebo odmítne (má pouze dva koncové stavy $F = \lbrace q_{Y},q_{N} \rbrace$).\\
+\textbf{Transducer} dostane na vstupu nějaké slovo $x \in \Sigma^{*}$ a když skončí výpočet,
+tak na výstupní pásce (která je write only) vydá slovo $y$.
+\end{definition}
+
+\begin{definition}[Klasifikace problémů]
+\begin{itemize}
+\item \emph{problém obecný} - pro daný vstup chceme získat nějaký výstup (př. graf $G$ - vrcholové pokrytí $G$)
+\item \emph{problém optimalizační} - pro daný vstup chceme získat výstup s danými vlastnostmi (př. graf $G$ -\emph{minimální} vrcholové pokrytí $G$)
+\item \emph{problém rozhodovací} - pro daný vstup chceme rozhodnout zda existuje řešení (př. graf $G$ - existuje vrcholové pokrytí $G$ velikosti $k$?)
+\item \emph{problém početní} - pro daný vstup chceme zjistit počet řešení (př. graf $G$ - počet nezávislých podmnožin velikosti $k$?)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Det./Nedet. časová složitost jazyka]
+$L$ má \emph{Det./Nedet. časovou složitost} $t(n)$ pokud existuje Det./Nedet. TS $M$,
+který pro vstupní slovo $|w|=n$ rozpozná jestli $w \in L$ po max. $t(n)$ krocích.\\
+\end{definition}
+
+\begin{definition}[Det./Nedet. prostorová složitost jazyka]
+$L$ má \emph{Det./Nedet. prostorovou složitost} $s(n)$ pokud existuje Det./Nedet. TS $M$,
+který pro vstupní slovo $|w|=n$ rozpozná jestli $w \in L$ a využije při tom prostor max. $s(n)$.
+\end{definition}
+
+\begin{definition}[Množiny jazyků:]
+jazyky pro které existují stejně efektivní TS:
+\begin{itemize}
+\item $DTIME(t(n))$ - jazyky s det. časovou složitostí $t(n)$
+\item $NTIME(t(n))$ - jazyky s nedet. časovou složitostí $t(n)$
+\item $DSPACE(s(n))$ - jazyky s det. prostorovou složitostí $s(n)$
+\item $NSPACE(s(n))$ - jazyky s nedet. prostorovou složitostí $s(n)$
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Složitostní třídy:]
+sjednocení jazyků pro které existují podobně efektivní TS:
+\begin{itemize}
+\item $\mathbf{P} = \bigcup_{c>0} DTIME(n^{c})$
+\item $\mathbf{PSPACE} = \bigcup_{c>0} DSPACE(n^{c})$
+\item $\mathbf{NP} = \bigcup_{c>0} NTIME(n^{c})$
+\item $\mathbf{NPSPACE} = \bigcup_{c>0} NSPACE(n^{c})$
+\item $\ldots$
+\end{itemize}
+\end{definition}
+
+\begin{theorem}[Redukce počtu pásek na 1]
+Ke každému $k$-páskovému ($k \geq 2$) DTS $M$ lze sestrojit $1$-páskový stroj $M^{'}$ tak, že oba stroje rozpoznávají stejný jazyk.
+Pokud  $M$ pracuje v čase $t(n)$ pro vstup velikosti $n$, potom $M^{'}$ může pracovat v čase $5.k.t^{2}(n)$.
+\end{theorem}
+
+\begin{proof}
+Shrnutí důkazu:
+\begin{itemize}
+\item abeceda $M^{'}$ je rozšířená tak, aby šlo označit kde je která hlava původního stroje
+\item $M$ má $k$ pásek a udělá maximálně $t(n)$ kroků - tím je omezen největší možný navštívený prostor (!)
+\item $M^{'}$ používá 1 pásku na které má vstup ($n$ buněk) + zakódované všechny pásky (vstupní - $n$ buněk, zbytek $k.t(n)$ buněk).
+Dohromady tedy maximálně $2n + k.t(n)$ buněk (vstupní je tam vlastně dvakrát a
+ostatní pásky mají omezenou délku maximálním počtem kroků stroje $M$)
+\item $M^{'}$ potřebuje $(n+nk)n = O(n^{2})$ kroků na zkopírování vstupu
+\item Páska $M^{'}$ má $2n + k.t(n) \leq (k+2)t(n)$ buněk.
+\item Simulace jednoho kroku $M$ proběhne ve dvou průchodech pásky $M^{'}$:
+	\begin{enumerate}
+		\item $\rightarrow$: zjištění pozic hlav
+		\item $\leftarrow$: zápis a pohyb hlav
+	\end{enumerate}
+\item $2.(k+2)t(n) \leq 5k.t(n)$, takže celkem $5k.t^{2}(n)$ kroků
+\end{itemize}
+Podle věty o lineárním zrychlení to umíme srazit na $t^{2}(n)$ kroků.
+\end{proof}
+
+\begin{theorem}[Redukce počtu pásek na 2]
+Ke každému $k$-páskovému ($k\geq 2$) DTS $M$ umíme sestrojit $2$-páskový stroj $M^{'}$ tak, že oba stroje rozpoznávají stejný jazyk.
+Pokud $M$ pracuje v čase $t(n)$ pro vstup velikosti $n$, pak $M^{'}$ může pracovat v čase $t(n)*log\ t(n)$. 
+\end{theorem}
+
+\begin{proof}
+Hlavní ideje důkazu:
+\begin{itemize}
+\item jedna páska je "naskládaná" (dvoustopé bloky délky $2^{i}$, kde $i$ je vzdálenost od středu pásky) a druhá odkládací
+\item hýbe se obsahem pásek a hlavy zůstávají na jednom místě
+\item Nejhorší případ při přesunu nastává když jsou všechny bloky zaplněné. V takovém případě se provádí operace se složitostí $O(|B_{i}|)$, kde $B_{i}$ je první volný blok (během výpočtu se dodržují určitá pravidla pro zaplňování bloků)
+\end{itemize}
+\end{proof}
+
+\section{První část}
+
+\subsection{Věty o zrychlení}
+Uvedené věty se zabývají lineárním zrychlením v případě DTS. Pro NTS by měly fungovat taky.
+Obě věty o zrychlení se dokazují pomocí následujícího lemmatu:
+\begin{lemma}
+DTS $M$ má $k \geq 2$ pásek a rozpoznává jazyk $L$ v čase $t(n)$ ($n$ je délka vstupu).
+Potom pro každé celočíselné $r$ existuje stroj $M^{'}$, který rozpoznává $L$ v čase:
+\[
+n+\lceil\frac{n}{r}\rceil+6*\lceil t(n)/r \rceil
+\]
+\end{lemma}
+
+\begin{proof}
+Co dělá stroj $M^{'}$?
+\begin{enumerate}
+\item zkomprimuje obsah pásky - $r$ původních buněk se nacpe do 1 buňky nového stroje ($n$ - kroků)
+\item vrátí se na začátek nově vytvořené pásky ($\lceil\frac{n}{r}\rceil$ - kroků)
+\item provádí výpočet nad konečnými úseky pásky - 3 buňky najednou (všechno lze zakódovat do přechodové funkce a extra stavů).
+Jedna fáze obnáší načtení 3 buněk (4 kroky - $\leftarrow\ \rightarrow\ \rightarrow\ \leftarrow$), zjištění nového stavu a případné přepsání 2 změněných buněk (2 kroky).
+\end{enumerate}
+Provede tedy $r$ kroků původního stroje v jedné svojí fázi, která zabere 6 kroků ($6*\lceil t(n)/r \rceil$).
+\end{proof}
+
+\begin{theorem}[O zrychlení 1.]
+Mějme DTS $M$ s $k$ páskami, který rozpoznává jazyk $L$.
+Pokud $M$ pracuje v čase $T(n)$ ($n$ - délka vstupního slova) a zároveň platí:
+\[
+lim_{n\rightarrow \infty} \frac{T(n)}{n} = \infty
+\]
+potom pro každé $c>0$ existuje DTS $M^{'}$ s $k$ páskami, který rozpoznává $L$ a pracuje v čase $c*T(n)$.
+\end{theorem}
+
+\begin{theorem}[O zrychlení 2.]
+Mějme DTS $M$ s $k$ páskami, který rozpoznává jazyk $L$.
+Pokud $M$ pracuje v čase $T(n)=c*n$ ($n$ - délka vstupního slova a $c>1$), potom pro každé $\varepsilon > 0$
+existuje DTS $M^{'}$ s $k$ páskami, který rozpoznává $L$ a pracuje v čase $(1+\varepsilon)*n$
+\end{theorem}
+
+\paragraph{Důsledky vět o zrychlení:}
+\begin{itemize}
+\item Pokud $lim_{n\rightarrow \infty} \frac{T(n)}{n} = \infty$, potom:
+\[
+\forall c>0:\ DTIME(T(n))=DTIME(cT(n)) 
+\]
+\item Pokud $T(n)=cn$ pro nějaké $c>1$, potom:
+\[
+\forall \varepsilon >0:\ DTIME(T(n))=DTIME((1+\varepsilon)n)
+\]
+\item Obojí platí stejně i pro $NTIME$.
+\end{itemize}
+
+\begin{theorem}[Blumova věta o zrychlení]
+Mějme rekurzivní funkci $r(n)$. Potom existuje rekurzivní jazyk $L$ takový, že pro každý DTS $M_i$ který rozpoznává $L$ v prostoru
+$S_{i}(n)$ existuje DTS $M_{j}$, který rozpoznává $L$ v prostoru $S_{j}(n)$ a při tom \emph{skoro všude} platí:
+\[
+r(S_{j}(n)) \leq S_{i}(n) 
+\]
+\end{theorem}
+
+\begin{remark}
+Když naštvete zkušební komisi, tak se Vás zeptá na Blumovu větu o zrychlení.
+Je to totiž fundamentální věta o složitosti vyčíslitelných funkcí. (viz. \emph{Blum's speedup theorem} - \verb+en.wikipedia.org+)
+\end{remark}
+
+\subsection{Věta o mezerách}
+V důkazu věty o mezerách jsou využita následující pomocná tvrzení:
+
+\begin{lemma}[Skoro všude]
+Pokud DTS $M$ přijímá jazyk $L$ s prostorovou složitostí $S(n)$ skoro všude (tzn. až na konečně mnoho vyjímek),
+potom existuje DTS $M^{'}$, který přijímá $L$ s prostorovou složitostí $S(n)$ (všude). 
+\end{lemma}
+
+\begin{remark}
+Konečně mnoho výjimek lze ošetřit zvlášť. Nicméně $M^{'}$ nelze zkonstruovat, protože neumíme výjimky předem identifikovat. 
+\end{remark}
+
+\begin{lemma}[Kontrola prostoru]
+Mějme dán DTS $M$, fixovanou délku vstupu $n$ a číslo $m$. Potom existuje DTS $K$, který dokáže vždy rozhodnout, zda je $m$
+maximální počet použitých buňěk při výpočtu stroje $M$ nad vstupem délky $n$.
+\end{lemma}
+
+\begin{remark}
+Na konečném prostoru má stroj $M$ konečně mnoho konfigurací. Jejich počet lze zeshora odhadnout číslem $H$.
+Pokud udělá $M$ při výpočtu víc než $H$ kroků, tak se dostal do smyčky a $K$ může vydat odpověď. 
+\end{remark}
+
+\begin{theorem}[Borodinova věta o mezerách]
+Mějme rekurzivní funkci $g(n)\geq n$. Potom existuje rostoucí rekurzivní funkce $S(n)$ taková, že
+\[
+DSPACE(S(n))=DSPACE(g(S(n)))
+\]
+\end{theorem}
+
+Platí i verze pro $NSPACE$, $DTIME$ a $NTIME$.
+
+\begin{proof}(by Peter Černo)
+Máme:
+\begin{itemize}
+\item G\"{o}delovo očíslování pro všechny DTS ($M_{i}$ - $i$-tý DTS)
+\item Funkci $S_{i}(n)$ - vrací maximální počet použitých buněk při výpočtu DTS $M_{i}(x)$ (přes všechna $|x|\leq n$)
+\end{itemize}
+Rádi bychom rostoucí rekurzivní funkci $S(n)$.
+
+Mějme jazyk $L\in DSPACE(g(S(n)))$ tedy existuje DTS $M_{k}$, který ho rozpoznává a platí 
+
+\end{proof}
+
+\begin{proof}
+\begin{enumerate}
+	\item Zavedeme značení: pro DTS $M_{i}$ definujeme číslo $S_{i}(n)$:
+	\begin{itemize}
+		\item pokud se nad všemi vstupy délky $n$ stroj $M_{i}$ zastaví, je $S_{i}(n)$ maximální počet zabraných buněk
+		\item $S_{i}(n) = +\infty$, pokud existuje vstup délky $n$, nad kterým se $M_{i}$ nezastaví
+	\end{itemize}
+\item Zkonstruujeme rekurzivní funkci $S(n)$, která $\forall k$ splňuje:
+	\begin{itemize}
+		\item $S_{k}(n) \leq S(n)$ pro skoro všechna $n$ (konečný počet výjimek)
+		\item $S_{k}(n) > g(S(n))$ pro nekonečně mnoho $n$ (nekonečný počet čísel $n$ s danou vlastností)
+	\end{itemize}
+\item Taková $S(n)$ nám umožní dokázat inkluzi $DSPACE(g(S(n))) \subseteq DSPACE(S(n))$.
+Protože opačná inkluze je jednoduchá, tak dostaneme rovnost.
+\end{enumerate}
+
+Funkce $S(n)$ se definuje pro fixované $n$.
+
+Pokud $L \in DSPACE(g(S(n)))$, tak určitě existuje $M_k$, pro který platí $\forall n:\ S_{k}(n) \leq g(S(n))$.
+Protože pro všechna $k$ platí (z toho jak je vymyšlená $S(n)$) že $S_{k}(n) \leq S(n)$, může se stát, že stroj $M_{k}$, pro konečně mnoho vstupů $n$ využije víc, než $S(n)$ buněk. Tedy splňuje předpoklady lemmatu, které nám zaručuje existenci DTS, který má prostorovou složitost menší než $S(n)$ a rozpoznává stejný jazyk.
+\end{proof}
+
+\subsection{Věty o hierarchii tříd složitosti}
+Věty o hierarchii v zásadě říkají, že když dostane turingův stroj víc prostředků (čas/prostor), tak dokáže rozhodovat
+složitější jazyk, který předtím nedokázal.
+
+\begin{theorem}[Časová deterministická hierarchie]
+Pokud jsou $f$ a $g$ časově konstruovatelné funkce splňující podmínku:
+\[
+f(n).log(f(n)) = o(g(n))
+\]
+Potom platí následující ostrá inkluze:
+\[
+DTIME(f(n)) \subsetneq DTIME(g(n))
+\]
+\end{theorem}
+
+\begin{proof}
+Chceme najít jazyk $L$, který patří do $DTIME(g(n))$ a nepatří do $DTIME(f(n))$.
+Zkonstruujeme speciální DTS $M$, který poběží v čase $g(n)$ a od všech strojů,
+co pracují v čase $f(n)$ se bude lišit alespoň na jednom vstupu. Jazyk rozpoznávaný strojem $M$ bude mít požadovanou vlastnost.
+\begin{enumerate}
+\item prefixově očíslujeme všechny dvoupáskové stroje (tzn. validní kód stroje může mít libovolně dlouhý prefix třeba z 0)
+\item popíšeme stroj $M$:
+	\begin{itemize}
+		\item stroj $M$ dostane na vstupu číslo $w$ ($|w|=n$)
+		\item vezme $M_{w}$ a simuluje si jeho výpočet nad $w$ a dělá si čárky na za každý jeho krok.
+		\item pokud $M_{w}$ odmítne vstup $w$ v čase nejvýš $g(n)$
+		(počet čárek umíme porovnat protože $g(n)$ je časově konstruovatelná), tak náš stroj $M$ vstup $w$ přijme. Jinak odmítne.
+	\end{itemize}
+\item Proč má jazyk $L$ přijímaný strojem $M$ požadovanou vlastnost?
+	\begin{itemize}
+		\item Existuje pro něj DTS pracující v čase $g(n)$ - $M$, takže $L \in DTIME(g(n))$.
+		\item Pro spor předpokládejme, že $L \in DTIME(f(n))$.
+		(tedy existuje nějaký stroj $Q$, který rozpoznává $L$ a pracuje v čase $f(n)$)
+		\item Stroje máme prefixově očíslované, takže existuje $w$ takové, že $Q$ je stejný jako $M_{w}$.
+		\item Když $M_{w}(w)\downarrow = 0$ (odmítne vlastní kód), tak $w \notin L$, jenomže v takovém případě stroj $M$ slovo $w$ přijímá, takže $w \in L$. No a takhle to přeci nejde, takže máme \textbf{SPOR!}. 
+		\item Když $M_{w}(w)\downarrow = 1$ (přijme vlastní kód), tak $w \in L$, jenomže stroj $M$ za těchto okolností slovo $w$ odmítne, takže $w \notin L$. Takže zase \textbf{SPOR!}.  
+	\end{itemize}
+\end{enumerate}
+Předpoklad $f(n).log(f(n)) = o(g(n))$ je k tomu, že musíme $Q$ převést na dvoupáskový stroj. Při tom se může stát, že se zvětší jeho abeceda.
+Velikost abecedy určuje konstantu $c_t$, která ovlivňuje dobu simulace, takže stroj, který běžel v čase $T(n)$ lze simulovat v $c_{t}*T(n)*log(T(n))$, kde $c_t$ je konstanta určená velikostí abecedy simulovaného stroje.
+Výše uvedený předpoklad nám zaručuje, že pro libovolnou takovou konstantu najdeme $n$ (délka kódu stroje $M_{w}$),
+pro které bude platit $f(n)*log(f(n)) \leq g(n)$, takže stroj $M$ simulaci stihne v čase $g(n)$. 
+\end{proof}
+
+\begin{theorem}[Časová nedeterministická hierarchie]
+Pokud jsou $f$ a $g$ časově konstruovatelné funkce splňující podmínku:
+\[
+f(n+1) = o(g(n))
+\]
+Potom platí následující ostrá inkluze:
+\[
+NTIME(f(n)) \subsetneq NTIME(g(n))
+\]
+\end{theorem}
+
+\begin{theorem}[Prostorová deterministická hierarchie]
+Pokud jsou $f$ a $g$ prostorově konstruovatelné funkce splňující podmínku:
+\[
+f(n) = o(g(n))
+\]
+Dále ať platí $f(n)\geq log_{2}\ n$.
+Potom platí následující ostrá inkluze:
+\[
+DSPACE(f(n)) \subsetneq DSPACE(g(n))
+\]
+\end{theorem}
+
+\begin{proof}
+Podobně jako v případě časové deterministické hierarchie popíšeme konstrukci stroje, který pracuje na prostoru $g(n)$ a
+jazyk který rozpoznává nepatří do $DSPACE(f(n))$. Tentokrát prefixově číslujeme jednopáskové stroje a
+předpoklad $f(n) = o(g(n))$ využíváme k tomu abychom ukázali, že můžeme libovolný stroj převést na jednopáskový a
+najít pro něj (převedený stroj) dostatečně dlouhý prefixový kód, aby platilo $c_{t}*f(n) \leq g(n)$, kde $c_t$ je nějaká konstanta která vznikne převodem.
+\end{proof}
+
+\begin{theorem}[Prostorová nedeterministická hierarchie]
+Ať $\varepsilon > 0$ a $r > 0$. Potom platí:
+\[
+NSPACE(n^{r}) \subsetneq NSPACE(n^{(r+\varepsilon)})
+\]
+\end{theorem}
+
+\begin{proof}
+Důkaz se provadí sporem a využívá translační lemma.
+\end{proof}
+
+
+\subsection{Konstruovatelné funkce}
+Pojem konstruovatelnosti nám dodává pocit jistoty, že pro danou funkci existuje DTS, který ji vždycky spočítá.
+Na každý vstup má odpověď - a to v dohledné době (časová konstruovatelnost), nebo aspoň víme jak dlouhá páska mu bude stačit (prostorová konstruovatelnost).
+
+\begin{definition}[Rekurzivní funkce]
+Funkci $f: \mathbf{N} \rightarrow \mathbf{N}$ nazveme \emph{rekurzivní}, pokud existuje DTS transducer,
+který přepíše ($\forall n\in \mathbf{N}$) vstup $1^{n}$ na výstup $1^{f(n)}$.
+\end{definition}
+
+\begin{definition}[Vyčíslitelnost v čase]
+Funkce $f: \mathbf{N} \rightarrow \mathbf{N}$ je \emph{vyčíslitelná v lineárním čase}, pokud je rekurzivní, a příslušný transducer udělá při výpočtu max. $c.f(n)$ kroků pro nějaké $c \geq 1$.
+\end{definition}
+
+\begin{definition}[Vyčíslitelnost v prostoru]
+Funkce $f: \mathbf{N} \rightarrow \mathbf{N}$ je \emph{vyčíslitelná v lineárním prostoru}, pokud je rekurzivní, a příslušný transducer použije při svém výpočtu max. $c.f(n)$ buněk pro nějaké $c \geq 1$. 
+\end{definition}
+
+\begin{definition}[Časová konstruovatelnost]
+O funkci $f: \mathbf{N} \rightarrow \mathbf{N}$ řekneme, že je \emph{časově konstruovatelná}, pokud existuje DTS takový,
+že se pro každý vstup délky $n$ zastaví právě po $f(n)$ krocích.
+\end{definition}
+
+\begin{definition}[Prostorová konstruovatelnost]
+O funkci $f: \mathbf{N} \rightarrow \mathbf{N}$ řekneme, že je \emph{prostorově konstruovatelná}, pokud existuje DTS takový, že při práci nad
+libovolným vstupem délky $n$ použije právě $f(n)$ buněk na pásce.
+\end{definition}
+
+\begin{theorem}[Časová konstruovatelnost a vyčíslitelnost v lin. čase]
+Mějme funkci $f: N \rightarrow N$, takovou, že:
+\[
+\exists \epsilon > 0, \exists n_0: \forall n > n_0: f(n) \geq (1+\epsilon)n
+\]
+Potom platí: $f$ je časově konstruovatelná $\Leftrightarrow$ $f$ je vyčíslitelná v lineárním čase
+\end{theorem}
+
+\begin{theorem}[Prostorová konstruovatelnost a vyčíslitelnost v lin. prostoru]
+Mějme funkci $f: N \rightarrow N$. Potom platí: $f$ je prostorově konstruovatelná $\Leftrightarrow$ $f$ je vyčíslitelná v lineárním prostoru
+\end{theorem}
+
+\begin{remark}
+Každá časově konstruovatelná funkce $f$ je i prostorově konstruovatelná pokud splňuje podmínku:
+\[
+\exists \epsilon > 0, \exists n_0: \forall n > n_0: f(n) \geq (1+\epsilon)n
+\]
+Omezíme-li DTS počtem kroků, může označit omezený počet buněk na pásce, protože se dál nedostane.
+\end{remark}
+
+\subsection{Vztahy mezi prostorovými a časovými mírami, determinismem a nedeterminismem}
+Obecně platí, že nedeterminismus je silnější než determinismus neboť DTS je speciální případ NTS,
+jehož přechodová funkce nabízí vždy jen 1 alternativu.
+\[
+\forall f: \mathbf{N} \rightarrow \mathbf{N}
+\begin{array}{lcr}
+DTIME(f(n)) & \subseteq & NTIME(f(n))\\
+DSPACE(f(n)) & \subseteq & NSPACE(f(n))\\
+\end{array}
+\]
+
+\begin{theorem}[O vztazích]
+Nechť $f: \mathbf{N} \rightarrow \mathbf{N}$ je funkce. Potom platí:
+\begin{enumerate}
+\item $NTIME(f(n)) \subseteq DSPACE(f(n))$
+\item $L \in NSPACE(f(n)),\ f(n)\geq log\ n\ \Rightarrow \exists c_{L}: L\in DTIME(c_{L}^{f(n)})$
+\item $L \in NTIME(f(n)) \Rightarrow \exists c_{L}: L \in DTIME(c_{L}^{f(n)})$
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\begin{enumerate}
+\item Ať $L\in NTIME(f(n))$ a $M$ je stroj, který ho rozpoznává. Strom výpočtu $M$ je omezený počtem kroků. Každá větev výpočtu se dá jednoznačně popsat posloupností $f(n)$ rozhodnutí. Pokud v každém kroku řekneme stroji $M$, \emph{jak se má rozhodnout}, dostaneme DTS.
+
+Stačí tedy odsimulovat všechny větve výpočtu - použijeme 2-páskový stroj, který na 1. pásce bude systematicky generovat rozhodovací posloupnosti délky $O(f(n))$ a na druhé pásce simulovat odpovídající větve výpočtu v prostoru $f(n)$. Dohromady tedy vystačíme s prostorem $O(f(n))$. 
+\item NTS s omezeným prostorem má omezený počet konfigurací. Hledáme cestu v orientovaném grafu s $c_{L}^{f(n)}$ vrcholy.
+\item NTS $M$ co rozpoznává $L$ má časem omezenou hloubku stromu výpočtu. Generujeme seznam dosažitelných konfigurací.
+Jejich počet je omezen pro vhodnou konstantu $d$:
+\[
+s*(f(n))^{k}*t^{k*f(n)}\leq d^{f(n)}
+\]
+Přitom $s$ - počet stavů $M$, $k$ - počet pásek $M$, $t$ - počet páskových symbolů.
+\end{enumerate}
+\end{proof}
+
+\subsection{Savitchova věta}
+Upřesňuje vztah mezi prostorovou složitostí DTS a NTS. Ze Savitchovy věty vyplývá rovnost složitostních tříd: $PSPACE = NPSPACE$.
+
+\begin{theorem}[Savitch]
+Nechť $f: \mathbf{N} \rightarrow \mathbf{N}$ je prostorově konstruovatelná funkce a $f(n)\geq log\ n$.
+Potom platí:
+\[
+NSPACE(f(n)) \subseteq DSPACE((f(n))^{2})
+\]
+\end{theorem}
+
+\begin{proof}
+Mějme jazyk $A\in NSPACE(f(n))$. Ukážeme, že $A \in DSPACE((f(n))^{2})$:
+\begin{enumerate}
+\item $A \in NSPACE(f(n)) \Rightarrow \exists NTS M: L(M)=A$
+\item Stroj $M$ má konečně mnoho konfigurací - lze tedy sestrojit graf konfigurací $G=(V,E)$, kde $V$ jsou konfigurace $M$ a pro každou hranu $(a,b) \in E$ platí, že $M$ přejde z $a$ do $b$ v jednom kroku. 
+\item Sestavíme rekurzivní proceduru $Test(I_1,I_2,i)$, která testuje zda se dá z konfigurace $I_1$ přejít do $I_2$ v max. $2^{i}$ krocích.
+\item Mějme $I_0$ počáteční konfigurace stroje $M$. Zavoláme pro každou přijímající konfiguraci $F_k \in V$ proceduru $Test(I_0,F_k,c_{A}^{f(n)})$ a pokud odpoví kladně, tak přijmeme. 
+\end{enumerate}
+Zbývá ukázat:
+\begin{enumerate}
+\item \emph{počet konfigurací} je omezen výrazem: $(\#tape)*(\#state)*(\#headPos) = |\Sigma|^{f(n)}*|Q|*f(n)$,
+což je menší než $c_{A}^{f(n)}$ pro nějakou konstantu $c_{A}$ závislou na jazyku $A$ (resp. velikost $|\Sigma|$).
+\item \emph{rekurzivní volání} procedury $Test$ se zanoří max. do hloubky $f(n)$, pokud jako poslední parametr zadáme $c_{A}^{f(n)}$. Jedno volání si potřebuje pamatovat 3 konfigurace - tedy zabere prostor $O(f(n))$. Ve výsledku tedy zabereme $f(n)$ krát prostor $O(f(n))$, což je $O((f(n))^{2})$ \qed
+\end{enumerate}
+Graf $G$ nemusíme mít nikde explicitně zaznamenaný - potřebujeme pouze testovat dosažitelnost v 1 kroku a k tomu nám stačí přechodová funkce stroje $M$. BÚNO můžeme předpokládat, že $M$ má jen jeden přijímací stav (kdykoliv by měl přijmout, tak přejde do speciálního stavu, smaže pásku a přejde do toho jednoho konkrétního).
+\end{proof}
+
+\section{Druhá část}
+
+\subsection{Úplné problémy pro třídy NP, PSPACE}
+
+\paragraph{Klasifikace úloh:}
+\begin{itemize}
+\item \textbf{úloha} - pro vstup $X$ nalézt výstup $Y$ (př. pro daný graf nalézt kostru)
+\item \textbf{optimalizační úloha} - pro vstup $X$ nalézt optimální výstup $Y$ (př. nalézt nejmenší/největší kostru)
+\item \textbf{rozhodovací problém} - úloha s výstupem \emph{ANO} nebo \emph{NE} (př. SAT). Mějme rozhodovací problém $Q$. Potom
+	\begin{itemize}
+	\item $L_{Y}(Q)$ je jazyk všech kladných instancí ($\forall x \in L_{Y}(Q)$ se akceptor problému $Q$ se zastaví ve stavu $q_{Y}$)
+	\item $L_{N}(Q)$ je jazyk všech záporných instancí ($\forall x \in L_{N}(Q)$ se akceptor problému $Q$ se zastaví ve stavu $q_{N}$)
+	\end{itemize}
+\end{itemize}
+
+\begin{definition}[Polynomiálně vyčíslitelná funkce]
+Funkce $f: \lbrace 0,1 \rbrace^{*} \rightarrow \lbrace 0,1 \rbrace^{*}$ je \emph{polynomiálně vyčíslitelná}, pokud existuje DTS transducer $M$,
+který pro každý vstup $x \in \lbrace 0,1 \rbrace^{*},\ |x|=n$ vydá výstup $f(x)$ a to nejvýše po $p(n)$ krocích pro nějaký polynom $p$. 
+\end{definition}
+
+\begin{definition}[Polynomiální převoditelnost]
+Jazyk $A$ je \emph{polynomiálně převoditelný} na jazyk $B$ právě tehdy, když
+existuje polynomiálně vyčíslitelná funkce $f$ tak, že:
+\[
+\forall x:\ x \in A \Leftrightarrow f(x) \in B
+\]
+Značení: $A \varpropto B$\\
+\end{definition}
+
+\begin{definition}[Třída NP] může být definována jedním z následujících ekvivalentních způsobů:
+\begin{enumerate}
+\item Jazyk $L$ patří do třídy $NP$, pokud pro každé $x \in L$ existuje v polynomiálním čase ověřitelný certifikát.
+\item
+\[
+\mathbf{NP} = \bigcup_{c \geq 0} NTIME(n^{c})
+\]
+\end{enumerate}
+\end{definition}
+
+\begin{definition}[NP-těžkost]
+Problém $P$ je \emph{NP-těžký}, pokud jsou na něj všechny problémy ve třídě NP polynomiálně převoditelné.
+To co se převádí jsou jazyky kladných instancí:
+\[
+\forall Q \in NP: L_{Y}(Q) \varpropto L_{Y}(P)
+\] 
+\end{definition}
+
+\begin{definition}[NP-úplnost]
+Problém je \emph{NP-úplný}, pokud je ve třídě NP a je NP-těžký.
+\end{definition}
+
+\paragraph{Jak se co dokazuje?}
+\begin{itemize}
+\item Pokud chci dokázat NP-těžkost problému $X$, stačí vzít NP-úplný problém $Y$ a ukázat polynomiální převod na $Y \varpropto X$.
+\item Pokud chci dokázat, že je $X$ ve třídě NP, tak musím ukázat, že každá jeho kladná instance je ověřitelná v polynomiálním čase, nebo dokázat existenci NTS, který $L_{Y}(X)$ v polynomiálním čase rozpoznává.
+\end{itemize}
+
+\paragraph{Seznam NP-úplných problémů} (v závorce je uvedeno případné kódové označení pro pozdější referenci)
+\begin{itemize}
+\item \textbf{Kachlíkování}(KACHL) - je dána konečná množina barev $\chi$, konečná množina typů dlaždic a mříž do které se dají dlaždice skládat.
+Mříž má strany obarvené barvami z $\chi$ a dlaždice taky. Je možné vydláždit mříž pomocí dostupných dlaždic tak,
+aby na všech hranách spolu sousedily pouze shodné barvy?
+\item \textbf{SAT} - je dána booleovská formule v CNF s $n$ proměnnými. Existuje ohodnocení proměnných tak, aby byla formule splněna?
+\item \textbf{3-SAT} - jako SAT, pouze klauzule mají max. 3 literály.
+\item \textbf{3-Barvení grafu}(3-GC) - je dán graf $G=(V,E)$. Existuje obarvení vrcholů 3 barvami tak,
+že neexistuje hrana spojující 2 vrcholy se stejnou barvou?
+\item \textbf{Klika}(CS) - je dán graf $G=(V,E)$ a číslo $k$. Existuje v $G$ úplný podgraf velikosti $k$?
+\item \textbf{Nezávislá množina}(IS) - je dán graf $G=(V,E)$ a číslo $k$. Existuje v $G$ nezávislá množina vrcholů velikosti $k$?
+\item \textbf{Vrcholové pokrytí}(VC) - je dán graf $G=(V,E)$ a číslo $r$. Existuje množina vrcholů $U\subseteq V,\ |U|=r$, taková, že každá hrana z $E$ má v $U$ alespoň jeden vrchol?
+\item \textbf{Hamiltonovská kružnice}(HC) - je dán graf $G=(V,E)$. Existuje kružnice, která projde všechny vrcholy $V$ právě jednou?
+\item \textbf{Obchodní cestující}(TSP) - je dán vážený graf $G=(V,E)$ (funkce $\delta:E \rightarrow Z^{0}+$ určuje váhy hran) a číslo $r$. Existuje
+v $G$ hamiltonovská kružnice se součtem vah maximálně $r$?
+\item \textbf{Součet podmnožiny}(BAT) - je dána konečná množina čísel $\lbrace a_1, a_2, \ldots, a_n\rbrace$ a číslo $b$.
+Existuje podmnožina indexů $I \subseteq \lbrace 1,2, \ldots, n \rbrace$ pro kterou platí $\Sigma_{i\in I} a_{i} \leq b$?
+\end{itemize}
+
+\paragraph{Převody problémů} - krátké hinty jak asi tak zhruba na to
+\begin{itemize}
+\item $KACHL \rightarrow SAT$: každá dlaždice představuje 1 proměnnou (doménou je vždy množina možných dlaždic).
+Sestavíme logické formule, které vymezí okraje (speciální přidané typy dlaždic) a topologii mříže. Nakonec vymezíme formule, které definují legální vydláždění. Celkově se to všechno dá převést na SAT.
+\item $SAT \rightarrow 3-SAT$: každou klauzuli delší než 3 můžeme rozsekat na menší kousky, protože platí (pro novou proměnnou $y$):
+\[
+(x_1 \vee x_2 \vee x_3 \vee \ldots \vee x_n) \Leftrightarrow (x_1 \vee x_2 \vee \mathbf{y}) \wedge (\mathbf{\neg y} \vee x_3 \vee \ldots \vee x_n)
+\]
+\item $SAT \rightarrow 3-GC$: ?
+\item $SAT \rightarrow CS$: ?
+\item $SAT \rightarrow IS$: ?
+\item $SAT \rightarrow VP$: ?
+\end{itemize} 
+
+\begin{definition}[Třída PSPACE]
+\[
+\mathbf{PSPACE} = \bigcup_{c \geq 0} DSPACE(n^{c})
+\]
+\end{definition}
+
+\paragraph{Seznam PSPACE-úplných problémů}
+\begin{itemize}
+\item \textbf{TQBF} - mějme kvantifikovanou booleovskou formuli $F$ (má $n$ proměnných a délku $m$) v prenexním tvaru. Je $F$ pravdivá?
+\end{itemize}
+
+\subsection{Polynomiální hierarchie}
+
+\begin{definition}[DTS s orákulem]
+Ať je $A$ jazyk. DTS $M$ s orákulem $A$ má k dispozici dotazovací pásku, na které používá jazyk $A$.
+Má taky navíc speciální stavy \emph{dotaz}, \emph{ANO} a \emph{NE}. Pokud se během výpočtu dostane do stavu \emph{dotaz},
+přejde do stavu:
+\begin{itemize}
+\item \emph{ANO} - pokud slovo na dotazovací pásce patří do $A$
+\item \emph{NE} - pokud slovo na dotazovací pásce nepatří do $A$
+\end{itemize}
+Zároveň naráz vymaže dotazovací pásku. Jazyk rozpoznávaný strojem $M$ s orákulem $A$ značíme $L(M,A)$. 
+\end{definition}
+
+\begin{definition}[Turingovská převoditelnost]
+Jazyk $X$ je deterministicky turingovsky převoditelný na jazyk $Y$ pokud existuje DTS $M$: $L(M,Y)=X$
+Podle toho, jakou časovou/prostorovou složitost $M$ má mluvíme o různých typech převoditelnosti.
+Většinou se používá \emph{polynomiální časová} turingovská převoditelnost, která se značí:
+\[
+X \leq_{T} Y
+\]
+což znamená, že jazyk $X$ je \emph{deterministicky turingovsky převoditelný} na $Y$ v \emph{polynomiálním čase}.
+Naproti tomu:
+\[
+X \leq_{NP} Y
+\]
+znamená, že jazyk $X$ je \emph{nedeterministicky turingovsky převoditelný} na $Y$ v \emph{polynomiálním čase}
+(využívá tedy NTS s orákulem $X$).
+\end{definition}
+
+\begin{definition}[Relativizované třídy]
+Ať $A$ je jazyk a $\mathcal{C}$ je třída jazyků.
+\begin{itemize}
+\item $P(A) = \lbrace B\ |\ B \leq_{T} A \rbrace$
+\item $P(\mathcal{C}) = \lbrace B\ |\ \exists A\in \mathcal{C}: B \leq_{T} A\rbrace$
+\item Podobně také $NP(A)$ a $NP(\mathcal{C})$ - pouze převoditelnost je v těchto případech nedeterministicky turingovská
+\end{itemize}
+\end{definition}
+
+\begin{example}[Relativizace.]
+Například platí, že $NP(P) = NP$.
+\end{example}
+
+\begin{definition}[Doplňky jazyků a složitostních tříd.] Mějme jazyk $A$ nad abecedou $\Sigma$ a třídu $\mathcal{C}$. Potom definujeme následující:
+\begin{itemize}
+\item množina slov: $co(A) = \lbrace x\ |\ x\in \Sigma^{*}, x\notin A\rbrace$
+\item množina jazyků: $co(\mathcal{C}) = \lbrace co(A)\ |\ A\in \mathcal{C}\rbrace$
+\end{itemize} 
+\end{definition}
+
+\begin{definition}[Polynomiální hierarchie]
+Definujeme-li: $\Sigma_0 = \Delta_0 = \Pi_0 = P$, dále:
+\[
+\begin{array}{lcl}
+\Sigma_{k+1} & = & NP(\Sigma_k)\\
+\Delta_{k+1} & = & P(\Sigma_k)\\
+\Pi_{k+1} & = & co(NP(\Sigma_k))\\
+\end{array}
+\]
+Dostaneme strukturu složitostních tříd. Polynomiální hierarchie $PH$ je definována jako:
+\[
+PH = \bigcup_{i \geq 0} \Sigma_{i} = \bigcup_{i \geq 0} \Delta_{i} = \bigcup_{i \geq 0} \Pi_{i}  
+\]
+Přitom platí: $PH \subseteq PSPACE$
+\end{definition}
+
+\begin{remark}[K čemu je dobrá polynomiální hierarchie?]
+Poskytuje jemější dělení složitostních tříd mezi $P$ a $PSPACE$ - pokud ovšem nekolabuje (což by se stalo kdyby někdo dokázal $P=NP$).
+Protože $NP$ intuitivně odpovídá problémům s $\exists$ (\emph{existuje} v grafu nezávislá množina velikosti $k$?) a
+$co-NP$ zase problémům s $\forall$ (je pravda, že \emph{všechny} nezávislé množiny v grafu jsou menší než $k$?), kam potom patří například problém: \emph{existuje} v grafu nezávislá množina velikosti $k$ tak, že \emph{všechny} ostatní nezávislé množiny jsou menší než $k$?
+
+Polynomiální hierarchie takové zařazení umožňuje. 
+\end{remark}
+
+\paragraph{Kolaps hierarchie.} Pokud by platilo $\mathcal{P} = \mathcal{NP}$, potom také:
+\[
+\Sigma_{1} = NP(\Sigma_{0}) = \mathcal{NP} \Rightarrow \forall k\leq 0: \Sigma_{k} = \mathcal{NP} = \mathcal{P} 
+\]
+Takže i $PH = \mathcal{P}$.
+
+\subsection{Pseudopolynomiální algoritmy}
+
+\begin{definition}
+Mějme rozhodovací problém $Q$ a jeho instanci $X$. Definujeme:
+\begin{itemize}
+\item $code(X)$ - délka zápisu $X$ (např. počet bitů v binárním kódování)
+\item $max(X)$ - největší číslo v zadání problému (nejde o délku zápisu ale o absolutní hodnotu)
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Pseudopolynomiální algoritmus]
+Algoritmus řešící problém $Q$ je \emph{pseudopolynomiální}, pokud
+je jeho časová složitost nad vstupem $X$ omezena polynomem v proměnných $code(X)$ a $max(X)$.
+\end{definition}
+
+\begin{remark}
+Pokud existuje pro daný problém $X$ polynom $p$ tak, že platí $max(X) \leq p(code(X))$, je pseudopolynomiální algoritmus vlastně polynomiální.
+\end{remark}
+
+\begin{definition}
+O problému $X$ říkáme, že je \emph{číselný}, pokud neexistuje polynom $p$, pro který by platilo $max(X) \leq p(code(X))$.
+\end{definition}
+
+Problémy, které \emph{nelze} řešit žádným pseudopolynomiálním algoritmem jsou \textbf{silně NP-těžké}.
+Stejně tak nelze řešit pseudopulynomiálním algoritmem NP-úplné problémy, které \emph{nejsou číselné} (za předpokladu $P \neq NP$).
+
+\begin{example}
+Algoritmus pro rozhodovací verzi součtu podmnožiny.
+(tj. existuje pro danou posloupnost $a_1,\ldots,a_n$ a číslo $b$ množina indexů $I\subseteq \lbrace1,\ldots,n\rbrace$ tak, že:
+$\Sigma_{i\in I} a_i = b$ ?)
+\lstset{
+	basicstyle=\small,
+	stringstyle=\ttfamily,
+	columns=fixed,
+        numbers=left,
+	basewidth=0.6em,
+	breaklines=true,
+	breakautoindent=true}
+\begin{lstlisting}{frame=single}
+soucet({a1,...,aN},b) 
+A=[0 | _ <- [1..b]] 
+a0=b+1              
+for K in [1..N] do
+   A[aK] = 1
+   for L in reverse([a(K-1)..b]) do  
+      if A[L] == 1 &&
+         L+aK <= b than
+            A[L+aK] = 1
+return (A[b]==1)
+\end{lstlisting}
+\verb+SAMPLE INPUT: {21, 16, 14, 10, 7, 5}, 50+\\
+Komentar ke kodu:
+\begin{enumerate}
+\item \textbf{predpokladame $a_1 \geq \ldots \geq a_N$}
+\item bitova mapa velikosti b inicializovana nulami
+\item zarazka kvuli prvnimu behu vnitrniho cyklu
+\setcounter{enumi}{4}
+\item umime soucet velikosti aK
+\item postupujeme odzadu abychom nepricetli prvek aK vickrat
+\item pokud umime soucet velikosti L z predchozich kroku
+\item a po pricteni aK neprelezeme b
+\item poznamename si ze umime i soucet L+aK
+\item pokud je v A[b] 1, tak umime nascitat b
+\end{enumerate}
+
+Tento algoritmus je \emph{pseudopolynomiální} a rozhodovací verze součtu podmnožiny je \emph{číselný problém}.
+\end{example}
+
+\section{Třetí část}
+
+\section{Dolní odhady pro uspořádání}
+Rozhodování pomocí porovnávání lze vždycky reprezentovat pomocí stromu. Pro vstupní data velikosti $n$ máme $n!$ možností,
+jak mohou být přeházená (počet permutací). Každá z těchto možností představuje list v binárním stromu.
+
+Protože počet listů v hloubce $h$ je vždy menší, než $2^{h}$, dostaneme:
+\[
+n! \leq 2^{h}
+\]
+Po zlogaritmování zjistíme, že výška stromu je zezdola omezená:
+\[
+log\ n! \leq h
+\]
+Omezení je ale moc přísné - jde to lépe:
+\[
+n! \geq n(n-1)(n-2)\ldots2 \geq n(n-1)(n-2)\ldots \left( \frac{n}{2} \right) \geq \left( \frac{n}{2}\right)^{\frac{n}{2}}
+\]
+Takže:
+\[
+log\ n! \geq log\ \left( \frac{n}{2}\right)^{\frac{n}{2}} \geq \left( \frac{n}{2}\right) log\ \frac{n}{2} = \Theta(n.log\ n)
+\]
+
+\section{Aproximační algoritmy a schémata}
+
+\begin{definition}[Aproximační algoritmus]
+Jde o algoritmus používaný na řešení NP-těžkých optimalizačních problémů, který má následující vlastnosti:
+\begin{itemize}
+\item Vrací suboptimální až optimální řešení problému
+\item Pracuje v polynomiálním čase vzhledem k velikosti úlohy
+\item Dává odhad nalezeného řešení vzhledem k optimu:
+	\begin{itemize}
+		\item $OPT$ - optimální řešení
+		\item $APR$ - nalezené řešení
+		\item $f(Z)$ - kvalita řešení $Z$ (nezáporné číslo)
+	\end{itemize}
+Ať $A$ je aproximační algoritmus. Pokud pro všechny instance problému $X$ velikosti $n$ platí:
+\begin{itemize}
+\item $r(n) \geq max\lbrace \frac{f(OPT)}{f(APR)},\frac{f(APR)}{f(OPT)}\rbrace$ - potom $r(n)$ je poměrová chyba $A$
+\item $e(n) \geq \frac{|f(OPT) - f(APR)|}{f(OPT)}$ - potom $e(n)$ je relativní chyba $A$ 
+\end{itemize}
+\end{itemize}
+\end{definition}
+
+\paragraph{Příklady problémů pro aproximační algoritmy:} Maximální KLIKA (v počtu vrcholů), Optimalizační verze TSP (hledání HK s nejmenším součtem vah)...
+
+\begin{example}[Aproximační algoritmy]
+Algoritmy pro vrcholové pokrytí:
+\begin{itemize}
+\item Odebírej postupně vrcholy s největším stupněm.
+\item Odebírej postupně hrany (včetně hran incidentních s vrcholy odebrané hrany).
+\end{itemize}
+Algoritmus pro TSP
+\end{example}
+
+\paragraph{Šlo by nějak předem říct, jaká chyba je OK?} Pokud se spokojíme s nějakou chybou, tak se hodí ji nastavit přímo do algoritmu.
+K tomu slouží \emph{aproximační schémata}.  
+
+\begin{definition}[Aproximační schéma]
+Aproximačním schématem nazveme algoritmus, pro optimalizační úlohu $Q$, kterému lze zadat racionální číslo $e>0$.
+Poté pracuje nad libovolným vstupem $X$ jako aproximační algoritmus s relativní chybou $e$.
+\end{definition}
+
+\begin{definition}[Polynomiální AS]
+Je aproximační schéma, které pracuje v polynomiálním čase vzhledem k velikosti vstupu. (Vzhledem k $1/e$ ten čas ale může být exponenciální)
+\end{definition}
+
+\begin{definition}[Úplně Polynomiální AS]
+Je polynomiální AS, které pracuje v polynomiálním čase také vzhledem k $1/e$.
+\end{definition}
+
+\begin{example}[Příklad AS]
+Problém batohu - rozdíl oproti SP je v tom, že věci mají kromě váhy (musí se vejít do batohu) i cenu (tu chceme maximalizovat).
+\lstset{
+	basicstyle=\small,
+	stringstyle=\ttfamily,
+	columns=fixed,
+        numbers=left,
+	basewidth=0.6em,
+	breaklines=true,
+	breakautoindent=true}
+\begin{lstlisting}{frame=single}
+APPROX-SP({a1,...,aN},b,e) 
+L(0) = (0)
+for i = 1 to N do
+   L(i) = Merge(L(i-1),L(i-1)+ai)
+   L(i) = Prorez(L(i),e/N)
+
+return last(L(N))
+\end{lstlisting}
+Metoda $Prorez(L,d)$ odstraňuje ze seznamu prvky tak, aby za každý odstraněný prvek $y$ zůstal nějaký prvek $z$ pro který (pro $d \in <0,1>$):
+\[
+(1-d)y \leq z \leq y
+\]
+\end{example}
+
+\section{Čtvrtá část}
+
+\subsection{Metody tvorby algoritmů}
+
+\paragraph{Rozděl a panuj.}
+Celek rozlož na části a ty vyřeš rekurzivně - výsledky potom poskládej dohromady.
+
+Příklady:
+
+\begin{itemize}
+\item \verb+Mergesort+ s parametrem $L$ - posloupnost prvku
+	\begin{enumerate}
+	\item pokud je $L$ delší než jednoprvková, tak ji rozdel na $A$ a $B$, jinak vrat $L$ (uz je setridena)
+	\item zavolej $Mergesort(A)$ a $Mergesort(B)$ a vysledky slij procedurou \verb+Merge+
+	\item vrat posloupnost vytvorenou procedurou \verb+Merge+ z predchoziho kroku 
+	\end{enumerate}
+\item \verb+Quicksort+
+\end{itemize}
+
+\subparagraph{Analýza složitosti} algoritmů typu rozděl a panuj vede na rekurentní rovnice tvaru:
+\[
+\begin{array}{lclr}
+T(n) & = & D(n) + a*T(n/c) + S(n) & n \geq k\\
+T(n) & = & \Theta(1) & n < k\\		
+\end{array}
+\]
+kde:
+\begin{itemize}
+\item $D(n)$ - čas na rozdělení úlohy
+\item $S(n)$ - čas na složení výsledků
+\item $a,c,k$ - konstanty závislé na problému
+\end{itemize}
+K řešení rekurentních rovnic lze použít \emph{Master theorem}.
+
+\paragraph{Dynamické programování.}
+Vhodné pro úlohy, které jsou dělitelné do podúloh, jejichž řešení se mohou opakovat při skládání celkového řešení. Funguje na principu optimality podstrategií: \emph{Podstrategie optimální strategie je opět optimální.}
+
+Příklad:
+\begin{itemize}
+\item Výpočet $n$-tého Fibonacciho čísla
+\item Problém součtu podmnožiny
+\item Floyd-Warshalův algoritmus na hledání nejkratších cest mezi všemi vrcholy grafu.
+\end{itemize}
+
+\paragraph{Hladový algoritmus}
+Při hledání řešení jdi vždy po aktuálně nejlepší cestě.
+
+Příklad: Matroidový problém.
+
+\begin{definition}[Matroid]
+$M$ je uspořádaná dvojice $M=(S,I)$ splňující podmínky:
+\begin{itemize}
+\item $S$ je konečná a neprázdná množina prvků
+\item $I$ je množina podmnožin $S$, která má \emph{dědičnou vlastnost}:
+\[
+A \in I\ \wedge B \subseteq A \Rightarrow B \in I
+\]
+a \emph{výměnnou vlastnost}:
+\[
+\forall A \in I, B \in I, |A|<|B|\ :\ \exists x \in B \setminus A: A \cup \lbrace x\rbrace \in I 
+\]
+\end{itemize}
+\end{definition}
+
+\section{Pátá část}
+
+\subsection{Pravděpodobnostní algoritmy}
+
+Používají se pro řešení NP-těžkých úloh. Jako teoretický model pro zkoumání pravděpodobnostních algoritmů lze
+využít PTS - pravděpodobnostní turingův stroj, který má dvě přechodové funkce $\delta_0$ a $\delta_{1}$ a v každém kroku si hodí mincí, kterou z nich bude používat.
+
+\end{document}
+

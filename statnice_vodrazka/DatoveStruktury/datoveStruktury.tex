@@ -1,0 +1,581 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+\usepackage{latexsym}
+\usepackage{listings}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+
+\section*{Amortizovaná složitost}
+Na rozdíl od složitosti v nejhorším případě se při amortizované složitosti započítává i "vhodnost" stavu
+datové struktury pro provedení operace. Složitá operace zpravidla změní stav datové struktury tak, že k jejímu dalšímu použití
+dojde až za delší dobu. Lze počítat více způsoby:
+
+\begin{itemize}
+\item \emph{Agregační metoda} - spočítáme nejhorší možný čas $T(n)$ posloupnosti $n$ operací. Amortizovaná složitost je potom:
+\[
+\frac{T(n)}{n}
+\]
+\item \emph{Účetní metoda} - za každou provedenou operaci je třeba zaplatit určitý obnos $c$ - \emph{amortizovaná cena}.
+Jednoduché operace z tohoto obnosu spotřebují jen část (přebytek se uloží na účet),
+složité mohou potřebovat víc (co chybí, to se bere z účtu). To co se doopravdy spotřebuje je \emph{skutečná cena} operace.
+Pokud je stav na účtu vždy nezáporný, je $c$ amortizovaná složitost dané operace.
+\end{itemize}
+
+\begin{example}{Insert v dynamickém poli}
+Pokud se pole zaplní, naalokujeme dvakrát tak veké a překopírujeme všechny prvky.
+\begin{itemize}
+\item \emph{amortizovaná cena} - určíme ji na $2k+1$ kde $k$ je nějaká konstanta.
+\item \emph{skutečná cena} - stanovíme $k$ jako cenu za alokaci místa pro jeden prvek a jeho překopírování. Samotné vložení prvku do pole má cenu $1$.
+\end{itemize}
+Protože jsme to udělali chytře, tak nám vyjde, že nejhorší případ má skutečnou cenu $n*k$, kde $n$ je velikost plného pole před alokací.
+
+Máme jistotu, že než k tomuto případu dojde, bude na účtu obnos $2n*k$. Protože nové pole alokujeme dvakrát větší, je to přesně tolik, kolik potřebujeme.
+
+Amortizovaná složitost operace \verb+insert+ je tedy $O(2k+1)$, takže asymptoticky $O(1)$. Podmínka na nezáporný stav účtu je určitě splněna, protože každé "složité" operaci předchází dostatečně mnoho "jednoduchých", které účet stihnou naplnit. 
+\end{example}
+
+\section{Stromové vyhledávací struktury}
+Binární stromy, haldy, trie a B-stromy
+
+\subsection{Binární vyhledávací stromy}
+Všechny vychází ze základního BVS. Používají se k reprezentaci podmnožiny $S \subseteq U$ nějakého lineárně uspořádaného univerza.
+BVS umožňuje operace \verb+MEMBER+, \verb+INSERT+ a \verb+DELETE+, jejichž složitost závisí na výšce stromu.
+Pro každý uzel $x$ BVS definuje:
+\begin{itemize}
+\item $key(x)$ - přiřazený prvek
+\item $parent(x)$ - rodič uzlu
+\item $left(x)$ - levý syn
+\item $right(x)$ - pravý syn
+\end{itemize}
+Pro kořen $r$ platí $parent(r) = NIL$. Pro všechny listy $s$ platí $left(s)=NIL$ a $right(s)=NIL$.
+Je-li $x$ vrchol a $left(x) = u, right(x)= v$, potom platí:
+\[
+key(u) < key(x) \leq key(v)
+\]
+
+\paragraph{Efektivní operace} - protože efektivita operací závisí na výšce stromu, chceme pracovat s vyváženými stromy, jejichž výška je logaritmická vzhledem k počtu uložených prvků.
+
+\paragraph{AVL stromy}
+Oproti BVS každý uzel obsahuje navíc vyvažovací informaci \verb+N.balance+ $\in \lbrace -1, 0, 1\rbrace$.
+Význam je následující:
+\begin{itemize}
+\item $-1$ - levý podstrom je o 1 vyšší než pravý
+\item $0$ - oba podstromy mají stejnou výšku
+\item $1$ - pravý podstrom je o 1 vyšší než levý
+\end{itemize}
+Vyvažovací informace se používá při operacích \verb+INSERT+ a \verb+DELETE+ v rámci vyvažovacích procedur:
+\begin{itemize}
+\item jednoduchá rotace (levá/pravá)
+\item dvojitá rotace (levá/pravá)
+\end{itemize}
+Operace \verb+INSERT+ vyvažuje jednou. Operace \verb+DELETE+ vyvažuje max. $log(|S|)$-krát. 
+Logaritmická výška AVL stromu se dokazuje výpočtem $min(i)$ - \#vrcholů minimálního AVL stromu s výškou $i$ (složitě přes Fibonacciho čísla)
+a $max(i)$ - \#vrcholů maximálního AVL stromu s výškou $i$ (jednoduše indukcí).
+
+\paragraph{RB stromy}
+Mají navíc jednobitovou vyvažovací informaci (červená/černá) v každém uzlu. Navíc musí každý RB strom splňovat následující invarianty:
+\begin{itemize}
+\item Délka \emph{černé cesty}(počet vrcholů na cestě označených černě) z kořene do libovolného listu je stejná.
+\item Listy jsou označeny černě.
+\item Červený vrchol je buď kořen, nebo syn černého otce.
+\end{itemize}
+
+Operace \verb+INSERT+ vloží vrchol jako červený a obarví jeho syny černě.
+Následuje oprava obarvení směrem ke kořeni a poté jedno volání nějaké rotace.
+
+Operace \verb+DELETE+ volá buď 2x jednoduchou rotaci, nebo 1x jednoduchou a 1x dvojitou rotaci.
+Logaritmická výška RB stromu vzhledem k počtu uložených prvků je garantována díky invariantu černé cesty.
+
+Ať je $b$ délka černé cesty. Potom pro počet vrcholů $n$ platí:
+\[
+\begin{array}{lrcl}
+b=1 & 1 \leq & n & \leq 3\\
+b=2 & 2^{2}-1 \leq & n & \leq 2^{4}-1\\
+b=3 & 2^{3}-1 \leq & n & \leq 2^{6}-1\\
+    &              &\ldots & \\
+b   & 2^{b}-1 \leq & n & \leq 2^{2b}-1\\
+\end{array}
+\]
+
+\subsection{Haldy}Stromová datová struktura s lokální podmínkou na vnitřní vrcholy. Je-li $v$ vnitřní vrchol a $n_1,\ldots,n_k$ jeho následníci, potom platí:
+\[
+\forall i: f(v) \leq f(n_i)
+\]
+Umožňuje reprezentovat množinu $S$ s uspořádáním daným funkcí $f:S \rightarrow \mathbb{R}$ a poskytuje efektivní operace:
+\begin{itemize}
+\item \verb+Min(H)+ - nalezení minimálního prvku z haldy
+\item \verb+RemoveMin(H)+ - odebrání minimálního prvku z haldy
+\item \verb+Insert(x,H)+ - vložení prvku $x$ do haldy $H$
+\item \verb+Delete(x,H)+ - odebrání prvku $x$
+\item \verb+Increase(x,a), Decrease(x,a)+ - zvětší/zmenší hodnotu prvku $x$ o $a$
+\item \verb+Makeheap(S)+ - postaví haldu nad množinou $S$
+\item \verb+Merge(H1,H2)+ - sloučí haldy $H1$ a $H2$ 
+\end{itemize}
+
+\paragraph{d-regulární haldy} mají následující vlastnosti:
+\begin{itemize}
+\item každý vnitřní uzel má $d$ následníků (i kořen), nebo je listem
+\item pokud má uzel méně než $d$ následníků, jsou všichni následníci listy
+\item pokud očíslujeme všechny uzly průchodem do šířky a uzel, který má méně než $d$ následníků má číslo $i$, potom všechny uzly s číslem menším než $i$ mají přesně $d$ následníků a uzly s větším číslem než $i$ jsou listy
+\end{itemize}
+Téměř všechny operace jsou založeny na procedurách \verb+Up(v)+ (složitost $O(log(|S|))$ - může stoupat přes všechny patra) a \verb+Down(v)+ (složitost $O(d*log(|S|))$ - musí hledat minimum z $d$ synů v každém patře cestou dolů), které "probublávají" prvky haldou buď nahoru do kořene, nebo dolů na dno haldy. Operace \verb+Makeheap(S)+ (nasyp všechno do pole a pro každý prvek počínaje kořenem udělej \verb+Down+) vyjde teoreticky lépe (v čase $O(n)$), ale pro malé haldy se spíš vyplatí opakování \verb+Insert(x)+ (to pak bude v čase $O(n*log\ n)$).
+
+\paragraph{Leftist halda} je speciální případ 2-regulární haldy s dalšími vlastnostmi:
+\begin{itemize}
+\item umíme rozlišit levého a pravého syna libovolného vrcholu $v$
+\item pro každý vrchol $v$ definujeme $npl(v)$ - délka pravé cesty (po kolika krocích dojdu z $v$ do listu, když půjdu vždy doprava)
+\item když má vrchol jednoho syna, je to levý syn
+\item když má vrchol dva syny (levý - $u$ a pravý - $v$) potom platí:
+\[
+npl(u) \geq npl(v)
+\]
+\end{itemize}
+Vrchol $v$ který nemá žádného syna má $npl(v)=1$(!!). Visí na něm jakože dva listy, které nenesou žádnou hodnotu. V \verb+Merge+ se takové vrcholy považují za prázdnou haldu ($\emptyset$).
+Většina operací je implementována na základě rekurzivní operace \verb+Merge(H1,H2)+ (složitost $O(log(|H1|+|H2|))$).
+Následující jednoduchý fakt (dokazuje se indukcí podle velikosti podstromu):
+\[
+n \geq 2^{npl(root)}-1 
+\]
+lze použít k důkazu toho, že délka pravé cesty z kořene leftist haldy je omezena logaritmicky k počtu uložených prvků ($log(n+1) \geq npl(root)$). Z toho pak vyplývá složitost operace \verb+Merge+ od které se odvíjí složitosti ostatních operací. Operace \verb+Makeheap+ používá frontu, do které si iniciálně vloží jednoprvkové haldičky, které po dvou spojuje a hází na konec, dokud není ve frontě jen jedna halda.
+Tímhle způsobem lze docílit složitosti $O(|S|)$ vzhledem k počtu prvků - složitost \verb+while+ cyklu,
+ve kterém to všechno běží se počítá jako součet nekonečné řady.
+
+\begin{definition}[Binomiální strom] je stromová struktura definovaná rekurzivně:
+\begin{itemize}
+\item $H_0$ je jednoprvkový binomiální strom
+\item $H_i$ vznikne složením dvou disjunktních stromů $H_{i-1}$ (kořen jednoho z nich se stane kořenem nově vzniklého stromu)
+\end{itemize}
+Binomiální strom $H_i$ má následující vlastnosti:
+\begin{itemize}
+\item má $2^{i}$ vrcholů
+\item jeho výška je $i$
+\item jeho kořen má $i$ synů
+\item podstromy jeho synů jsou binomiálními stromy $H_0,H_1,\ldots,H_{i-1}$  
+\end{itemize}
+\end{definition}
+
+\paragraph{Binomiální halda} je uspořádaný seznam binomiálních stromů:
+\[
+H = [T_1,T_2,\ldots,T_k]
+\]
+V haldě nemohou být dva binomiální stromy stejného řádu ($T_i,T_j \in H\ \Rightarrow i\neq j $).
+Všechny uzly v binomiálních stromech splňují lokální haldovou podmínku na uspořádání.
+Normálně je většina operací založena na operaci \verb+Merge+ (zde se realizuje vyvažování - aby se zachovaly unikátní řády stromů v haldě).
+
+\paragraph{Líná binomiální halda} je binomiální halda se zeslabenými předpoklady na unikátní řády stromů.
+V seznamu stromů mohou být i stromy různých řádů - vyvažování se provádí pouze při operacích \verb+Min+ a \verb+Deletemin+.
+
+\paragraph{Vyvažovací procedura} pracuje se seznamy stromů řádu $i$ (postupně pro všechna $i$). Prvky ze seznamu po dvou spojuje a vkládá do seznamu $i+1$. Pokud nějaký zbyde, tak ho hodí do haldy. Výsledkem je halda, která obsahuje stromy s unikátními řády.
+
+\lstset{
+	basicstyle=\small,
+	stringstyle=\ttfamily,
+	columns=fixed,
+	basewidth=0.50em,
+	breaklines=true,
+	breakautoindent=true}
+\begin{lstlisting}{frame=single}
+vyvaz(L={O_1,O_2,..}) // O_i je seznam binomialnich stromu radu i (nektere seznamy mohou byt prazdne)
+i=0
+H={}
+while L != {{},{},...} do    // dokud jsou v L neprazdne seznamy
+  S=O_i              // aktualne zpracovavany seznam (stromy radu i)
+  D=O_(i+1)          // seznam stromu s vyssim radem (i+1)
+  while length(S) >= 2 do
+    T1=head(S)       // prvni dva stromy ze seznamu (maji stejny rad i)
+    T2=head(tail(S))
+    S=tail(tail(S))  // zbytek bez prvnich dvou
+    append(D,spoj(T1,T2)) // spoj stromy a zarad vysledek do seznamu pro vyssi rad
+  done
+  if length(S) > 0 then // zbyva posledni strom radu i (byl jich lichy pocet)
+    append(H,head(S))   // vloz zbyly strom do vysledne haldy
+	  O_i = {}  // vsechny stromy radu i jsou vyresene
+  i=i+1
+done 
+\end{lstlisting}
+
+\paragraph{Fibonacciho strom} je strom, ve kterém platí lokální haldová podmínka. Některé vrcholy (kromě kořene) mohou být označeny.
+Označení znamená, že byl od vrcholu odtržen některý syn. Fibonacciho strom má řád $i$ pokud má jeho kořen $i$ synů.
+Navíc každý Fibonacciho strom vznikl uvnitř nějaké Fibonacciho haldy, která byla na začátku prázdná posloupností haldových operací.
+
+\paragraph{Fibonacciho halda} je tvořena seznamem Fibonacciho stromů.
+Efektivita Fibonacciho haldy je založena na tom, že vznikla z prázdné haldy posloupností haldových operací.
+Operace \verb+Merge, Insert, Min+ a \verb+Deletemin+ jsou stejné jako v binomiálních haldách s línou implementací.
+Operace \verb+Increase+ a \verb+Decrease+ pracují s označením vrcholů. Amortizované složitosti:
+\begin{itemize}
+\item \verb+Insert+, \verb+Merge+ a \verb+Decrease+ - $O(1)$
+\item \verb+Min+, \verb+Deletemin+, \verb+Delete+ a \verb+Increase+ - $O(log(n))$
+\end{itemize}
+
+\paragraph{Manipulace s hodnotami prvků} se provádí pouze v operacích \verb+INCREASE+ a \verb+DECREASE+.
+Ve Fibonacciho haldách pracují s označením vrcholů a fungují zhruba takto:
+\begin{itemize}
+\item \verb+DECREASE+: když se sníží hodnota uzlu $x$, poruší se tím \emph{lokální haldová podmínka} vzhledem k rodiči $x$. Celý podstrom včetně $x$ se musí odříznout a vložit do haldy zvlášť (tím se zruší případné \emph{označení} vrcholu $x$, protože se stane kořenem) a vrchol $x$ se musí označit(jakože už přišel o jednoho syna). Pokud by se od $x$ odtrhával 2. syn, tak se potom musí odtrhnout i samotný vrchol $x$ (protože když někdo přijde o dva syny, tak to už je na čase aby se z něj stal kořen). To sice může vyvolat kaskádu odtrhávání, ale \emph{amortizovaně} to prý vychází dobře.
+\item \verb+INCREASE+: když se zvýší hodnota uzlu $x$, tak se tím poruší haldová podmínka vzhledem k dětem $x$. Je potřeba všechny děti utrhat a vložit do haldy jako samostatné stromečky. Stejně tak samotný vrchol $x$. Odtržení $x$ ale zase může vyvolat kaskádu odtrhávání, protože rodič $x$ už může být označený.
+\end{itemize}
+
+
+\subsection{Trie}
+Stromová datová struktura vhodná pro implementaci slovníku. 
+
+\paragraph{Slovník}
+Mějme abecedu $\Sigma$ velikosti $k$. Potom univerzum $U$ tvoří slova délky právě $l$
+(nekonečná slova mít nemůžeme a kratší slova doplníme zprava mezerami). Chceme reprezentovat nějakou množinu slov $S \subseteq U$.
+
+\paragraph{Základní varianta.}
+\begin{itemize}
+\item kořen odpovídá prázdnému slovu
+\item pokud uzel odpovídá slovu \verb+wx+, potom jeho předek odpovídá slovu \verb+w+
+\item pro každý list je definována funkce $N: L \rightarrow \lbrace 0,1 \rbrace$. Platí: $N(u)=1\ \Leftrightarrow$ uzel $u \in L$ odpovídá slovu $w \in S$.
+\item pro každé slovo $w \in S$ existuje ve struktuře odpovídající list
+\end{itemize}
+Složitost operace \verb+MEMBER+ je $O(1)$, složitost operací \verb+INSERT+ a \verb+DELETE+ je $O(kl)$. Paměťová složitost v nejhorším případě je $O(|S|lk)$. Dobrá množina slov pro příklad je: \verb+THERE IS A TAVERN IN THE TOWN+
+
+\subsection{B-stromy a jejich varianty}
+Jde o speciální případ \textbf{(a,b)-stromů}. Je asi lepší, nejdřív popsat co je (a,b)-strom a potom popisovat modifikace
+a vysvětlovat, k čemu jsou dobré.
+
+\begin{definition}[(a,b)-strom]
+pro $a \leq b$(kladná, přirozená) je kořenový strom $(T,t)$ pokud:
+\begin{itemize}
+	\item každý vnitřní vrchol $v \in T$ různý od kořene $t$ má minimálně $a$ a maximálně $b$ následníků
+	(dále požadujeme: $2 \leq a,\ 2a-1 \leq b$ - to nám umožní reprezentovat množiny všech velikostí)
+	\item kořen je buď list, nebo má minimálně $2$ a maximálně $b$ synů.
+	\item všechny listy $l$ jsou vzhledem ke kořeni $t$ ve stejné hloubce
+\end{itemize}
+\end{definition}
+
+\begin{remark}[Logaritmická výška] vzhledem k počtu listů $n$ (prvky reprezentované množiny $|S|=n$ jsou uloženy v listech!!):
+\begin{itemize}
+	\item $h=0$ - kořen je listem ($n=1$)
+	\item $h=1$ pro $n$ platí $2 \leq n \leq b$
+	\item $h=2$ pro $n$ platí $2a \leq n \leq b^{2}$
+	\item $h=3$ pro $n$ platí $2a^{2} \leq n \leq b^{3}$
+	\item atd.
+\end{itemize}
+Obecně platí: $2a^{h-1} \leq n \leq b^{h}$
+\end{remark}
+
+\paragraph{Struktura vrcholů v (a,b)-stromech.} Mějme vnitřní vrchol $v$. Potom $v=(S_{v},H_{v})$, kde:
+\begin{itemize}
+\item $S_{v}$ - je pole ukazatelů na syny velikosti $\rho_{v}$
+\item $H_{v}$ - je uspořádané pole hodnot (velikosti $\rho_{v}-1$) takové, že:
+$H_{v}[i]$ je největší hodnota z $S$ reprezentovaná v podstromu syna $S_{v}[i]$.
+\end{itemize}
+List $l$ obsahuje pouze klíč - $key(l)\in S$ a případně odkaz na data.
+
+\paragraph{Algoritmy} operací pro (a,b)-stromy:
+\begin{itemize}
+	\item \textbf{Vyhledej} - sestupuje od kořene, v každém uzlu $v$ hledá index $i$ aby věděl do kterého $S_{v}[i]$
+        má pokračovat. Ukazatel $S_{v}[i]$ ukazuje na podstrom reprezentující interval $[H_{v}[i-1],H_{v}[i])$.
+	\item \textbf{Štěpení} - štěpení uzlu, který má víc než $b$ synů
+	\item \textbf{Spojení} - spojení uzlů, z nichž jeden má $a$ synů a druhý méně než $a$
+	\item \textbf{Přesun} - přesun prvku mezi dvěma uzly
+\end{itemize}
+
+\paragraph{Varianty B-stromů}
+\begin{itemize}
+\item \textbf{$B$-stromy} řádu $b$ jsou vlastně $(a,b)$-stromy s $a=\lceil \frac{b}{2}\rceil$
+\item \textbf{$B^{*}$-stromy} - u vnitřních uzlů se odkládá štěpení (přehazováním k sousedovi) až do okamžiku,
+kdy jsou dva sousední uzly plné ze $\frac{2}{3}$
+\item \textbf{$B^{+}$-stromy} - mají listy propojené pomocí ukazatelů (dobré pro intervalové dotazy); využití v databázích a filesystémech
+\item \textbf{redundantní} vs. \textbf{neredundantní} - podle toho, kde jsou odkazy na data (pouze v listech vs. ve vnitřních uzlech)
+\end{itemize}
+
+\section{Hašování}
+Pomocí hašování se řeší problém\footnote{tzv. slovníkový problém}, jak reprezentovat podmnožinu $S$ nějakého univerza $U$ v tabulce velikosti $m$.
+Přitom zpravidla platí, že $m$ je prvočíslo, $|S| < m $ a $|S| \ll |U|$.
+
+Chceme množinu $S$ reprezentovat pomocí nějaké datové struktury, která podporuje efektivní operace:
+\begin{itemize}
+\item \textbf{MEMBER(x)} - platí $x \in S$ ?
+\item \textbf{INSERT(x)} - pokud $x \notin S$, tak vloží $x$ do datové struktury. 
+\item \textbf{DELETE(x)} - pokud $x \in S$, tak smaže $s$ z datové struktury.
+\end{itemize}  
+
+Nejjednodušší reprezentace $S$ by mohla být pomocí pole s přímým přístupem, které by mělo velikost univerza $|U|$. To je ale plýtvání pamětí, protože předpokládáme, že $|S| \ll |U|$. Na druhou stranu všechny požadované operace by mohly mít konstantní složitost.
+
+Hašování je metoda, která se snaží zachovat konstatntní složitost operací a zároveň šetřit paměť.
+Používá se při tom \emph{hašovací funkce}, pomocí které se zjišťuje pozice prvku v tabulce:
+\[h: U \rightarrow \lbrace 0, 1, \ldots, m-1 \rbrace\]
+Přitom může samozřejmě pro dva různé prvky $x,y \in U$ nastat situace kdy $h(x) = h(y)$. Tomu se říká kolize.
+Hašovací algoritmy se jí snaží minimalizovat a pomocí nejrůznějších mechanismů vyřešit.
+
+Základní předpoklady a požadavky pro hašování jsou:
+\begin{enumerate}
+\item Hašovací funkce $h$ je \textbf{snadno spočitatelná} (v čase $O(1)$, nezávisle na velikosti vstupu)
+\item Hašovací funkce zajišťuje \textbf{rovnoměrné rozdělení $U$}
+\[
+\forall i,j \in \lbrace 0, \ldots, m-1\rbrace:\ -1 \leq |h^{(-1)}(i)| - |h^{(-1)}(j)| \leq 1
+\]
+Když zahašujeme pomocí $h$ celé univerzum $U$, tak počty prvků kolidující na libovolných dvou pozicích tabulky se budou lišit maximálně o 1.
+\item Množina \textbf{$S$} ($|S|=n$) \textbf{je náhodně vybrána z univerza $U$} s pravděpodobností $\frac{1}{{|U|\choose n}}$.
+\item Každý prvek z $U$ \textbf{má stejnou pravděpodobnost, že bude argumentem operace.} 
+\end{enumerate}
+
+\paragraph{Metoda separovaných řetězců} řeší problém kolizí tak, že místo jednoho prvku ukládá do tabulky odkaz na seznam prvků.
+Seznam pak obsahuje všechny prvky, které na dané pozici tabulky kolidují.
+
+Poznámky k metodám:
+\begin{itemize}
+\item \textbf{MEMBER} prohledává seznam na dané pozici (prvek může být v seznamu právě jednou, nebo vůbec)
+\item \textbf{INSERT} (i \textbf{DELETE}) volá nejdřív metodu \textbf{MEMBER} a poté vloží nový prvek na konec seznamu (\textbf{DELETE} jenom smaže) 
+\end{itemize}
+
+\paragraph{Metoda uspořádaných řetězců} používá separované řetězce, které jsou navíc setříděné.
+Lepší výsledky lze očekávat při \textbf{neúspěšném vyhledávání} - nemusí se procházet celý řetězec až do konce.
+Při úspěšném vyhledávání je složitost přibližně stejná jako v případě separovaných řetězců bez uspořádání.
+
+Nevýhoda metod využívajících separované řetězce spočívá v neefektivním využití paměti.
+Když se všechny prvky nahašují na jednu pozici v tabulce, je to stejné, jako používat spojový seznam,
+ale navíc ještě alokujeme paměť pro seznamy k ostatním pozicím v tabulce.
+
+\paragraph{Hašování s přemísťováním} ukládá prvky do původní tabulky. Tabulka má navíc položky \emph{next} a \emph{prev},
+které nám umožňují uložit spojový seznam přímo do hašovací tabulky.
+
+\paragraph{Hašování se dvěma ukazateli} ukládá prvky do původní tabulky. V tabulce jsou navíc položky \emph{begin} a \emph{next}.
+Pomocí \emph{begin} zjistíme, kde začíná řetězec prvků kolidujících na dané pozici a pomocí \emph{next} zjistíme pozici následujícího prvku.
+
+\paragraph{Srůstající hašování} nezajišťuje oddělení řetězců. Tabulka má navíc pouze prvek \emph{next}.
+Podle toho kam se vkládá prvek při operaci \emph{INSERT} rozlišujeme \textbf{E}ISCH a \textbf{L}ISCH
+(\textbf{Early} Standart Coalescent Hashing a \textbf{Late} Standart Coalescent Hashing).
+\begin{itemize}
+\item EISCH vkládá \textbf{za první prvek}
+\item LISCH vkládá \textbf{na konec}
+\end{itemize}
+
+Další varianty LICH, VICH a EICH používají přidané řádky tabulky, do kterých hašovací funkce nemůže nic zahašovat. Tyto přidané řádky
+se přednostně využívají když se hledá volný řádek. Tento postup oddaluje srůstání řetězců. Jednotlivé varianty se opět liší tím,
+kam se vkládá nový prvek:
+\begin{itemize}
+\item LICH $\rightarrow$ Late Insert CH: vkládání na konec řetězce
+\item EICH $\rightarrow$ Early Insert CH: vkládání za první prvek
+\item VICH $\rightarrow$ Variable Insert CH: za poslední prvek řetězce, který je v pomocné části - pokud takový existuje. Pokud neexistuje,tak za první prvek.
+\end{itemize}
+
+Metody, které využívají speciální položky v tabulce mají zvýšené nároky na paměť. Následující metody nepotřebují žádné speciální položky v tabulce. Kolize jsou řešeny pomocí dalších hašovacích funkcí.
+
+\paragraph{Hašování s lineárním přidáváním} je metoda, která v případě kolize hledá nejbližší volný řádek. Když ho najde, tak tam prvek vloží.
+Přitom je třeba kontrolovat, jestli už neprocházíme tabulku podruhé.
+
+Nevýhodou je možnost vzniku shluků, které vedou ke zpomalení algoritmu.
+
+\paragraph{Dvojité hašování} využívá dvě hašovací funkce - $h_1$ a $h_2$.
+
+Při operaci \textbf{INSERT} se hledá nejmenší $i$ takové, že:
+\[
+(h_1(x) + i*h_2(x))\ mod\ m
+\]
+je index volného řádku.
+
+\paragraph{Složitost hašování s řetězci} se počítá na základě předpokladů pro hašování (rychlá spočitatelnost $h$, rovnoměrné rozdělení univerza, náhodný výběr prvků, náhodný výběr hašované množiny). Přitom významnou roli hrají:
+\begin{itemize}
+\item faktor naplnění $\alpha = \frac{n}{m}$
+\item očekávaná délka řetězců
+\item očekávaný počet testů (při vyhledávání v úspěšném/neúspěšném případě)
+\end{itemize}
+
+\paragraph{Další otázky k hašování}
+\begin{itemize}
+\item hledání volného řádku lze zpravidla implementovat pomocí zásobníku
+\item přeplnění lze řešit přehašováním celé tabulky. Přitom se rozhodujeme podle $\alpha$ a držíme tento parametr v mezích $<\frac{1}{4}, 1>$.
+\item operace \verb+DELETE+ v metodách, které ho nepodporují: metoda \emph{falešného delete} - prvek neodstranit, pouze zapsat speciální hodnotu, že je tam volno (\verb+INSERT+ tam potom může vkládat)
+\end{itemize}
+
+
+\paragraph{Univerzální hašování} je metoda, která umožňuje obejít předpoklad rovnoměrného
+rozložení dat pomocí náhodného výběru hašovací funkce. Hašovací funkce se přitom vybírá ze speciální množiny funkcí
+(tzv. \emph{c-univerzální systém}), ve které je zaručeno, že se většina funkcí z této množiny chová "dobře".
+
+\begin{definition}
+Množina funkcí $H = \lbrace h_i | \forall i \in I: h_i: U \rightarrow \lbrace 0, \ldots, m-1 \rbrace \rbrace$ je \emph{c-univerzální systém funkcí}, pokud:
+\[
+\forall x,y \in U, x \neq y: |\lbrace i \in I\ |\ h_i(x) = h_i(y) \rbrace| \leq c*\frac{|I|}{m}
+\]
+\end{definition}
+
+Existence c-univerzálních systémů:
+\begin{enumerate}
+\item předpoklad o univerzu: $U = \lbrace 0,1, \ldots, N-1\rbrace$, kde $N$ je prvočíslo
+\item množina funkcí:
+\[
+h_{a,b}(x) = ((ax + b)\ mod\ N)\ mod\ m
+\]
+\item $a,b \in I = \lbrace 0, \ldots , N-1 \rbrace$, tedy celkem $N^{2}$ funkcí
+\item zkoumáme kolik existuje dvojic $a,b$ takových, že pro nějaká $x,y \in U, x \neq y$:
+\[
+h_{a,b}(x) = h_{a,b}(y)
+\]
+\item soustava rovnic (regulární protože $x \neq y$):
+\[
+\begin{array}{lcl}
+(ax+b)\ mod\ N & = & rm + i\\
+(ay+b)\ mod\ N & = & sm + i\\
+\end{array}
+\]
+Počet řešení soustavy s proměnnými $a$,$b$ a pevně danými $r,s,i$ představuje počet kolidujících funkcí pro danou dvojici $x$ a $y$.
+\item Jsou-li $x$ a $y$ předem dány, zkoumáme počet různých kombinací pro $r,s$ a $i$.
+Přitom $i \in \lbrace 0,1,\ldots,m-1 \rbrace$. Počet možností pro $r$ a $s$ je omezen výrazem $\lceil \frac{N}{m} \rceil$ (nejdříve modulo $N$ a potom modulo $m$). Počet kolidujících prvků tedy je tedy $m*\left( \lceil \frac{N}{m} \rceil \right)^{2}$.
+\item Z nerovnosti:
+\[
+m*\left( \lceil \frac{N}{m} \rceil \right)^{2} \leq c*\frac{|I|}{m}
+\]
+stanovíme $c = \frac{\left( \lceil \frac{N}{m} \rceil \right)^{2}}{\left( \frac{N}{m} \right)^{2}}$
+a ukážeme, že takové $c$ splňuje definici c-univerzálního systému.
+\end{enumerate}
+
+\paragraph{Perfektní hašování} je metoda, která řeší problém kolizí jejich úplnou eliminací - používá hašovací funkci, při jejímž použití nedochází ke kolizím. Pro daná vstupní data (množina $S$) se zkonstruuje perfektní hašovací funkce a ta se potom používá.
+Přitom předpokládáme, že k operaci \textbf{INSERT} nebo \textbf{DELETE} téměř nedochází.
+
+\begin{definition}
+Mějme univerzum $U = \lbrace 0,1,\ldots, N-1 \rbrace$. Chceme hašovat množinu $S \subseteq U,\ |S|=n$ do hašovací tabulky velikosti $m$.
+Soubor funkcí $H = \lbrace h | h: U \rightarrow \lbrace 0,1,\ldots, m-1 \rbrace \rbrace$ nazveme \textbf{$(N,m,n)$-perfektní}, pokud pro libovolnou $S \subseteq U,\ |S|=n$ existuje perfektní hašovací funkce $h \in H$.
+\end{definition}
+
+\paragraph{Odhad velikosti} $(N,m,n)$-perfektního systému $H$.
+
+\paragraph{Důkaz existence} $(N,m,n)$-perfektního systému $H$.
+
+\paragraph{Konstrukce} $(N,m,n)$-perfektního systému.
+\begin{enumerate}
+\item Použijeme funkci tvaru $h_{k}(x) = (k*x\ mod\ N) mod\ m$
+\item Definujeme \emph{odchylku} od perfektnosti $b_{i}^{k} = |\lbrace x | x \in S: h_{k}(x) = i \rbrace|$.
+Funkce $k$, která bude perfektní bude splňovat:
+\[
+\forall i \in 0,\ldots,m-1\ :\ b_{i}^{k} \leq 1
+\]
+\item Ukážeme, že pro perfektní hašovací funkci musí platit:
+\[
+\Sigma_{i=0}^{m-1} (b_{i}^{k})^{2} - n < 2
+\]
+\item Ukážeme (pomocí magie), že čísel $k$, které jsou perfektní je alespoň $\frac{N-1}{4}$, což nám umožní použít pravděpodobnostní algoritmus, který takové $k$ najde. (Očekávaný počet pokusů při hledání je 4)
+\end{enumerate}
+
+\section{Mapování datových struktur do stránek vnější paměti počítače}
+Data jsou ve vnější paměti uložena ve stránkách. Předpokládáme, že na jednu stránku se vejde $b > 1$ záznamů. 
+Při práci s vnější pamětí (HDD,DVD,...) načítáme data po stránkách. Protože práce s vnější pamětí představuje typicky časově náročnou operaci (v porovnání s operacemi ve vnitřní paměti), chceme minimalizovat počet I/O operací (\emph{read}/\emph{write}) na 1 stránku. 
+Například při reprezentaci jednoduchých datových struktur (např. fronta nebo zásobník) lze použít \emph{buffer}.
+
+\paragraph{Slovníkový problém na externí paměti:} chceme DS, která umožňuje operace \verb+INSERT+, \verb+DELETE+ a \verb+MEMBER+ při minimálním počtu I/O operací.
+
+\paragraph{Schéma pro použití externího hašování.} Používáme pomocné struktury zvané \emph{adresář} a \emph{primární soubor}.
+\begin{enumerate}
+\item dostaneme dotaz a spočteme pomocí hašovací funkce pozici v \emph{adresáři} (ten se dá načíst do RAM)
+\item na dané pozici z adresáře zjistíme číslo stránky \emph{primárního souboru}, kterou načteme z disku
+\item v rámci stránky najdeme odkaz na fyzickou stránku, která obsahuje hledaná data
+\end{enumerate}
+Počet přístupů na disk při dotazu: 1x načtení stránky z primárního souboru + 1x načtení stránky se záznamem.
+Taky je třeba načíst z disku adresář (to ale stačí 1x při inicializaci). 
+
+\paragraph{Statické vs. dynamické hašování.}
+Rozdíl je v tom, jestli máme fixovanou délku \emph{primárního souboru} nebo ne. \textbf{Statické hašování} používá \emph{primární soubor konstantní velikosti} a tímpádem nemá možnost adresovat víc stránek než dokáže primární soubor pojmout.
+Naproti tomu \emph{dynamické hašování} nemá fixovaný počet stránek primárního souboru, takže se nemůže stát, že by nám stránky došly.
+
+\subsection{Statické hašování}
+
+\paragraph{Cormack} - \emph{perfektní} hašovací metoda.
+Využívá \emph{dvě hašovací funkce} a \emph{adresář} s $d$ řádky.
+Primární soubor má fixní počet řádků.
+\begin{itemize}
+\item primární hašovací funkce $h(k) \in \lbrace 0, \ldots, d-1 \rbrace$ vrací řádek adresáře pro daný klíč $k$
+\item jeden řádek adresáře obsahuje trojici: $(p,i,r)$ - (adresa v primárním souboru, maximální použitá hašovací funkce, počet kolidujících záznamů)
+\item sekundární hašovací funkce $h_{i}(k,r)$ pro dané $k,i,r$ jednoznačně určí relativní pozici prvku s klíčem $k$ v primárním souboru vzhledem k $p$
+\end{itemize}
+Při vkládání, nebo mazání prvku se musí přesunout celá kolidující skupina a najít nová hašovací funkce (perfektní v rámci skupiny).
+Nová funkce se hledá pro danou množinu klíčů velikosti $r$ tak, že se mění $i$.
+
+\paragraph{Larson-Kajla} - \emph{perfektní} hašovací metoda. Používá 2 hašovací funkce: $h(k,i) = (k + i) mod M$ ($M$ je počet stránek primárního souboru) a $s(k,i)=k^{i} mod b$ ($b$ je maximální počet záznamů ve stránce).
+Nepotřebuje adresář, ale používá fixní počet stránek primárního souboru.
+
+\subsection{Dynamické hašování}
+
+\paragraph{Fagin} - rozšiřitelné hašování s 1 hašovací funkcí $h: U \rightarrow \lbrace 0,1 \rbrace^{*}$.
+
+Metoda využívá \emph{adresář} který nese parametr $d$ - aktuální počet bitů rozlišovaných v rámci adresáře. Počet řádků v adresáři je $2^{d}$, což odpovídá počtu slov z množiny $\lbrace 0,1 \rbrace^{d}$.
+Každý řádek odkazuje na nějakou stránku \emph{primárního souboru}.
+
+Každá stránka $S$ v \emph{primárním souboru} nese parametr $p_{S}$ který udává počet bitů (délku prefixu), které jsou stejné pro všechny klíče
+nahašované do $S$.
+
+\paragraph{Litwin}
+
+\section{Třídění ve vnitřní a vnější paměti}
+
+\subsection{Vnitřní paměť}
+\paragraph{Algoritmy založené na porovnávání}
+\begin{itemize}
+\item Quicksort - podle principu rozděl a panuj. Problém výběru tzv. \emph{pivota} (proměnná $a$).
+	\lstset{
+	basicstyle=\small,
+	stringstyle=\ttfamily,
+	columns=fixed,
+	basewidth=0.50em,
+	breaklines=true,
+	breakautoindent=true,
+	language=haskell}
+\begin{lstlisting}{frame=single}
+quick [] = []
+quick (a:za) =  quick [m | m <- za, m < a]
+                ++ [a]
+                ++ quick [v | v <- za, v >= a]
+\end{lstlisting}
+V nejhorším případě složitost $O(n^2)$. Očekávaný případ $O(n*log\ n)$.
+\item Mergesort - opět rozděl a panuj. Slévání krátkých posloupností do delších. Vstupní posloupnost $A$
+	\begin{enumerate}
+	\item vytvoř frontu $Q$ obsahující rostoucí podposloupnosti $A$
+	\item dokud je ve frontě víc než jedna posloupnost, tak zavolej \verb+Merge(a,b)+ na první dvě a výsledek ulož do $Q$
+	\item vrať poslední posloupnost co zbyla ve frontě $Q$
+	\end{enumerate}
+\textbf{Analýza:} procedura \verb+Merge+ se provede v každém kole cyklu tolikrát, že celková složitost je $O(n)$
+(vždycky musí projít všechny prvky). Délky posloupností ve frontě: v prvním kole alespoň $1$, v druhém alespoň $2$ atd.
+(v $i$-tém alespoň $2^{i-1}$) takže celkem bude $log_{2} n$ běhů cyklu. Dohromady tedy $O(n*log n)$
+\item Heapsort - postavíme d-regulární haldu v čase $O(n)$ a $n$-krát provedeme operaci \verb+Deletemin+ v čase $O(log\ n)$
+\end{itemize}
+
+\paragraph{Ostatní}
+\begin{itemize}
+\item Radixsort
+\end{itemize}
+
+\subsection{Vnější paměť}
+Pokud se nám data nevejdou do vnitřní paměti, tak si musíme ukládat mezivýsledky na disk. Lze použít \emph{mergesort} na souborech.
+Předpokládejme, že chceme setřídit $900$ MB a máme k dispozici jen $100$ MB RAM.
+\begin{enumerate}
+\item Vytvořím setříděné kusy $C_1,\ldots,C_9$ velikosti $100$ MB (načtu, setřídím v paměti, uložím na disk)
+\item Z každého kusu načtu do paměti $10$ MB a $10$ MB si nechám na buffer
+\item Použiju 9-ti cestný mergesort:
+	\begin{enumerate}
+	\item ze začátku těch načtených kousků odebírám nejmenší prvek do bufferu
+	\item když se zaplní buffer, zapíšu ho na disk a uvolním
+	\item když se vyprázdní jeden z těch $10$ MB kousků, tak načtu z příslušného souboru pokračování
+	\end{enumerate}
+\item na konci budu mít na disku setříděný soubor
+\end{enumerate} 
+V prvním kroku můžu vytvořit delší než $100$ MB kusy, pokud použiju 2 $50$ MB haldy:
+\begin{itemize}
+\item načítám z původního $900$ MB souboru $P$ a stavím haldu $A$
+\item když je $A$ plná, zapisuju do souboru $C_i$ vždy menší z prvků: vrchol $A$, počátek $P$ a větší použiju na stavbu druhé haldy $B$
+\item když se vyprázdní jedna halda, načnu nový soubor $C_{i+1}$ a prohodím haldy $A$ a $B$  
+\end{itemize}
+U složitosti nás zajímá především počt přístupů na disk.
+\end{document}
+
