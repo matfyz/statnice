@@ -1,0 +1,612 @@
+\documentclass[a4paper]{article}      % Comments after  % are ignored
+\usepackage{amsmath,amssymb,amsfonts} % Typical maths resource packages
+\usepackage[utf8]{inputenc}
+\usepackage{czech}
+\usepackage{graphicx}
+\usepackage{latexsym}
+
+\newtheorem{theorem}{Věta}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Předpoklad}
+\newtheorem{corollary}[theorem]{Důsledek}
+
+\newenvironment{proof}[1][Důkaz]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{definition}[1][Definice]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{example}[1][Příklad]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+\newenvironment{remark}[1][Pozorování]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}]}{\end{trivlist}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\begin{document}
+
+\section*{Axiomy, pravidla a věty}
+
+\subsection*{\textsl{Axiomy:}}
+\begin{description}
+	\item[A1]$ A \rightarrow (B\rightarrow A)$
+	\item[A2]$ (A\rightarrow (B \rightarrow C)\rightarrow((A\rightarrow B)\rightarrow (A\rightarrow C)))$
+	\item[A3]$ (\neg B\rightarrow \neg A)\rightarrow(A\rightarrow B)$
+	\item[A4]$ (\forall x)A \rightarrow A_{x}[t]$ \\ tzv. \emph{schema specifikace}
+	\item[A5]$ (\forall x)(A \rightarrow B)\rightarrow(A\rightarrow (\forall x)B)$ - pokud $A$ neobsahuje volné $x$\\
+	tzv. \emph{schema přeskoku} 
+\end{description}
+
+\subsection*{\textsl{Pravidla:}}
+\begin{description}
+	\item[Modus Ponens:] $A,(A \rightarrow B) \vdash B$
+	\item[Veta o Dedukci:] $T,A \vdash B$ právě když $T \vdash A \rightarrow B$
+	\item[Generalizace:] $A \vdash (\forall x) A$
+	\item[Lemma pro $\exists$:] $\vdash A_{x}[t] \rightarrow (\exists x) A$
+	\item[Zavedení $\forall$:] pokud $\vdash A \rightarrow B$ a $x$ není volná v $A$\\ 
+	potom platí: $\vdash A \rightarrow (\forall x) B$
+	\item[Zavedení $\exists$:] pokud $\vdash A \rightarrow B$ a $x$ není volná v $B$\\ 
+	potom platí: $\vdash (\exists x) A \rightarrow B$ 
+\end{description}
+
+\subsection*{\textsl{Věty:}}
+\begin{description}
+	\item[V1]	$A\rightarrow A$
+	\item[V2]	$\neg A \rightarrow (A \rightarrow B)$
+	\item[V3]	$\neg \neg A \rightarrow A$
+	\item[V4]	$A\rightarrow \neg \neg A$
+	\item[V5]	$(A \rightarrow B) \rightarrow (\neg B \rightarrow \neg A)$
+	\item[V6]	$A \rightarrow (\neg B \rightarrow \neg (A \rightarrow B))$
+	\item[V7]	$(\neg A \rightarrow A) \rightarrow A$
+	\item[V8]	$A \wedge B \vdash A$\\
+						$A \wedge B \vdash B$
+	\item[V9]	$A,B \vdash A \wedge B$ 
+\end{description}
+
+\section{První část}
+
+\subsection{Formální systém} sestává ze tří částí:
+\begin{enumerate}
+\item \textbf{jazyk} (symboly ze kterých vytváříme konečné posloupnosti - termy, formule)
+\item \textbf{axiomy} (formule přijaté jako základní tvrzení)
+\item \textbf{odvozovací pravidla} (syntaktická pravidla pro odvozování nových formulí)
+\end{enumerate}
+
+\paragraph{Jazyk 1. řádu} je společný pro všechny formální systémy 1. řádu (tzn. pracují pouze s \emph{proměnnými jednoho typu}).
+Tento jazyk obsahuje:
+\begin{itemize}
+	\item symboly pro \emph{proměnné}
+	\item \emph{logické spojky} $\wedge,\ \vee,\ \rightarrow,\ \leftrightarrow,\ \neg$
+	\item \emph{kvantifikátory} $\forall,\ \exists$
+	\item symboly pro \emph{predikáty}
+	\item symboly pro \emph{funkce}
+	\item pomocné symboly $(,\ ),\ \lbrace,\ \rbrace,\ [,\ ],\ldots$
+\end{itemize}
+
+\paragraph{Termy vs. formule} - \emph{termy} popisují objekty vzniklé pomocí nějakých (v termu popsaných) operací:
+\[
+f(g(x))
+\]
+\emph{formule} vyjadřují nějaké tvrzení (které je buď pravdivé nebo nepravdivé):
+\[
+(\forall x)  (x > 0)
+\]
+
+\begin{example}
+\emph{Formální systém výrokové logiky}:\\
+\textbf{P} - množina prvotních formulí.
+\begin{enumerate}
+\item Jazyk: logické spojky, symbly pro prvotní formule z \textbf{P} a závorky
+\item Axiomy: A1, A2, A3
+\item Odvozovací pravidlo: Modus ponens - z formulí $A$ a $A \rightarrow B$ odvoď formuli $B$  
+\end{enumerate}
+\end{example}
+
+\begin{example}
+\emph{Formální systém predikátové logiky 1. řádu:}
+\begin{enumerate}
+\item Jazyk: jazyk 1. řádu
+\item Axiomy: 	\begin{itemize}
+			\item axiomy pro logické spojky - A1, A2, A3
+			\item axiomy pro kvantifikátory - Schema specifikace, Schema přeskoku
+		\end{itemize}
+\item Odvozovací pravidla: Modus ponens, Pravidlo generalizace - pro libovolnou proměnnou $x$ z formule $A$ odvoď formuli $(\forall x)A$
+\end{enumerate}
+\end{example}
+
+\paragraph{Důkaz ve formálním systému} je konečná posloupnost formulí ve které je každá formule axiomem, nebo je odvozená z předchozích formulí pomocí odvozovacích pravidel. Formule, ke které máme důkaz je \emph{dokazatelná}.
+
+\section{Druhá část}
+
+\subsection{Výroková logika} zkoumá syntax a sémantiku formulí vytvořených pouze pomocí logických spojek.
+Všechny složitější formule bereme jako prvotní formule - výroky, které buď platí, nebo ne.\\
+Jazyk navíc můžeme redukovat - pokud jako základní logické spojky vezmeme $\neg$ a $\rightarrow$, můžeme pomocí nich vyjádřit všechny ostatní.
+
+\paragraph{Sémantika výrokové logiky} - abychom mohli rozhodovat o pravdivosti formulí ve výrokové logice, potřebujeme někde zjistit
+jak je to s pravdivostí prvotních formulí ($p \in \mathbf{P}$, které v rámci VL nepitváme).
+Pro tento účel se zavádí tzv. \emph{pravdivostní ohodnocení}:
+\[
+v: \mathbf{P} \rightarrow \lbrace 0,1 \rbrace
+\]
+Indukcí podle složitosti formule lze potom určit pravdivost libovolné formule ($\mathbf{F}$ - množina všech formulí vytvořených z prvotních flí. pomocí logických spojek) pomocí rozšířeného zobrazení:
+$\bar{v}: \mathbf{F} \rightarrow \lbrace 0,1 \rbrace$
+
+\paragraph{Tautologie a splnitelnost}
+
+\begin{definition}[Tautologie] je formule $A \in \mathbf{F}$, která je pravdivá při libovolném pravdivostním ohodnocení $v$. To znamená, že pro libovolnou volbu $v$:
+\[
+\bar{v}(A) = 1
+\]
+(Pozn. $\bar{v}$ je \emph{rozšířené} pravdivostní ohodnocení $v$)
+\end{definition}
+
+\begin{definition}[Splnitelná formule] je každá, formule $A \in \mathbf{F}$, pro kterou existuje alespoň jedno pravdivostní ohodnocení $v$
+při kterém $\bar{v}(A) = 1$.
+\end{definition}
+
+\begin{definition}[Model množiny formulí T] je každé ohodnocení $v$ při kterém jsou splněny všechny formule z T.
+\end{definition}
+
+\begin{definition}[Tautologický důsledek množiny formulí T] je formule $A$, která je pravdivá při každém ohodnocení, které je modelem $T$.
+Značení: $T \models A$ znamená, že $A$ je tautologickým důsledkem množiny $T$.
+\end{definition}
+
+\begin{definition}[Dokazatelnost]
+Konečná posloupnost formulí $A_{1},\ldots,A_{n}$ je \emph{důkazem} formule $A$, jestliže $A=A_{n}$ a pro každé $i$ takové, že $1 \leq i \leq n$
+je $A_{i}$ buď axiom, nebo je odvozena z předchozích formulí pomocí pravidla modus ponens. Pokud existuje důkaz formule $A$, říkáme, že $A$ je dokazatelná ve výrokové logice (je větou výrokové logiky) a píšeme $\vdash A$.
+Dokazatelnost $A$ z předpokladů $T$ značíme $T \vdash A$. Přitom formule z množiny $T$ se v důkazu používají jako jakési "přidané axiomy".  
+\end{definition}
+
+\begin{theorem}[Věta o dedukci]
+\[
+T \vdash A \rightarrow B\ \Leftrightarrow\ T \cup \lbrace A \rbrace \vdash B
+\]
+\end{theorem}
+
+\begin{proof}
+\begin{itemize}
+\item "$\Rightarrow$": Protože platí $T \vdash A \rightarrow B$, musí existovat posloupnost formulí:
+\[
+A_{1},\ldots,A_{n},A \rightarrow B
+\]
+přidáme-li $A$ do předpokladů, bude možné přidat $A$ na počátek této posloupnosti a odvodit $B$ pomocí pravidla modus ponens.
+Důkaz $B$ z $T \cup \lbrace A \rbrace$ bude tedy:
+\[
+A,A_{1},\ldots,A_{n},A \rightarrow B,B
+\]
+takže $T \cup \lbrace A \rbrace \vdash B$.
+\item "$\Leftarrow$": Mějme posloupnost $A = A_{0},A_{1},\ldots,A_{n} = B$, která je důkazem pro $T \cup \lbrace A \rbrace \vdash B$.
+Indukcí podle $i$ dokážeme:
+\[
+T \vdash A \rightarrow A_{i}
+\]
+V každém indukčním kroku vždy můžou pro $A_{i}$ nastat dva případy:
+\begin{enumerate}
+	\item $A_{i}$ je axiom, nebo patří do $T \cup \lbrace A \rbrace$
+	\item $A_{i}$ je odvozena pomocí modus ponens z nějakých formulí $A_{j}$ a $A_{k}$ takových, že $j,k < i$
+\end{enumerate}
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[Věta o kompaktnosti]
+Množina formulí $T$ je splnitelná, právě když je splnitelná libovolná konečná podmnožina $T_{0} \subseteq T$.
+\end{theorem}
+\begin{proof}
+\begin{itemize}
+\item "$\Rightarrow$" - $T$ je splnitelná, takže má model $v$. V tomto modelu je potom splněna libovolná podmnožina $T$.
+\item "$\Leftarrow$" - pokud je $T$ nejvýše spočetná (konečná, nebo nekonečná, ale každopádně spočetná) tak
+lze dokázat indukcí dle velikosti podmnožiny. Jinak se to dokazuje přes větu o kompaktnosti součinu kompaktních topologických prostorů.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Lemma o prvotních formulích]\label{lemma:prvotni_formule}
+Značení: pokud $v$ je ohodnocení a $B$ je formule, potom
+\[
+\bar{v}(B) = \left\{
+\begin{array}{lcl}
+1 & \Rightarrow & B^{v} = B\\
+0 & \Rightarrow & B^{v} = \neg B\\
+\end{array}
+\right.
+\]
+Znění lemmatu: Nechť $A$ je formule VL a $P_{1},\ldots,P_{n}$ jsou všechny její prvotní podformule. Potom
+platí:
+\[
+P_{1}^{v},\ldots,P_{n}^{v} \vdash A^{v}
+\]
+\end{lemma}
+
+\begin{lemma}[Lemma o neutrální formuli]\label{lemma:neutralni_formule}
+Pro množinu formulí $T$ a formule $A$ a $B$ platí:
+\[
+(T,A \vdash B)\ \wedge\ (T,\neg A \vdash B)\ \Leftrightarrow\ (T \vdash B)
+\]
+\end{lemma}
+
+\begin{theorem}[Slabá věta o úplnosti (Post)]
+Ve výrokové logice jsou dokazatelné právě tautologie.
+\[
+\vdash A\ \Leftrightarrow\ \models A
+\]
+\end{theorem}
+
+\begin{proof}
+Idea důkazu.
+\begin{itemize}
+	\item "$\Rightarrow$": dokážeme, že všechny axiomy VL jsou tautologiemi a že pravidlo modus ponens dělá z tautologií zase tautologie.
+	\item "$\Leftarrow$": Vezmeme libovolnou formuli $A$ a pracujeme s jejími prvotními podformulemi $P_{1},\ldots,P_{n}$.
+Potřebujeme lemmata \ref{lemma:prvotni_formule} a \ref{lemma:neutralni_formule}. Protože je $A$ tautologie, můžeme zvolit ohodnocení $v$
+takové, že při něm budou všechny prvotní formule pravdivé. Podle lemmatu \ref{lemma:prvotni_formule} dostaneme:
+\[
+P_{1},\ldots,P_{n} \vdash A
+\]
+Můžeme dále zvolit takové ohodnocení, že všechny prvotní formule jsou pravdivé až na $P_{n}$, tedy:
+\[
+P_{1},\ldots,\neg P_{n} \vdash A
+\]
+Použitím lemmatu \ref{lemma:neutralni_formule} na předchozí dva výsledky dostaneme:
+\[
+P_{1},\ldots,P_{n-1} \vdash A
+\]
+Stejný postup aplikujeme dokud nezískáme $\vdash A$.
+\end{itemize}
+\end{proof}
+
+\begin{theorem}[Věta o úplnosti Výrokové logiky]
+Nechť $T$ je množina formulí a $A$ je formule. Potom platí:
+\[
+(T \vdash A)\ \Leftrightarrow\ (T \models A)
+\]
+\end{theorem}
+
+
+\paragraph{Tvary formulí (konjunktivně disjunktivní a disjunktivně konjunktivní)}. Každou formuli výrokové logiky můžeme vyjádřit ve standartním tvaru. Zavedeme nejprve pojmy:
+\begin{itemize}
+\item \emph{literál} - prvotní formule, nebo její negace
+\item \emph{klauzule} - disjunkce literálů
+\end{itemize}
+
+\paragraph{Konjunktivní tvar.} Formule je v konjunktivním tvaru, pokud je zapsána jako konjunkce klauzulí. Př.:
+\[
+(\neg a\vee b\vee c)\wedge(a\vee \neg b\vee c)\wedge(a\vee b\vee \neg c)
+\]
+
+\paragraph{Disjunktivní tvar.} Formule je v disjunktivním tvaru, je-li zapsána jako disjunkce konjunkcí literálů. Př.:
+\[
+(x\wedge \neg y\wedge \neg z)\vee(\neg x\wedge y\wedge \neg z)\vee(\neg x\wedge \neg y\wedge z)
+\]
+
+\begin{theorem}[Standartní tvary formulí]
+Ke každé formuli $A$ lze sestrojit formuli $A_{k}$ v konjunktivním tvaru a formuli $A_{d}$ v disjunktivním tvaru tak, že:
+\[
+(\vdash A \leftrightarrow A_{k})\ \wedge\ (\vdash A \leftrightarrow A_{d})
+\]
+\end{theorem}
+
+\section{Třetí část}
+
+\subsection{Predikátová logika} používá jazyk prvního řádu.
+Oproti výrokové logice obsahuje tedy navíc ještě proměnné, kvantifikátory, predikáty a funkce.
+Speciálním případem predikátu je predikát rovnosti.
+
+\paragraph{Termy} jsou zavedeny induktivně:
+\begin{enumerate}
+\item každá proměnná je \emph{term} 
+\item jsou-li $t_1,\ldots,t_{n}$ termy a  $f$ je n-ární funkční symbol, potom $f(t_1,\ldots,t_{n})$ je taky term.
+\item Všechny výrazy vytvořené konečným použitím výše uvedených pravidel jsou termy.
+\end{enumerate}
+
+\paragraph{Formule} jsou konstruovány následovně:
+\begin{enumerate}
+\item Jsou-li $t_1,\ldots,t_{n}$ termy a $p$ je n-ární predikátový symbol, potom $p(t_1,\ldots,t_{n})$ je \emph{atomická formule}.
+\item Jsou-li $A$ a $B$ formule, potom přidáním logických spojek lze vytvořit formule.
+\item Je-li $A$ formule a $x$ proměnná, potom $(\forall x)A$ a $(\exists x)A$ jsou taky formule.
+\item Cokoliv vznikne konečným použitím výše uvedených pravidel jsou formule.
+\end{enumerate}
+
+\paragraph{Vázaný a volný výskyt proměnné.} Proměnná $x$ je ve formuli $A$ \emph{vázaná}, pokud je součástí nějaké podformule ve tvaru
+$(Q\ x)A$ kde $Q$ je jeden z kvantifikátorů. Pokud není proměnná nikde vázána, je to \emph{volná} proměnná.
+Proměnná může mít v jedné formuli volný i vázaný výskyt.
+
+\paragraph{Otevřená a uzavřená formule.} Formule $A$ je \emph{uzavřená}, pokud neobsahuje žádnou volnou proměnnou. Pokud formule $A$ neobsahuje žádnou vázanou proměnnou, je \emph{otevřená}.
+
+\paragraph{Realizace jazyka $L$} obsahuje:
+\begin{itemize}
+\item neprázdnou množinu individuí $M$
+\item zobrazení $f: M^{n} \rightarrow M$ pro každý n-ární funkční symbol
+\item n-ární relaci $p \subseteq M^{n}$ pro každý n-ární predikátový symbol 
+\end{itemize}
+Konstanty chápeme jako nulární funkční symboly.
+
+\paragraph{Realizace termů} je definována pomocí zobrazení $e$, které každé proměnné přiřadí prvek z $M$.
+\begin{enumerate}
+\item Je-li termem $t$ proměnná $x$, potom $t[e] = e(x)$
+\item Je-li termem $t$ n-ární funkční symbol $f(t_1,\ldots,t_{n})$ potom $t[e] = f(t_1[e],\ldots,t_{n}[e])$ 
+\end{enumerate}
+
+\paragraph{Tarského definice pravdy.} Pokud je $\mathcal{M}$ realizace jazyka $L$ a $e$ je ohodnocení proměnných, pravdivost formule
+$A$ v realizaci $\mathcal{M}$ při ohodnocení $e$ se značí:
+\[
+\mathcal{M} \models A[e]
+\]
+A je definována induktivně podle složitosti formule $A$.
+
+\begin{definition}[Teorie prvního řádu]
+Mějme jazyk $L$ prvního řádu a množinu formulí $T$ z $L$. Potom $T$ je teorie prvního řádu v jazyce $L$.
+Formule z $T$ jsou jejími \emph{speciálními axiomy}. Speciálně pro predikátovou logiku 1. řádu platí: $T = \emptyset$.
+\end{definition}
+
+\paragraph{Dokazatelnost} v predikátové logice pouze využívá další axiomy a odvozovací pravidla.
+Důkaz je stále tvořen posloupností formulí, z nichž každá je sama axiomem,nebo je odvozena podle pravidla modus ponens, nebo generalizace.
+
+\begin{theorem}[Věta o uzávěru]
+Mějme formuli $A$ a její uzávěr $A'$. Platí:
+\[
+(\vdash A)\ \Leftrightarrow\ (\vdash A')  
+\]
+Důkaz jedním směrem: pravidlo generalizace.\\
+Důkaz druhým směrem: lemma $\vdash (\forall x_1)\ldots(\forall x_n)A \rightarrow A_{x_1,\ldots,x_{n}}[t_1,\ldots,t_{n}]$ a pravidlo modus ponens.
+\end{theorem}
+
+\paragraph{Věta o dedukci} se dokazuje podobně jakove výrokové logice - pouze musíme navíc počítat s odvozovacím pravidlem generalizace.
+V předpokladech je navíc požadavek nauzavřenost formule $A$.\\
+Důležitým důsledkem věty o dedukci je následující tvrzení:
+
+\begin{corollary}[Důkaz sporem]
+Ať $A'$ je uzávěr $A$ a $T$ je množina formulí. Potom:
+$T \vdash A$ právě když $T \cup \lbrace \neg A'\rbrace$ je sporná teorie (pro libovolnou formuli $B$ v ní lze dokázat $B$ a zároveň $\neg B$).
+\end{corollary}
+
+\paragraph{Substituovatelnost.} Term $t$ je substituovatelný za proměnnou $x$ do formule $A$, pokud pro každou proměnnou $y$ v $t$, žádná kvantifikovaná podformule $A$ tvaru $(Q\ y) B$ neobsahuje volný výskyt $x$ (z hlediska $A$).
+Pokud by existoval volný výskyt proměnné $x$,
+mohli bychom vytvořit nevhodnou substitucí z neuzavřené formule uzavřenou a to nechceme. Značení: $A_{x}[t]$.
+Úspěšnou substitucí vytvoříme \emph{instanci} dané formule.
+
+\begin{example}[Špatná substituce]
+Máme formuli $A = (\forall y) (x < y + 1)$ a substituujeme term $t = y + 5$ za proměnnou $x$:
+\[
+A_{x}[t] = (\forall y)(y + 5 < y + 1)
+\]
+Což se úplně nepovedlo. Aby k tomu nedošlo, zavádí se pojem \emph{substituovatelnosti}.
+Substituovatelnost je zaručená, pokud žádná proměnná obsažená v $t$ není v $A$ vázaná.
+\end{example}
+ 
+\begin{theorem}[Věta o konstantách]
+Mějme množinu formulí $T$ a formuli $A$ z jazyka $L$. Jsou-li $c_1,\ldots,c_{n}$ nové konstanty (rozšíříme $L$ na $L'$) a
+$x_1,\ldots,x_{n}$ proměnné, potom platí:
+\[
+(T \vdash A_{x_1,\ldots,x_{n}}[c_1,\ldots,c_{n}])\ \Leftrightarrow\ (T \vdash A)
+\]
+\end{theorem}
+
+\begin{proof}
+\begin{itemize}
+\item "$\Leftarrow$": je-li dokazatelná $A$, je dokazatelná i každá její instance.
+\item "$\Rightarrow$": je-li dokazatelná $A_{x_1,\ldots,x_{n}}[c_1,\ldots,c_{n}]$, znamená to, že má důkaz. Všechny konstanty nahradíme
+proměnnými $y_1,\ldots,y_{n}$ a důkaz který máme bude fungovat dál. 
+\end{itemize}
+\end{proof}
+
+\paragraph{Prenexní tvary formulí.} Formule $A$ je v prenexním tvaru, má-li tvar:
+\[
+(Q_1\ x_1)(Q_2\ x_2)\ldots(Q_n\ x_n)B
+\]
+kde $Q_i$ je jeden z kvantifikátorů $\forall$ a $\exists$, $B$ je otevřená formule a $x_1,\ldots,x_n$ jsou navzájem různé proměnné.
+
+\begin{theorem}[O prenexním tvaru formulí]
+Ke každé formuli $A$ lze sestrojit formuli $A'$ v prenexním tvaru tak, že:
+\[
+\vdash A \leftrightarrow A'
+\]
+V důkazu se využívá nahrazení formule variantou (přejmenování proměnných) a důkaz 4 prenexních operací:
+\begin{enumerate}
+\item záměna kvantifikátoru
+\[
+\neg (\mathbf{Q}\ x)A \leftrightarrow (\mathbf{\bar{Q}}\ x)\neg A
+\] 
+\item kvantifikace implikace "proti šipce" (předpoklad $x$ není volná v $A$)
+\[
+(\mathbf{Q}\ x)(A \rightarrow B) \leftrightarrow (A \rightarrow (\mathbf{Q}\ x)B)
+\]
+\item kvantifikace implikace "přes závorku" (předpoklad $x$ není volná v $B$)
+\[
+(\mathbf{\bar{Q}}\ x)(A \rightarrow B) \leftrightarrow ((\mathbf{Q}\ x)A \rightarrow B)
+\]
+\item kvantifikace konjunkce/disjunkce ($\ \square \rightsquigarrow \wedge\ |\ \vee$, předpoklad $x$ není volná v $B$) 
+\[
+((\mathbf{Q}\ x)A \square B) \rightarrow (\mathbf{Q}\ x)(A \square B)
+\]
+\end{enumerate}
+\end{theorem}
+
+\section{Čtvrtá část}
+
+\begin{theorem}[Věta o korektnosti]
+Ať $T$ je teorie s jazykem $L$. Pokud pro nějakou formuli $A$ z $L$ platí:
+\[
+T \vdash A
+\]
+potom $T \models A$. Takže každá věta teorie $T$ je splněna ve všech modelech $T$.
+\end{theorem}
+
+\begin{proof}
+Věta o korektnosti se dokazuje indukcí podle délky důkazu formule.
+Ať je $\mathcal{M}$ libovolný model teorie $T$ a $A_1,\ldots,A_n = A$ je důkaz $A$ z $T$.
+Indukcí dokážeme, že $\forall i:\ \mathcal{M} \vDash A_i$. Rozbor příkladů z čeho vzešlo $A_i$:
+\begin{enumerate}
+\item je to formule z $T$ - takže je splněna v $\mathcal{M}$
+\item je to axiom PL:
+	\begin{enumerate}
+	\item je to axiom VL
+	\item je to axiom \emph{specifikace}
+	\item je to axiom \emph{přeskoku}
+	\item je to axiom rovnosti
+	\end{enumerate}
+\item je odvozeno pravidlem \emph{modus ponens}
+\item je odvozeno pravidlem \emph{generalizace}
+\end{enumerate}
+\end{proof}
+
+\begin{definition}[Úplná teorie]
+Teorie $T$ s jazykem  $L$ je \emph{úplná}, jestliže $T$ je bezesporná
+a pro každou \emph{uzavřenou} formuli $A$ jazyka $L$ je jedna z formulí $A$,$\neg A$ v $T$ dokazatelná.
+\end{definition}
+
+\begin{definition}[Henkinova teorie]
+Teorie $T$ s jazykem $L$ je \emph{Henkinova} pokud pro každou uzavřenou formuli $(\exists x) B$ existuje v $L$ konstanta $c$ tak,
+že:
+\[
+T \vdash (\exists x)B \rightarrow B_{x}[c]
+\]
+\end{definition}
+
+\begin{lemma}[Model Henkinovy teorie]
+Je-li $T$ úplná Henkinova teorie, pak má model.
+\end{lemma}
+
+\begin{theorem}[Věty o úplnosti (G\"{o}del)]
+Ať $T$ je teorie s jazykem $L$. Potom platí:
+\begin{enumerate}
+\item je-li $A$ formule z $L$, potom:
+\[
+(T \vdash A)\ \Leftrightarrow\ (T \models A)
+\]
+\item $T$ je bezesporná právě když má nějaký model.
+\end{enumerate}
+\end{theorem}
+
+\begin{remark}
+Z 2. části věty o úplnosti vyplývá 1. část:
+\begin{itemize}
+\item Mějme teorii $T$ a formuli $A$ - obojí v jazyce $L$.
+\item podle důsledku věty \emph{o uzávěru} platí $T \vdash A$ právě když je $T \cup \lbrace \neg A^{'} \rbrace$ sporná teorie ($A^{'}$ značí uzávěr $A$).
+\item pokud je $T \cup \lbrace \neg A^{'} \rbrace$ sporná, tak není splněna v žádném modelu (dle části 2. věty o úplnosti), takže ve všech modelech 
+$T$ musí být splněna $T \cup \lbrace A^{'} \rbrace$
+\item jestli je uzávěr $A$ splněn ve všech modelech, tak to znamená, že $A$ je taky splněna ve všech modelech, tedy: $T \models A$ \qed
+\end{itemize}
+\end{remark}
+
+\paragraph{Rozšiřování.} Jazyk $L'$ nazveme rozšířením jazyka $L$, pokud nový jazyk obsahuje všechno, co obsahoval ten původní (funkční symboly a predikáty).
+
+\begin{definition}[Rozšíření teorie]
+Mějme teorii $T$ v jazyce $L$. Teorii $T'$ v jazyce $L'$ nazveme rozšířením teorie $T$, pokud:
+\begin{enumerate}
+\item jazyk $L'$ je rozšířením $L$
+\item pro každou formuli $A$ z jazyka $L$:
+\[
+(T \vdash A)\ \Rightarrow\ (T' \vdash A)
+\]  
+\end{enumerate}
+Pokud platí také opačná implikace:
+\[
+(T \vdash A)\ \Leftarrow\ (T' \vdash A)
+\]
+hovoříme o \emph{konzervativním rozšíření}.
+\end{definition}
+
+\begin{remark}[Rozšíření o konstantní symbol]
+je vždy konzervativní rozšíření. (plyne z věty o konstantách)
+\end{remark}
+
+\paragraph{Rozšíření teorie o definici funkcí a predikátů}
+Je rozdíl mezi \emph{zavedením funkčního symbolu} a \emph{definicí funkčního symbolu} (příklad):
+\begin{itemize}
+\item zavedení: \emph{Nechť je $p$ prvočíslo větší než $x$.} (Takových prvočísel je mnoho - víme, že ke každému $x$ nějaké $p$ najdeme)
+\item definice: \emph{Nechť je $p$ nejmenší z prvočísel, která jsou větší než $x$.} (Ke každému $x$ máme právě jedno $p$)
+\end{itemize}
+Oběma způsoby můžeme získat konzervativní rozšíření teorie o funkční symbol.
+
+\begin{theorem}[Definice predikátového symbolu]
+Máme teorii $T$ s jazykem $L$. Formule $D$ v jazyce $L$ obsahuje volné proměnné $x_1,\ldots,x_n$. Pokud $T^{'}$ vznikne z $T$
+rozšířením jazyka $L$ o $n$-ární predikátový symbol $p$ a přidáním axiomu:
+\[
+p(x_1,\ldots,x_n) \leftrightarrow D
+\]
+potom je $T^{'}$ kozervativní rozšíření $T$. Navíc lze ke každé fli. $B^{'}$ sestrojit $B$ v jazyce $L$ tak, že: $T^{'} \vdash B^{'} \leftrightarrow B$
+\end{theorem}
+
+\begin{theorem}[Henkin]
+Ke každé teorii $T$ lze sestrojit teorii $T_{H}$, která je konzervativním rozšířením $T$.
+\end{theorem}
+
+\begin{theorem}[Zavedení funkčního symbolu]
+Máme teorii $T$ s jazykem $L$. Formule $A$ v jazyce $L$ obsahuje volné proměnné $x_1,\ldots,x_n,y$ a platí:
+\[
+T \vdash (\exists y)A
+\]
+Pokud $T^{'}$ vznikne z $T$ rozšířením jazyka $L$ o funkční symbol $f$ a přidáním axiomu:
+\[
+A_{y}[f(x_1,\ldots,x_n)]
+\]
+potom je $T^{'}$ konzervativní rozšíření $T$.
+\end{theorem}
+
+\begin{theorem}[Definice funkčního symbolu]
+Máme teorii $T$ s jazykem $L$. Formule $D$ v jazyce $L$ obsahuje volné proměnné $x_1,\ldots,x_n,y$ a platí:
+\[
+\begin{array}{rcl}
+T & \vdash & (\exists y)D\\
+T & \vdash & D \rightarrow (D_{y}[t] \rightarrow y=t)
+\end{array}
+\]
+Pokud $T^{'}$ vznikne z $T$ rozšířením jazyka $L$ o funkční symbol $f$ a přidáním (definujícího) axiomu:
+\[
+y=f(x_1,\ldots,x_n) \leftrightarrow D
+\]
+potom $T^{'}$ je konzervativní rozšíření $T$. Navíc pro každou fli. $B^{'}$ lze sestrojit $B$ v jazyce $L$ tak, že:
+$T^{'} \vdash B^{'} \leftrightarrow B$
+\end{theorem}
+
+\section{Pátá část}
+
+\paragraph{Míry výpočtové složitosti}
+Zkoumáme prostorovou a časovou složitost algoritmů vzhledem k velikosti vstupních dat.
+\begin{itemize}
+\item časová složitost - počet elementárních kroků, které musí algoritmus vykonat během výpočtu
+\item prostorová složitost - objem paměti, kterou algoritmus během výpočtu zabere
+\end{itemize}
+
+V teorii složitosti se využívá výpočetní model Turingova stroje - časová složitost je potom počet kroků TS a prostorová složitost odpovádá
+počtu zabraných buněk na pásce.
+
+\paragraph{Třídy složitosti}
+Pokud přeformulujeme problémy jako rozhodovací problémy rozpoznávání jazyků pomocí TS, můžeme definovat množiny jazyků:
+\begin{itemize}
+\item $DTIME(f(n))$ - množina jazyků, které lze rozpoznat pomocí DTS v čase $O(f(n))$
+\item $DSPACE(s(n))$ - množina jazyků, které lze rozpoznat pomocí DTS v prostoru $O(s(n))$ 
+\end{itemize}
+Podobně pro NTS zavádíme množiny $NTIME$ a $NSPACE$.
+
+Složitostní třídy $P,NP,PSPACE,NPSPACE,LOGSPACE$ jsou potom definovány jako:
+\begin{itemize}
+\item $P = \bigcup_{c > 0} DTIME(n^{c})$
+\item $NP = \bigcup_{c > 0} NTIME(n^{c})$
+\item $PSPACE = \bigcup_{c > 0} DSPACE(n^{c})$
+\item $NPSPACE = \bigcup_{c > 0} NSPACE(n^{c})$
+\item $LOGSPACE = DSPACE(log(n))$
+\end{itemize}
+
+\paragraph{Vztahy mezi složitostními třídami.}  Platí:
+\begin{itemize}
+\item $P \subseteq NP \subseteq PSPACE = NPSPACE$
+\item $LOGSPACE \subseteq PSPACE$
+\end{itemize}
+Přitom rovnost $PSPACE = NPSPACE$ plyne ze Savičovy věty.
+
+\paragraph{NP-těžkost a NP-úplnost}
+
+\paragraph{Složitost algoritmů v AI}
+
+\paragraph{Prohledávání.} Základní stromové prohledávací algoritmy v AI:
+\begin{itemize}
+\item BFS - prohledávání do šířky
+\item DFS - prohledávání do hloubky
+\item Uniform Cost Search - prohledávání podle ceny cesty (BFS s prioritní frontou)
+\item LDFS - omezené DFS (prohledávání omezené hloubkou)
+\item IDFS - iterované prohlubování
+\item Bi-directional search - prohledává se od startu i od cíle
+\end{itemize}
+
+\paragraph{Rezoluční odvozování}
+Rezoluce patří mezi NP-úplné problémy - algoritmus v každém kroku nedeterministicky vybírá dvojici klauzulí pro rezoluci, dokud neodvodí prázdnou klauzuli (spor), nebo nenajde pevný bod (už nepřibývají žádné nové klauzule). 
+
+\end{document}
+

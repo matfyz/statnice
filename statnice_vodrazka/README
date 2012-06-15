@@ -1,0 +1,18 @@
+-- Puvod materialu --
+Tyto materialy vznikly pri priprave na SZS oboru Teoreticka informatika na MFF UK v roce 2012.
+Obsah pochazi z nejruznejsich zdroju - skript, slajdu, webovych stranek a knih (predevsim AIMA - S.Russell, P.Norvig).
+Citace zamerne nejsou uvedeny a autor si necini narok na originalitu.
+
+-- Disclaimer --
+Autor nezodpovida za spravnost uvedenych informaci.
+Kdokoliv tyto materialy jakkoliv pouzije, cini tak na vlastni zodpovednost.
+
+-- Poznamka autora --
+Statnice na MFF nejsou zadarmo. Venoval jsem tvorbe techto materialu netrivialni usili,
+za ktere mi bylo odmenou uspesne slozeni SZS. Pokud se nekomu budou hodit, bude me usili zhodnoceno dvojnasob.
+V duchu Open Source prikladam zdrojove kody v LaTeXu, aby kdokoliv mohl opravovat nalezene chyby,
+rozsirovat pasaze pokryte jen castecne a doplnovat chybejici informace.
+
+Preji zdar u zkousky.
+
+Jindrich Vodrazka
